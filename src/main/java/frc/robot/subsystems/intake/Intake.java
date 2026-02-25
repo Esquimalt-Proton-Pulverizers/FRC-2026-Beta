@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import static frc.robot.subsystems.intake.IntakeConstants.*;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
@@ -83,18 +84,17 @@ public class Intake extends SubsystemBase {
     return targetVoltage;
   } // End getTargetVoltage
 
+  /** Step the target voltage by the given amount. */
   public void stepVoltage(double stepVoltage) {
-		double next = Math.min(IntakeConstants.kMaxVoltage, getTargetVoltage() + stepVoltage);
-		if (getMode() == Intake.Mode.IDLE) {
-			setIntakingMode();
-			setTargetVoltage(stepVoltage);
-		} else {
-			setTargetVoltage(next);
-		}
-		if (next == 0) {
-			setIdleMode();
-		}
-  }
+    if (getMode() == Mode.IDLE) {
+      setIntakingMode();
+      setTargetVoltage(stepVoltage);
+    }
+    else {
+      setTargetVoltage(MathUtil.clamp(getTargetVoltage() + stepVoltage, -kMaxVoltage, kMaxVoltage));
+    }
+    if (getTargetVoltage() == kIdleVoltage) setIdleMode();
+  } // End stepVoltage
 
   /** Current mode. */
   public Mode getMode() {

@@ -25,6 +25,9 @@ public final class IntakeConstants { // TODO: Add correct values
   /** Max voltage magnitude applied to the motor. */
   public static final double kMaxVoltage = 8.0;
 
+  /** Min voltage (negative = reverse). */
+  public static final double kMinVoltage = -kMaxVoltage;
+
   /** Voltage when idle. */
   public static final double kIdleVoltage = 0.0;
 

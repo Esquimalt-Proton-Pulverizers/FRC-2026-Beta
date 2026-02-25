@@ -458,7 +458,7 @@ public class RobotContainer {
               flywheel));
     }
 
-		// -------- Manual Override + Encoder Reset --------
+		// --------------------------------------- Manual Override + Encoder Reset --------------------------------------
 		// If Manual Override is false, become true
 		// If Manual Override is true, reset encoder positions, and then become false
 		driverController.back().onTrue(Commands.runOnce(() -> 
@@ -493,86 +493,8 @@ public class RobotContainer {
 				if (flywheel != null) flywheel.setState(FlywheelState.IDLE);
 			}, agitator, transfer, flywheel));
 
-			final double intakeStepVoltage = 0.25;
-			// Raise intake voltage
-			operatorController.povLeft().onTrue(
-				new ConditionalCommand(
-					Commands.runOnce(() -> intake.stepVoltage(intakeStepVoltage), intake),
-					new InstantCommand(),
-					() -> (manualOverride && intake != null)
-				)
-			);
-
-			// Lower intake voltage
-			operatorController.povRight().onTrue(
-				new ConditionalCommand(
-					Commands.runOnce(() -> intake.stepVoltage(-intakeStepVoltage), intake),
-					new InstantCommand(),
-					() -> (manualOverride && intake != null)
-				)
-			);
-
-			final double agitatorStepVoltage = 0.25;
-			// Raise agitator voltage
-			operatorController.y().onTrue(
-				new ConditionalCommand(
-					Commands.runOnce(() -> agitator.stepVoltage(agitatorStepVoltage), agitator),
-					new InstantCommand(),
-					() -> (manualOverride && agitator != null)
-				)
-			);
-
-			// Lower agitator voltage
-			operatorController.a().onTrue(
-				new ConditionalCommand(
-					Commands.runOnce(() -> agitator.stepVoltage(-agitatorStepVoltage), agitator),
-					new InstantCommand(),
-					() -> (manualOverride && agitator != null)
-				)
-			);
-
-			final double transferStepVoltage = 0.25;
-			// Raise transfer voltage
-			operatorController.leftBumper().onTrue(
-				new ConditionalCommand(
-					Commands.runOnce(() -> transfer.stepVoltage(transferStepVoltage), transfer),
-					new InstantCommand(),
-					() -> (manualOverride && transfer != null)
-				)
-			);
-			// Lower transfer voltage
-			operatorController.rightBumper().onTrue(
-				new ConditionalCommand(
-					Commands.runOnce(() -> transfer.stepVoltage(-transferStepVoltage), transfer),
-					new InstantCommand(),
-					() -> (manualOverride && transfer != null)
-				)
-			);
-
-			// Manual Override for Flywheel Velocity
-    	//if (manualOverride && flywheel != null)
-    	final double stepRpm = 50.0;
-    	final double stepRadsPerSec = Units.rotationsPerMinuteToRadiansPerSecond(stepRpm);
-
-			// Raise flywheel rpm
-    	operatorController.povUp().onTrue(
-				new ConditionalCommand(
-    			Commands.runOnce(() -> flywheel.stepVelocityRadsPerSec(stepRadsPerSec), flywheel),
-					new InstantCommand(),
-					() -> (manualOverride && flywheel != null)
-				)
-			);
-						
-			// Lower flywheel rpm
-    	operatorController.povDown().onTrue(
-				new ConditionalCommand(
-    	  	Commands.runOnce(() -> flywheel.stepVelocityRadsPerSec(-stepRadsPerSec), flywheel),
-					new InstantCommand(),
-					() -> (manualOverride && flywheel != null)
-				)
-			);
-
-			// -------- Manual Override + Encoder Reset --------
+			
+			// --------------------------------------- Manual Override + Encoder Reset --------------------------------------
 			// If Manual Override is false, become true
 			// If Manual Override is true, reset encoder positions, and then become false
 			driverController.back().onTrue(Commands.runOnce(() -> 
@@ -585,6 +507,83 @@ public class RobotContainer {
 					() -> manualOverride)
 				));
     	}
+
+			// Intake Manual Voltage Control
+			final double intakeStepVoltage = 0.25;
+			// Raise Intake voltage
+			operatorController.povLeft().onTrue(
+				new ConditionalCommand(
+					Commands.runOnce(() -> intake.stepVoltage(intakeStepVoltage), intake),
+					new InstantCommand(),
+					() -> (manualOverride && intake != null)
+				)
+			);
+			// Lower Intake voltage
+			operatorController.povRight().onTrue(
+				new ConditionalCommand(
+					Commands.runOnce(() -> intake.stepVoltage(-intakeStepVoltage), intake),
+					new InstantCommand(),
+					() -> (manualOverride && intake != null)
+				)
+			);
+
+			// Agitator Manual Voltage Control
+			final double agitatorStepVoltage = 0.25;
+			// Raise Agitator voltage
+			operatorController.y().onTrue(
+				new ConditionalCommand(
+					Commands.runOnce(() -> agitator.stepVoltage(agitatorStepVoltage), agitator),
+					new InstantCommand(),
+					() -> (manualOverride && agitator != null)
+				)
+			);
+			// Lower Agitator voltage
+			operatorController.a().onTrue(
+				new ConditionalCommand(
+					Commands.runOnce(() -> agitator.stepVoltage(-agitatorStepVoltage), agitator),
+					new InstantCommand(),
+					() -> (manualOverride && agitator != null)
+				)
+			);
+
+			// Transfer Manual Voltage Control
+			final double transferStepVoltage = 0.25;
+			// Raise Transfer voltage
+			operatorController.leftBumper().onTrue(
+				new ConditionalCommand(
+					Commands.runOnce(() -> transfer.stepVoltage(transferStepVoltage), transfer),
+					new InstantCommand(),
+					() -> (manualOverride && transfer != null)
+				)
+			);
+			// Lower Transfer voltage
+			operatorController.rightBumper().onTrue(
+				new ConditionalCommand(
+					Commands.runOnce(() -> transfer.stepVoltage(-transferStepVoltage), transfer),
+					new InstantCommand(),
+					() -> (manualOverride && transfer != null)
+				)
+			);
+
+			// Flywheel Manual Velocity Control
+    	final double stepRpm = 50.0;
+    	final double stepRadsPerSec = Units.rotationsPerMinuteToRadiansPerSecond(stepRpm);
+			// Raise Flywheel rpm
+    	operatorController.povUp().onTrue(
+				new ConditionalCommand(
+    			Commands.runOnce(() -> flywheel.stepVelocityRadsPerSec(stepRadsPerSec), flywheel),
+					new InstantCommand(),
+					() -> (manualOverride && flywheel != null)
+				)
+			);
+			// Lower Flywheel rpm
+    	operatorController.povDown().onTrue(
+				new ConditionalCommand(
+    	  	Commands.runOnce(() -> flywheel.stepVelocityRadsPerSec(-stepRadsPerSec), flywheel),
+					new InstantCommand(),
+					() -> (manualOverride && flywheel != null)
+				)
+			);
   } // End configureOperatorBindings
 
 
