@@ -262,7 +262,7 @@ public class RobotContainer {
 		/// ---------------------------------------------------------------------------------------------------------------
 		/// ----------------------------------------------- Drive Commands ------------------------------------------------
 		/// ---------------------------------------------------------------------------------------------------------------		
-		teleopDrive = new TeleopDrive(drive, driverController); 
+		teleopDrive = new TeleopDrive(drive, driverController, () -> isRobotCentric); 
 		
 		// Initialize face-target PID controller (using same constants as DriveCommands)
 		faceTargetController = new ProfiledPIDController(DriveCommands.getAngleKp(), 0.0, DriveCommands.getAngleKd(),

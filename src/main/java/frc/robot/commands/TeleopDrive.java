@@ -24,6 +24,7 @@ import frc.robot.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.SlewRateLimiter2d;
 import frc.robot.util.Zones;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -31,6 +32,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 public class TeleopDrive extends Command {
   private final Drive drive;
   private final CommandXboxController controller;
+  private final BooleanSupplier isRobotCentricSupplier;
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private final DoubleSupplier omegaSupplier;
@@ -54,9 +56,10 @@ public class TeleopDrive extends Command {
   private ChassisSpeeds desiredFieldSpeeds = new ChassisSpeeds();
 
   /** Creates a new TeleopDrive. */
-  public TeleopDrive(Drive drive, CommandXboxController controller) {
+  public TeleopDrive(Drive drive, CommandXboxController controller, BooleanSupplier isRobotCentricSupplier) {
     this.drive = drive;
     this.controller = controller;
+    this.isRobotCentricSupplier = isRobotCentricSupplier;
     this.xSupplier = () -> -controller.getLeftY() * flipFactor;
     this.ySupplier = () -> -controller.getLeftX() * flipFactor;
     this.omegaSupplier = () -> -controller.getRightX();
@@ -145,10 +148,14 @@ public class TeleopDrive extends Command {
 
     switch (currentDriveMode) {
       case NORMAL:
-        drive.driveFieldCentric(
-            linearVelocity.getX(),
-            linearVelocity.getY(),
-            maxRotSpeedRadPerS * omega);
+        double vx = linearVelocity.getX();
+        double vy = linearVelocity.getY();
+        double rot = maxRotSpeedRadPerS * omega;
+        if (isRobotCentricSupplier.getAsBoolean()) {
+          drive.runVelocity(new ChassisSpeeds(vx, vy, rot));
+        } else {
+          drive.driveFieldCentric(vx, vy, rot);
+        }
         break;
       case TRENCH_LOCK:
         trenchYController.setSetpoint(getTrenchYMeters());
