@@ -56,6 +56,7 @@ public class TeleopDrive extends Command {
   @AutoLogOutput
   private DriveMode currentDriveMode = DriveMode.NORMAL;
 
+  @AutoLogOutput(key = "TeleopDrive/TargetFieldRelativeSpeeds")
   private ChassisSpeeds desiredFieldSpeeds = new ChassisSpeeds();
 
   /** Creates a new TeleopDrive. */

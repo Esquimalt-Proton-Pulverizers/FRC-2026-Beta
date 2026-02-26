@@ -52,6 +52,7 @@ import frc.robot.simulation.FuelSim;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -68,6 +69,7 @@ public class RobotContainer {
 	private final CommandXboxController operatorController = new CommandXboxController(1);
 
 	// Competition Toggle
+	@AutoLogOutput(key = "CompetitionToggle")
 	private boolean isCompetition = false;
 
 	// Subsystems Toggle
@@ -95,6 +97,7 @@ public class RobotContainer {
 	private final TeleopDrive teleopDrive;
 
 	// Robot Auto-Face Hub Target Mode
+	@AutoLogOutput(key = "TeleopDrive/IsFacingHub")
 	private boolean isFacingHub = false;
 	private ProfiledPIDController faceTargetController;
 
@@ -106,9 +109,11 @@ public class RobotContainer {
 	private final Field2d field = new Field2d();
 
 	// Robot-centric vs Field-centric drive
+	@AutoLogOutput(key = "TeleopDrive/IsRobotCentric")
 	private boolean isRobotCentric = false;
 
 	// Manual Override
+	@AutoLogOutput(key = "ManualOverride")
 	public static boolean manualOverride = false;
 
 	// Dashboard inputs

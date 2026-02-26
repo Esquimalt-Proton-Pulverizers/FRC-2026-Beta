@@ -332,6 +332,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
   /**
    * Returns field-relative chassis speeds. Used by FuelSim for robot-ball collision.
    */
+  @AutoLogOutput(key = "TeleopDrive/MeasuredFieldRelativeSpeeds")
   public ChassisSpeeds getFieldRelativeChassisSpeeds() {
     return ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getRotation());
   }

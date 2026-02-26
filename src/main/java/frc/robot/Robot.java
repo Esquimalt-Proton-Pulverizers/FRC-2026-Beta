@@ -91,9 +91,6 @@ public class Robot extends LoggedRobot {
     // Update field view with robot pose (real robot odometry; sim updates in simulationPeriodic)
     robotContainer.updateFieldPose();
 
-    // Log manual override state
-    Logger.recordOutput("ManualOverride", RobotContainer.manualOverride);
-
     // Return to non-RT thread priority (do not modify the first argument)
     // Do NOT enable, as PathPlanner path generation causes Loop Time Spike
     // Threads.setCurrentThreadPriority(false, 10);
