@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShooterCommands;
+import frc.robot.commands.TeleopDrive;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.*;
@@ -77,7 +78,8 @@ public class RobotContainer {
 	private boolean isHoodEnabled = false;
 	private boolean isFlywheelEnabled = true;
 
-	//region 
+	// Drive Commands
+	private final TeleopDrive teleopDrive;
 
 	// Subsystems
 	private final Drive drive;
@@ -259,7 +261,10 @@ public class RobotContainer {
 
 		/// ---------------------------------------------------------------------------------------------------------------
 		/// ----------------------------------------------- Drive Commands ------------------------------------------------
-		/// ---------------------------------------------------------------------------------------------------------------		// Initialize face-target PID controller (using same constants as DriveCommands)
+		/// ---------------------------------------------------------------------------------------------------------------		
+		teleopDrive = new TeleopDrive(drive, driverController); 
+		
+		// Initialize face-target PID controller (using same constants as DriveCommands)
 		faceTargetController = new ProfiledPIDController(DriveCommands.getAngleKp(), 0.0, DriveCommands.getAngleKd(),
 		new TrapezoidProfile.Constraints(DriveCommands.getAngleMaxVelocity(), DriveCommands.getAngleMaxAcceleration()));
     faceTargetController.enableContinuousInput(-Math.PI, Math.PI);
@@ -387,18 +392,8 @@ public class RobotContainer {
       drive.setDefaultCommand(Commands.run(() -> drive.runVelocity(new ChassisSpeeds(0.0, 0.0, 0.0)), drive));
     }
 		else {
-			// Drive enabled: field/robot-centric drive with turbo and optional face-target
-			drive.setDefaultCommand(
-					DriveCommands.joystickDriveWithTurboAndFaceTarget(
-							drive,
-							() -> -driverController.getLeftX(), // X-axis (left/right)
-							() -> -driverController.getLeftY(), // Y-axis (forward/backward)
-							() -> -driverController.getRightX(), // Omega (rotation)
-							() -> driverController.getRightTriggerAxis(), // Turbo
-							() -> isFacingHub, // Face-target enabled
-							() -> isRobotCentric, // Robot-centric (true) vs field-centric (false)
-							faceTargetController,
-							true)); // usePhysicalMaxSpeed: false = use artificial limit (1.6 m/s), true = use physical max TODO enable truemax speed
+			// Drive enabled: TeleopDrive
+			drive.setDefaultCommand(teleopDrive);
 
 			// Switch to X pattern when X button is pressed
 			driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -422,7 +417,6 @@ public class RobotContainer {
 
 			// Toggle robot-centric vs field-centric drive
 			driverController.rightBumper().onTrue(Commands.runOnce(() -> isRobotCentric = !isRobotCentric, drive));
-
 
 			// -------- Auto Pathfind to Target --------
 			// Pathfind then follow path to outpost when D-pad up is held
