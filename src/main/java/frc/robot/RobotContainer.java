@@ -261,13 +261,14 @@ public class RobotContainer {
 
 		/// ---------------------------------------------------------------------------------------------------------------
 		/// ----------------------------------------------- Drive Commands ------------------------------------------------
-		/// ---------------------------------------------------------------------------------------------------------------		
-		teleopDrive = new TeleopDrive(drive, driverController, () -> isRobotCentric); 
-		
-		// Initialize face-target PID controller (using same constants as DriveCommands)
+		/// ---------------------------------------------------------------------------------------------------------------
+		// Initialize face-target PID controller
+		// Rotate so Turret pivot aims at hub, not robot center. Same PID constants as DriveCommands.
 		faceTargetController = new ProfiledPIDController(DriveCommands.getAngleKp(), 0.0, DriveCommands.getAngleKd(),
 		new TrapezoidProfile.Constraints(DriveCommands.getAngleMaxVelocity(), DriveCommands.getAngleMaxAcceleration()));
-    faceTargetController.enableContinuousInput(-Math.PI, Math.PI);
+		faceTargetController.enableContinuousInput(-Math.PI, Math.PI);
+
+		teleopDrive = new TeleopDrive(drive, driverController, () -> isRobotCentric, () -> isFacingHub, faceTargetController);
 
 		/// ---------------------------------------------------------------------------------------------------------------
 		/// ------------------------------------------ Shooter Subsystem Commands -----------------------------------------

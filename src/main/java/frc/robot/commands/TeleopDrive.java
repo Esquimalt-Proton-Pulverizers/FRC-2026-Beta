@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,6 +34,8 @@ public class TeleopDrive extends Command {
   private final Drive drive;
   private final CommandXboxController controller;
   private final BooleanSupplier isRobotCentricSupplier;
+  private final BooleanSupplier isFacingHubSupplier;
+  private final ProfiledPIDController faceTargetController;
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private final DoubleSupplier omegaSupplier;
@@ -56,10 +59,17 @@ public class TeleopDrive extends Command {
   private ChassisSpeeds desiredFieldSpeeds = new ChassisSpeeds();
 
   /** Creates a new TeleopDrive. */
-  public TeleopDrive(Drive drive, CommandXboxController controller, BooleanSupplier isRobotCentricSupplier) {
+  public TeleopDrive(
+      Drive drive,
+      CommandXboxController controller,
+      BooleanSupplier isRobotCentricSupplier,
+      BooleanSupplier isFacingHubSupplier,
+      ProfiledPIDController faceTargetController) {
     this.drive = drive;
     this.controller = controller;
     this.isRobotCentricSupplier = isRobotCentricSupplier;
+    this.isFacingHubSupplier = isFacingHubSupplier;
+    this.faceTargetController = faceTargetController;
     this.xSupplier = () -> -controller.getLeftY() * flipFactor;
     this.ySupplier = () -> -controller.getLeftX() * flipFactor;
     this.omegaSupplier = () -> -controller.getRightX();
@@ -150,7 +160,9 @@ public class TeleopDrive extends Command {
       case NORMAL:
         double vx = linearVelocity.getX();
         double vy = linearVelocity.getY();
-        double rot = maxRotSpeedRadPerS * omega;
+        double rot = isFacingHubSupplier.getAsBoolean()
+            ? DriveCommands.computeOmegaToFaceHub(drive, faceTargetController)
+            : maxRotSpeedRadPerS * omega;
         if (isRobotCentricSupplier.getAsBoolean()) {
           drive.runVelocity(new ChassisSpeeds(vx, vy, rot));
         } else {
