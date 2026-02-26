@@ -5,7 +5,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import edu.wpi.first.math.util.Units;
 
 /** Constants for the Hood (position-controlled shooter angle) subsystem. */
-public final class HoodConstants { // TODO: Add correct values
+public final class HoodConstants { // XXX: Add correct values
 
   private HoodConstants() {}
 

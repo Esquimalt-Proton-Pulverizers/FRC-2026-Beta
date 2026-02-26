@@ -77,7 +77,8 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     // Optionally switch the thread to high priority to improve loop
     // timing - only impacts real robot, not little to no effect on simulation
-		// (see the template project documentation for details) // TODO: Could enable if Loop Time is under 1 ms
+		// (see the template project documentation for details) 
+    // Do NOT enable, as PathPlanner path generation causes Loop Time Spike
     // Threads.setCurrentThreadPriority(true, 99);
 
     // Runs the Scheduler. This is responsible for polling buttons, adding
@@ -93,7 +94,8 @@ public class Robot extends LoggedRobot {
     // Log manual override state
     Logger.recordOutput("ManualOverride", RobotContainer.manualOverride);
 
-    // Return to non-RT thread priority (do not modify the first argument)  // TODO: Could enable if Loop Time is under 1 ms
+    // Return to non-RT thread priority (do not modify the first argument)
+    // Do NOT enable, as PathPlanner path generation causes Loop Time Spike
     // Threads.setCurrentThreadPriority(false, 10);
   }
 
