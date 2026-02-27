@@ -3,7 +3,7 @@ package frc.robot.subsystems.intake;
 import com.revrobotics.spark.config.SparkBaseConfig;
 
 /** Constants for the Intake (one motor, voltage controlled) subsystem. */
-public final class IntakeConstants { // TODO: Add correct values
+public final class IntakeConstants { // XXX: Add correct values
 
   private IntakeConstants() {}
 
