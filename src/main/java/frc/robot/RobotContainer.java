@@ -576,6 +576,15 @@ public class RobotContainer {
 				() -> (manualOverride && turret != null)
 			)
 		);
+
+		// Reset Turret Encoder
+		operatorController.start().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> turret.resetMotorEncoder(), turret), 
+				new InstantCommand(),
+				() -> (manualOverride && turret != null)
+			)
+		);
 		
 		double turretStepPosition = Units.degreesToRadians(5);
 		// Step turret position up
