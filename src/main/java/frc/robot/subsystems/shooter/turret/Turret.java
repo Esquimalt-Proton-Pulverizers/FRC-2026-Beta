@@ -1,13 +1,15 @@
 package frc.robot.subsystems.shooter.turret;
 
-import static frc.robot.subsystems.shooter.turret.TurretConstants.*;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.littletonrobotics.junction.Logger;
+import static frc.robot.subsystems.shooter.turret.TurretConstants.kEncoderZeroOffsetRad;
+import static frc.robot.subsystems.shooter.turret.TurretConstants.kMaxAngleRad;
+import static frc.robot.subsystems.shooter.turret.TurretConstants.kMinAngleRad;
 
 /** Turret subsystem: one motor with onboard position control, aimed at a hub angle. */
 public class Turret extends SubsystemBase {
@@ -22,7 +24,6 @@ public class Turret extends SubsystemBase {
   public Turret(TurretIO io) {
     turretIO = io;
   } // End Turret Constructor
-
   @Override
   public void periodic() {
     turretIO.updateInputs(turretInputs);
