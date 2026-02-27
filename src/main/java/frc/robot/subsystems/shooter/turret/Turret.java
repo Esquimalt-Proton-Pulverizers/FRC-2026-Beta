@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -21,6 +22,13 @@ public class Turret extends SubsystemBase {
 
   public Turret(TurretIO io) {
     turretIO = io;
+    
+    // Publish default gains so SmartDashboard has keys for tuning (values read in IO layer)
+    SmartDashboard.putNumber("Turret/kP", kP);
+    SmartDashboard.putNumber("Turret/kI", kI);
+    SmartDashboard.putNumber("Turret/kD", kD);
+    //SmartDashboard.putNumber("Turret/Velocity", kV);
+    //SmartDashboard.putNumber("Turret/Voltage", kS);
   } // End Turret Constructor
 
   @Override
