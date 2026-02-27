@@ -1,5 +1,7 @@
 package frc.robot.subsystems.shooter.turret;
 
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -7,6 +9,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.ShooterCommands;
+import frc.robot.subsystems.drive.Drive;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kEncoderZeroOffsetRad;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kMaxAngleRad;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kMinAngleRad;
@@ -21,12 +25,31 @@ public class Turret extends SubsystemBase {
   private Rotation2d hubAngleRelativeToRobot = Rotation2d.kZero;
   private double velocityFeedforwardRadPerSec = 0.0;
 
+  /** When false, the turret will automatically aim towards the hub */
+  private BooleanSupplier manualOverrideSupplier = () -> false;
+  private Drive drive;
+
   public Turret(TurretIO io) {
     turretIO = io;
   } // End Turret Constructor
+
+  public void setManualOverrideSupplier(BooleanSupplier supplier) {
+    manualOverrideSupplier = supplier != null ? supplier : () -> false;
+  } // End setManualOverrideSupplier
+
+  public void setDrive(Drive drive) {
+    this.drive = drive;
+  } // End setDrive
+
   @Override
   public void periodic() {
     turretIO.updateInputs(turretInputs);
+
+    if (!manualOverrideSupplier.getAsBoolean()) {
+		  setHubAngleRelativeToRobot(ShooterCommands.getTurretAngleFromShot(drive));
+		  setVelocityFeedforwardRadPerSec(-drive.getFieldRelativeChassisSpeeds().omegaRadiansPerSecond);
+    }
+
     double targetPositionRad = DriverStation.isDisabled() ? 0.0 : getClampedHubAngleRad() - kEncoderZeroOffsetRad;
     Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/MotorConnected", turretInputs.motorConnected);
     Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/TargetPositionRads", targetPositionRad);
