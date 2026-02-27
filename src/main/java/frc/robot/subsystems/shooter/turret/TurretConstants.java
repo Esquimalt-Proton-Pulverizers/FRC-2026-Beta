@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 /** Constants for the Turret (position-controlled hub aiming) subsystem. */
-public final class TurretConstants { // TODO: Add correct values
+public final class TurretConstants { // XXX: Add correct values
 
   private TurretConstants() {}
 
