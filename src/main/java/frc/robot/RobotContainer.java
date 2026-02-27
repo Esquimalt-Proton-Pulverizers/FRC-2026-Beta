@@ -568,7 +568,7 @@ public class RobotContainer {
 			)
 		);
 
-				// Reset Turret
+		// Reset Turret
 		operatorController.x().onTrue(
 			new ConditionalCommand(
 				Commands.runOnce(() -> turret.setHubAngleRelativeToRobot(new Rotation2d(0)), turret), 

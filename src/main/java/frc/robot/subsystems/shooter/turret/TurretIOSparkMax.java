@@ -60,6 +60,11 @@ public class TurretIOSparkMax implements TurretIO {
     targetPosition = targetRads;
     // SPARK MAX position control does not expose velocity feedforward; ignore
   } // End setTargetPosition
+  
+  @Override
+  public void resetEncoder() { 
+    encoder.setPosition(0);
+  }
 
   @Override
   public void stop() {

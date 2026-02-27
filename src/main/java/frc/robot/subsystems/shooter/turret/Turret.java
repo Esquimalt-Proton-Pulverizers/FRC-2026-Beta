@@ -49,6 +49,11 @@ public class Turret extends SubsystemBase {
     velocityFeedforwardRadPerSec = radPerSec;
   } // End setVelocityFeedforwardRadPerSec
 
+  /** Resets the motors position to 0 */
+  public void resetMotorEncoder() {
+
+  } // End resetMotorEncoder
+
   /** Set the hub angle (robot frame: 0 = forward). Clamped to min/max in periodic. */
   public void setHubAngleRelativeToRobot(Rotation2d angle) {
     hubAngleRelativeToRobot = angle;

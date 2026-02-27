@@ -53,6 +53,9 @@ public class TurretIOSim implements TurretIO {
   } // End setTargetPosition
 
   @Override
+  public void resetEncoder() { }
+
+  @Override
   public void stop() {
     isStopped = true;
   } // End stop

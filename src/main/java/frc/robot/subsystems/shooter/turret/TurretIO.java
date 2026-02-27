@@ -29,6 +29,9 @@ public interface TurretIO {
     setTargetPosition(targetRads);
   }
 
+  /** Sets the encoder position to 0 */
+  default void resetEncoder() {}
+
   /** Stop the motor (coast). */
   default void stop() {}
 }

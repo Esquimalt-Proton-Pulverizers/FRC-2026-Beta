@@ -72,6 +72,11 @@ public class TurretIOTalonFX implements TurretIO {
   } // End setTargetPosition
 
   @Override
+  public void resetEncoder() { 
+    motor.setPosition(0);
+  }
+
+  @Override
   public void stop() {
     motor.setControl(new NeutralOut());
   } // End stop
