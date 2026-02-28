@@ -75,7 +75,9 @@ public class Turret extends SubsystemBase {
 
   /** Resets the motors position to 0 */
   public void resetMotorEncoder() {
-
+    turretIO.stop();
+    turretIO.resetEncoder();
+    setHubAngleRelativeToRobot(new Rotation2d(0));
   } // End resetMotorEncoder
 
   /** Set the hub angle (robot frame: 0 = forward). Clamped to min/max in periodic. */
