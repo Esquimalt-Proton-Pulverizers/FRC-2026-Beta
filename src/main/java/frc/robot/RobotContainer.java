@@ -97,6 +97,7 @@ public class RobotContainer {
 	// Controller
 	private final CommandXboxController driverController = new CommandXboxController(0);
 	private final CommandXboxController operatorController = new CommandXboxController(1);
+	private final CommandXboxController testingController = new CommandXboxController(2);
 
 	// Competition Toggle
 	@AutoLogOutput(key = "CompetitionToggle")
@@ -318,6 +319,7 @@ public class RobotContainer {
     // Configure button bindings
     configureDriverBindings();
     configureOperatorBindings(true); // False to disable operator controls
+		configureTestingBindings(); // For developer testing on controller port 2
   }
 
 	/// -----------------------------------------------------------------------------------------------------------------
@@ -410,8 +412,8 @@ public class RobotContainer {
 		}
 
 		// Enable/ Disable Intake
-		//operatorController.leftTrigger().onTrue(Commands.runOnce(() -> intake.setIntakingMode(), intake));
-		//operatorController.leftTrigger().onFalse(Commands.runOnce(() -> intake.setIdleMode(), intake));
+		operatorController.leftTrigger().onTrue(Commands.runOnce(() -> intake.setIntakingMode(), intake));
+		operatorController.leftTrigger().onFalse(Commands.runOnce(() -> intake.setIdleMode(), intake));
 
 		operatorController.rightTrigger().onTrue(Commands.runOnce(() -> intake.setReversingMode(), intake));
 		operatorController.rightTrigger().onFalse(Commands.runOnce(() -> intake.setIdleMode(), intake));
@@ -546,7 +548,6 @@ public class RobotContainer {
 			)
 		);
 
-		operatorController.leftTrigger().onTrue(Commands.runOnce(() -> {flywheel.setState(FlywheelState.CHARGING);}));
 		// Lower Flywheel rpm
 		operatorController.povDown().onTrue(
 			new ConditionalCommand(
@@ -556,6 +557,13 @@ public class RobotContainer {
 			)
 		);
   } // End configureOperatorBindings
+
+	/** Configure testing bindings */
+	private void configureTestingBindings() {
+
+		testingController.leftTrigger().onTrue(Commands.runOnce(() -> {flywheel.setState(FlywheelState.CHARGING); }));
+
+	} // End configureTestingBindings
 
 
 	/// -----------------------------------------------------------------------------------------------------------------
