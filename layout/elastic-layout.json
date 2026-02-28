@@ -608,6 +608,20 @@
                   "data_type": "string",
                   "show_submit_button": false
                 }
+              },
+              {
+                "title": "VelocityRpm",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/VelocityRpm",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
               }
             ]
           },
@@ -651,6 +665,20 @@
                 }
               },
               {
+                "title": "kP",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Turret/kP",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
                 "title": "kI",
                 "x": 0.0,
                 "y": 0.0,
@@ -676,34 +704,6 @@
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
-                }
-              },
-              {
-                "title": "kP",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 190.0,
-                "height": 190.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Turret/kP",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "kI",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 190.0,
-                "height": 190.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Flywheel/kI",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
                 }
               }
             ]
