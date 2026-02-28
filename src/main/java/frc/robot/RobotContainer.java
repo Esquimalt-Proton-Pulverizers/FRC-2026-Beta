@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -560,40 +561,24 @@ public class RobotContainer {
 								agitator));
 			}
 
-			// Manual Override for Transfer Voltage
-			if (manualOverride && transfer != null) {
+			
+	
 				final double stepVoltage = 0.25; // TODO: Set step voltage
 				operatorController.leftBumper().onTrue(
-						Commands.runOnce(
-							() -> {
-								double next = Math.min(TransferConstants.kMaxVoltage, transfer.getTargetVoltage() + stepVoltage);
-								if (transfer.getMode() == Transfer.Mode.IDLE) {
-									transfer.setStagingMode();
-									transfer.setTargetVoltage(stepVoltage);
-								} else {
-									transfer.setTargetVoltage(next);
-								}
-								if (next == 0) {
-									transfer.setIdleMode();
-								}
-							},
-							transfer));
+					new ConditionalCommand(
+							transfer.intakeCommand(stepVoltage),
+							new InstantCommand(),
+							() -> (manualOverride && transfer != null)
+							));
+
 				operatorController.rightBumper().onTrue(
-						Commands.runOnce(
-							() -> {
-								double next = Math.max(-TransferConstants.kMaxVoltage, transfer.getTargetVoltage() - stepVoltage);
-								if (transfer.getMode() == Transfer.Mode.IDLE) {
-									transfer.setStagingMode();
-									transfer.setTargetVoltage(-stepVoltage);
-								} else {
-									transfer.setTargetVoltage(next);
-								}
-								if (next == 0) {
-									transfer.setIdleMode();
-								}
-							},
-							transfer));
-			}
+					new ConditionalCommand(
+							transfer.outakeCommand(stepVoltage),
+							new InstantCommand(),
+							() -> (manualOverride && transfer != null
+					))
+				);
+			
 
 			// Manual Override for Flywheel Velocity
       if (manualOverride && flywheel != null) {
