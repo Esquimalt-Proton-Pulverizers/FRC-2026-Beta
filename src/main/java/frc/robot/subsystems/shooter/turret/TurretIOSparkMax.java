@@ -70,7 +70,6 @@ public class TurretIOSparkMax implements TurretIO {
   @Override
   public void resetEncoder() { 
     encoder.setPosition(0.0);
-    System.out.println("Reset Encoders");
   }
 
   @Override
