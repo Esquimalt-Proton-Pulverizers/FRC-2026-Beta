@@ -114,7 +114,8 @@ public class RobotContainer {
 
 	// Manual Override
 	@AutoLogOutput(key = "ManualOverride")
-	public static boolean manualOverride = false;
+	public static boolean driverManualOverride = false;
+	public static boolean operatorManualOverride = false;
 
 	// Dashboard inputs
 	private final LoggedDashboardChooser<Command> autoChooser;
@@ -236,7 +237,7 @@ public class RobotContainer {
 		shooter = new Shooter(drive, agitator, transfer, turret, hood, flywheel, isHoodEnabled);
 		shootWhenReadyCommand = new ShootWhenReadyCommand(agitator, transfer, shooter);
 		shooter.setShootCommandScheduledSupplier(shootWhenReadyCommand::isScheduled);
-		shooter.setManualOverrideSupplier(() -> manualOverride);
+		shooter.setManualOverrideSupplier(() -> operatorManualOverride);
 
 		/// -------------------------------------------------------------------------------------------
 		/// ------------------------------------- Drive Commands --------------------------------------		
@@ -362,17 +363,17 @@ public class RobotContainer {
               flywheel));
     }
 
-		// --------------------------------------- Manual Override + Encoder Reset --------------------------------------
+		// --------------------------------------- Driver Manual Override + Encoder Reset --------------------------------------
 		// If Manual Override is false, become true. 
 		// If true, reset encoder positions and then become false.
 		driverController.back().onTrue(
 			new ConditionalCommand(
 				new ParallelCommandGroup(
 					// TODO: Reset encoder positions
-					Commands.runOnce(() -> manualOverride = false)
+					Commands.runOnce(() -> driverManualOverride = false)
 				),
-				Commands.runOnce(() -> manualOverride = true),
-				() -> manualOverride));
+				Commands.runOnce(() -> driverManualOverride = true),
+				() -> driverManualOverride));
   }
 
   /** Configure Operator controls. */
@@ -390,17 +391,17 @@ public class RobotContainer {
 		operatorController.rightTrigger().onFalse(Commands.runOnce(() -> intake.setIdleMode(), intake));
 
 		
-		// --------------------------------------- Manual Override + Encoder Reset --------------------------------------
+		// --------------------------------------- Operator Manual Override + Encoder Reset --------------------------------------
 		// If Manual Override is false, become true. 
 		// If true, reset encoder positions and then become false.
 		operatorController.back().onTrue(
 			new ConditionalCommand(
 				new ParallelCommandGroup(
 					// TODO: Reset encoder positions
-					Commands.runOnce(() -> manualOverride = false)
+					Commands.runOnce(() -> operatorManualOverride = false)
 				),
-				Commands.runOnce(() -> manualOverride = true),
-				() -> manualOverride));
+				Commands.runOnce(() -> operatorManualOverride = true),
+				() -> operatorManualOverride));
 
 		// Set Agitator, Transfer, and Flywheel to idle mode when B is pressed
 		operatorController.b().onTrue(
@@ -411,7 +412,7 @@ public class RobotContainer {
 					if (flywheel != null) flywheel.setState(FlywheelState.IDLE);
 				}, agitator, transfer, flywheel),
 				new InstantCommand(),
-				() -> manualOverride));
+				() -> operatorManualOverride));
 
 		// Intake Manual Voltage Control
 		final double intakeStepVoltage = 0.25;
@@ -420,7 +421,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> intake.stepVoltage(intakeStepVoltage), intake),
 				new InstantCommand(),
-				() -> (manualOverride && intake != null)
+				() -> (operatorManualOverride && intake != null)
 			)
 		);
 		// Lower Intake voltage
@@ -428,7 +429,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> intake.stepVoltage(-intakeStepVoltage), intake),
 				new InstantCommand(),
-				() -> (manualOverride && intake != null)
+				() -> (operatorManualOverride && intake != null)
 			)
 		);
 
@@ -439,7 +440,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> agitator.stepVoltage(agitatorStepVoltage), agitator),
 				new InstantCommand(),
-				() -> (manualOverride && agitator != null)
+				() -> (operatorManualOverride && agitator != null)
 			)
 		);
 		// Lower Agitator voltage
@@ -447,7 +448,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> agitator.stepVoltage(-agitatorStepVoltage), agitator),
 				new InstantCommand(),
-				() -> (manualOverride && agitator != null)
+				() -> (operatorManualOverride && agitator != null)
 			)
 		);
 
@@ -458,7 +459,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> transfer.stepVoltage(transferStepVoltage), transfer),
 				new InstantCommand(),
-				() -> (manualOverride && transfer != null)
+				() -> (operatorManualOverride && transfer != null)
 			)
 		);
 		// Lower Transfer voltage
@@ -466,7 +467,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> transfer.stepVoltage(-transferStepVoltage), transfer),
 				new InstantCommand(),
-				() -> (manualOverride && transfer != null)
+				() -> (operatorManualOverride && transfer != null)
 			)
 		);
 
@@ -478,7 +479,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> flywheel.stepVelocityRadsPerSec(stepRadsPerSec), flywheel),
 				new InstantCommand(),
-				() -> (manualOverride && flywheel != null)
+				() -> (operatorManualOverride && flywheel != null)
 			)
 		);
 		// Lower Flywheel rpm
@@ -486,7 +487,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> flywheel.stepVelocityRadsPerSec(-stepRadsPerSec), flywheel),
 				new InstantCommand(),
-				() -> (manualOverride && flywheel != null)
+				() -> (operatorManualOverride && flywheel != null)
 			)
 		);
   } // End configureOperatorBindings
