@@ -113,10 +113,10 @@ public class TeleopDrive extends Command {
   } // End getTrenchYMeters
 
   private Rotation2d getTrenchLockAngle() {
-    if (Math.abs(MathUtil.inputModulus(drive.getRotation().getDegrees() - 90, -180, 180)) < 90) {
-      return Rotation2d.kCCW_90deg;
+    if (Math.abs(MathUtil.inputModulus(drive.getRotation().getDegrees(), -180, 180)) < 90) {
+      return Rotation2d.kZero;
     }
-    return Rotation2d.kCW_90deg;
+    return Rotation2d.k180deg;
   } // End getTrenchLockAngle
 
   private Rotation2d getBumpLockAngle() {
