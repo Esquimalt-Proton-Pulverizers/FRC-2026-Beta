@@ -364,7 +364,7 @@ public class RobotContainer {
               flywheel));
     }
 
-		// --------------------------------------- Driver Manual Override + Encoder Reset --------------------------------------
+		// ----------------------------------- Driver Manual Override + Encoder Reset -----------------------------------
 		// If Manual Override is false, become true. 
 		// If true, reset encoder positions and then become false.
 		driverController.back().onTrue(
@@ -391,8 +391,7 @@ public class RobotContainer {
 		operatorController.rightTrigger().onTrue(Commands.runOnce(() -> intake.setReversingMode(), intake));
 		operatorController.rightTrigger().onFalse(Commands.runOnce(() -> intake.setIdleMode(), intake));
 
-		
-		// --------------------------------------- Operator Manual Override + Encoder Reset --------------------------------------
+		// ---------------------------------- Operator Manual Override + Encoder Reset ----------------------------------
 		// If Manual Override is false, become true. 
 		// If true, reset encoder positions and then become false.
 		operatorController.back().onTrue(
