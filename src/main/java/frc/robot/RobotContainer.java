@@ -613,7 +613,7 @@ public class RobotContainer {
 		// Robot-relative component poses for visualization
 					// 	new Pose3d(-0.125, -0.17, 0.27, new Rotation3d(0, 0, 0)), // model_0 turret
 					// new Pose3d(0.17, 0, 0.15, new Rotation3d(0, 0, 0)),  // model_1 intake
-		Pose3d turretComponentPose = new Pose3d(-0.125, -0.17, 0.27, new Rotation3d(0, 0, turret.getPosition().getRadians() - Math.toRadians(90)));
+		Pose3d turretComponentPose = new Pose3d(-0.125, -0.17, 0.27, new Rotation3d(0, 0, turret.getPosition().getRadians() + Math.toRadians(90)));
 		Pose3d extenderComponentPose = new Pose3d(0.17, 0, 0.15, new Rotation3d(0, 0, 0));
 		//hopper extender code TBD
 		Logger.recordOutput("ComponentPoses/Final", new Pose3d[] {turretComponentPose, extenderComponentPose});
