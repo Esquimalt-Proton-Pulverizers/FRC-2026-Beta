@@ -352,7 +352,6 @@ public class RobotContainer {
     // Toggle robot-centric vs field-centric drive
     driverController.rightBumper().onTrue(Commands.runOnce(() -> isRobotCentric = !isRobotCentric, drive));
 
-
     // -------- Auto Pathfind to Target --------
     // Pathfind then follow path to outpost when D-pad up is held
     driverController.leftStick().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "DriveToOutpost"));
@@ -417,7 +416,6 @@ public class RobotContainer {
 
 		operatorController.rightTrigger().onTrue(Commands.runOnce(() -> intake.setReversingMode(), intake));
 		operatorController.rightTrigger().onFalse(Commands.runOnce(() -> intake.setIdleMode(), intake));
-
 		
 		// --------------------------------------- Manual Override + Encoder Reset --------------------------------------
 		// If Manual Override is false, become true. 
@@ -561,8 +559,6 @@ public class RobotContainer {
 	/** Configure testing bindings */
 	private void configureTestingBindings() {
 
-		testingController.leftTrigger().onTrue(Commands.runOnce(() -> {flywheel.setState(FlywheelState.CHARGING); }));
-
 	} // End configureTestingBindings
 
 
@@ -597,7 +593,6 @@ public class RobotContainer {
 	public Command getAutonomousCommand() {
 		return autoChooser.get();
 	} // End getAutonomousCommand
-
 
 	/// -----------------------------------------------------------------------------------------------------------------
 	/// --------------------------------------------- Other Useful Methods ----------------------------------------------
