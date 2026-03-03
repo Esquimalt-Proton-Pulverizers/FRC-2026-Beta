@@ -1,9 +1,9 @@
-package frc.robot.subsystems.rotator;
+package frc.robot.subsystems.extender;
 
 import org.littletonrobotics.junction.AutoLog;
 
 /** IO interface for the Extender (one motor, position controlled). */
-public interface RotatorIO {
+public interface ExtenderIO {
 
   @AutoLog
   class ExtenderIOInputs {

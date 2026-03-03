@@ -1,20 +1,20 @@
-package frc.robot.subsystems.rotator;
+package frc.robot.subsystems.extender;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.subsystems.rotator.RotatorConstants.kAtTargetRadsTolerance;
-import static frc.robot.subsystems.rotator.RotatorConstants.kD;
-import static frc.robot.subsystems.rotator.RotatorConstants.kDownRotatorRads;
-import static frc.robot.subsystems.rotator.RotatorConstants.kI;
-import static frc.robot.subsystems.rotator.RotatorConstants.kP;
-import static frc.robot.subsystems.rotator.RotatorConstants.kUpRotatorRads;
+import static frc.robot.subsystems.extender.ExtenderConstants.kAtTargetRadsTolerance;
+import static frc.robot.subsystems.extender.ExtenderConstants.kD;
+import static frc.robot.subsystems.extender.ExtenderConstants.kDownExtenderRads;
+import static frc.robot.subsystems.extender.ExtenderConstants.kI;
+import static frc.robot.subsystems.extender.ExtenderConstants.kP;
+import static frc.robot.subsystems.extender.ExtenderConstants.kUpExtenderRads;
 
-public class Rotator extends SubsystemBase {
+public class Extender extends SubsystemBase {
 
-  /** Rotator Modes:
+  /** extender Modes:
    * IDLE = stop motor
    * UP = set to target position (Usually UP position)
    * DOWN = set to target position (Usually DOWN position)
@@ -25,13 +25,13 @@ public class Rotator extends SubsystemBase {
     DOWN
   }
 
-  private final RotatorIO rotatorIO;
-  private final RotatorIO.ExtenderIOInputs rotatorInputs = new RotatorIO.ExtenderIOInputs();
+  private final ExtenderIO extenderIO;
+  private final ExtenderIO.ExtenderIOInputs extenderInputs = new ExtenderIO.ExtenderIOInputs();
   
   private Mode state = Mode.IDLE;
 
-  public Rotator(RotatorIO io) {
-    rotatorIO = io; 
+  public Extender(ExtenderIO io) {
+    extenderIO = io; 
 
     SmartDashboard.putNumber("Flywheel/kP", kP);
     SmartDashboard.putNumber("Flywheel/kI", kI);
@@ -40,30 +40,30 @@ public class Rotator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    rotatorIO.updateInputs(rotatorInputs);
-    Logger.recordOutput("Subsystems/Rotator/Inputs/MotorConnected", rotatorInputs.motorConnected);
-    Logger.recordOutput("Subsystems/Rotator/Inputs/AppliedVolts", rotatorInputs.appliedVolts);
-    Logger.recordOutput("Subsystems/Rotator/Inputs/SupplyCurrentAmps", rotatorInputs.supplyCurrentAmps);
-    Logger.recordOutput("Subsystems/Rotator/Inputs/TargetPositionRads", rotatorInputs.targetPositionRads);
-    Logger.recordOutput("Subsystems/Rotator/Inputs/PositionRads", rotatorInputs.positionRads);
-    Logger.recordOutput("Subsystems/Rotator/Inputs/VelocityRadsPerSec", rotatorInputs.velocityRadsPerSec);
+    extenderIO.updateInputs(extenderInputs);
+    Logger.recordOutput("Subsystems/extender/Inputs/MotorConnected", extenderInputs.motorConnected);
+    Logger.recordOutput("Subsystems/extender/Inputs/AppliedVolts", extenderInputs.appliedVolts);
+    Logger.recordOutput("Subsystems/extender/Inputs/SupplyCurrentAmps", extenderInputs.supplyCurrentAmps);
+    Logger.recordOutput("Subsystems/extender/Inputs/TargetPositionRads", extenderInputs.targetPositionRads);
+    Logger.recordOutput("Subsystems/extender/Inputs/PositionRads", extenderInputs.positionRads);
+    Logger.recordOutput("Subsystems/extender/Inputs/VelocityRadsPerSec", extenderInputs.velocityRadsPerSec);
 
     if (DriverStation.isDisabled()) {
-      rotatorIO.stop();
+      extenderIO.stop();
       return;
     }
 
     // Set extender position based on current state
     switch (state) {
       case IDLE:
-        rotatorIO.stop();
+        extenderIO.stop();
         break;
       case UP:
       case DOWN:
-        setTargetRads(rotatorInputs.targetPositionRads);
+        setTargetRads(extenderInputs.targetPositionRads);
         break;
       default:
-        rotatorIO.stop();
+        extenderIO.stop();
         break;
     }
   } // End periodic
@@ -76,40 +76,40 @@ public class Rotator extends SubsystemBase {
   /** Set state to up (Go to up position) */
   public void setUpMode() {
     state = Mode.UP;
-    setTargetRads(kUpRotatorRads);
+    setTargetRads(kUpExtenderRads);
   } // End setUpState
 
   /** Set state to down (Go to down position) */
   public void setDownMode() {
     state = Mode.DOWN;
-    setTargetRads(kDownRotatorRads);
+    setTargetRads(kDownExtenderRads);
   } // End setDownState
 
   /** Sets the motor encoder position to 0 */
   public void resetEncoders() {
-    rotatorIO.stop();
-    rotatorIO.resetEncoders();
+    extenderIO.stop();
+    extenderIO.resetEncoders();
     setTargetRads(0);
   } // End resetEncoders
 
   /** Set the target rads, used in UP/DOWN mode */
   public void setTargetRads(double rads) {
-    rotatorInputs.targetPositionRads = rads;
+    extenderInputs.targetPositionRads = rads;
   } // End setTargetPosition
 
   /** Returns the target rads */
   public double getTargetRads() {
-    return rotatorInputs.targetPositionRads;
+    return extenderInputs.targetPositionRads;
   } // End getTargetPosition
 
   /** Get the motors current rads */
   public double getRads() {
-    return rotatorInputs.positionRads;
+    return extenderInputs.positionRads;
   } // End getPosition
 
   /** Increases the target rads by "steps" */
   public void stepPosition(double steps) {
-    setTargetRads(rotatorInputs.targetPositionRads + steps);
+    setTargetRads(extenderInputs.targetPositionRads + steps);
   } // End stepPosition
 
   /** Whether the extender is at the target position within tolerance */
