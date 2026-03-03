@@ -1,4 +1,4 @@
-package frc.robot.subsystems.extender;
+package frc.robot.subsystems.rotator;
 
 import com.revrobotics.spark.config.SparkBaseConfig;
 
@@ -8,7 +8,7 @@ public class RotatorConstants {
   public static final double kMotorId = 0;
 
   // TODO: tune position
-  /** Target position when the  */
+  /** Target position when the rotator */
   public static final double kUpExtenderRads = 0;
 
   // TODO: tune position
