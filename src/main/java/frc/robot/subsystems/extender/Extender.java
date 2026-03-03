@@ -34,6 +34,7 @@ public class Extender extends SubsystemBase {
     SmartDashboard.putNumber("Extender/kP", kP);
     SmartDashboard.putNumber("Extender/kI", kI);
     SmartDashboard.putNumber("Extender/kD", kD);
+    SmartDashboard.putNumber("Extender/TargetPositionRads", extenderInputs.targetPositionRads);
   }
 
   @Override

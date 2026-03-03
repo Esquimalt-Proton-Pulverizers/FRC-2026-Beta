@@ -1,6 +1,7 @@
 package frc.robot.subsystems.extender;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase;
@@ -10,6 +11,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static frc.robot.subsystems.extender.ExtenderConstants.kD;
 import static frc.robot.subsystems.extender.ExtenderConstants.kGearRatio;
 import static frc.robot.subsystems.extender.ExtenderConstants.kI;
@@ -48,7 +50,26 @@ public class ExtenderIOSparkMax implements ExtenderIO {
 
   @Override
   public void updateInputs(ExtenderIOInputs inputs) {
+    double p = SmartDashboard.getNumber("Extender/kP", kP);
+    double i = SmartDashboard.getNumber("Extender/kI", kI);
+    double d = SmartDashboard.getNumber("Extender/kD", kD);
+    if (p != lastP || i != lastI || d != lastD) {
 
+      lastP = p;
+      lastI = i;
+      lastD = d;
+
+      SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
+      sparkMaxConfig.closedLoop.p(kP).i(kI).d(kD);
+      motor.configure(sparkMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+    inputs.motorConnected = motor.getLastError() == REVLibError.kOk;
+    inputs.positionRads = Units.rotationsToRadians(encoder.getPosition());
+    inputs.targetPositionRads = targetPosition;
+    inputs.velocityRadsPerSec = Units.rotationsToRadians(encoder.getVelocity() / 60.0);
+    inputs.appliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
+    inputs.supplyCurrentAmps = motor.getOutputCurrent();
   } // End updateInputs
 
   @Override
