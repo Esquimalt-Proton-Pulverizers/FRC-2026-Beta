@@ -5,20 +5,24 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 public class RotatorConstants {
 
   // TODO: get motor id
+  /** CAN ID of the rotator */
   public static final double kMotorId = 0;
 
   // TODO: tune position
-  /** Target position when the rotator */
-  public static final double kUpExtenderRads = 0;
+  /** Target position when the rotator is in the UP mode */
+  public static final double kUpRotatorRads = 0;
 
   // TODO: tune position
-  public static final double kDownExtenderRads = 0;
+  /** Target position when the rotator is in the DOWN mode */
+  public static final double kDownRotatorRads = 0;
 
   // TODO: tune PID
+  /** PID values to ensure */
   public static final double kP = 0;
   public static final double kI = 0;
   public static final double kD = 0;
 
   // TODO: tune
-  public static final double kAtTargetPositionTolerance = 0;
+  /** Tolerance for at-target position */
+  public static final double kAtTargetRadsTolerance = 0;
 }

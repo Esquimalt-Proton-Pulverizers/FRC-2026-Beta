@@ -4,9 +4,9 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.subsystems.rotator.RotatorConstants.kAtTargetPositionTolerance;
-import static frc.robot.subsystems.rotator.RotatorConstants.kDownExtenderRads;
-import static frc.robot.subsystems.rotator.RotatorConstants.kUpExtenderRads;
+import static frc.robot.subsystems.rotator.RotatorConstants.kAtTargetRadsTolerance;
+import static frc.robot.subsystems.rotator.RotatorConstants.kDownRotatorRads;
+import static frc.robot.subsystems.rotator.RotatorConstants.kUpRotatorRads;
 
 public class Rotator extends SubsystemBase {
 
@@ -64,13 +64,13 @@ public class Rotator extends SubsystemBase {
   /** Set state to up (Go to up position) */
   public void setUpMode() {
     state = Mode.UP;
-    setTargetRads(kUpExtenderRads);
+    setTargetRads(kUpRotatorRads);
   } // End setUpState
 
   /** Set state to down (Go to down position) */
   public void setDownMode() {
     state = Mode.DOWN;
-    setTargetRads(kDownExtenderRads);
+    setTargetRads(kDownRotatorRads);
   } // End setDownState
 
   /** Sets the motor encoder position to 0 */
@@ -102,6 +102,6 @@ public class Rotator extends SubsystemBase {
 
   /** Whether the extender is at the target position within tolerance */
   public boolean atTargetPosition() {
-    return Math.abs(getRads() - getTargetRads()) <= kAtTargetPositionTolerance;
+    return Math.abs(getRads() - getTargetRads()) <= kAtTargetRadsTolerance;
   } // End atTargetPosition
 }
