@@ -1,7 +1,5 @@
 package frc.robot.subsystems.shooter.flywheel;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,6 +12,8 @@ import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kIdleVeloc
 import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kP;
 import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kS;
 import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kV;
+import org.littletonrobotics.junction.Logger;
+
 
 /** Flywheel subsystem: one motor with onboard velocity control; state machine Idle / Charging / AtSpeed. */
 public class Flywheel extends SubsystemBase {
@@ -44,6 +44,9 @@ public class Flywheel extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // Read TargetVelocityRadsPerSec from SmartDashboard for live tuning
+    targetVelocityRadsPerSec = SmartDashboard.getNumber("Flywheel/TargetVelocityRadsPerSec", kDefaultTargetVelocityRadsPerSec);
+
     // Update the flywheel inputs and record the values
     flywheelIO.updateInputs(flywheelInputs);
     Logger.recordOutput("Subsystems/Shooter/Flywheel/Inputs/MotorConnected", flywheelInputs.motorConnected);
@@ -53,7 +56,6 @@ public class Flywheel extends SubsystemBase {
     Logger.recordOutput("Subsystems/Shooter/Flywheel/VelocityRpm", getVelocityRpm());
     Logger.recordOutput("Subsystems/Shooter/Flywheel/TargetVelocityRpm", getTargetVelocityRpm());
     Logger.recordOutput("Subsystems/Shooter/Flywheel/State", state.name());
-  
 
     // Auto-transition Charging → AtSpeed when at target velocity
     if (state == FlywheelState.CHARGING && atTargetVelocity()) {
@@ -65,24 +67,20 @@ public class Flywheel extends SubsystemBase {
       state = FlywheelState.CHARGING;
     }
 
-    targetVelocityRadsPerSec = SmartDashboard.getNumber("Flywheel/TargetVelocityRadsPerSec", kDefaultTargetVelocityRadsPerSec);
-  
     double velocityToUse = state == FlywheelState.IDLE ? kIdleVelocityRadsPerSec : targetVelocityRadsPerSec;
-    
+    Logger.recordOutput("Subsystems/Shooter/Flywheel/TargetVelocityRadsPerSec", velocityToUse);
+
     if (DriverStation.isDisabled()) {
       flywheelIO.stop();
       return;
     }
     
     flywheelIO.setTargetVelocity(velocityToUse);
-
   } // End periodic
 
   /** Set the flywheel state. */
   public void setState(FlywheelState newState) {
     state = newState;
-
-    
   } // End setState
 
   /** Set the target velocity (rad/s) used when state is Charging or AtSpeed. */
