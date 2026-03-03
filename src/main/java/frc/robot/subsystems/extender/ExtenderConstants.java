@@ -10,11 +10,11 @@ public class ExtenderConstants {
 
   // TODO: tune position
   /** Target position when the extender is in the UP mode */
-  public static final double kUpExtenderRads = 0;
+  public static final double kUpExtenderDegrees = 0;
 
   // TODO: tune position
   /** Target position when the extender is in the DOWN mode */
-  public static final double kDownExtenderRads = 0;
+  public static final double kDownExtenderDegrees = 0;
 
   /** Set true to invert the motor */
   public static final boolean kMotorInverted = false;
