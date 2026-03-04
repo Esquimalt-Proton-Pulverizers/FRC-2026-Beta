@@ -34,7 +34,7 @@ public class Turret extends SubsystemBase {
   private BooleanSupplier manualOverrideSupplier = () -> false;
   private Drive drive;
 
-  double lastSmartDashboardTargetPos = 0;
+  private double lastSmartDashboardTargetPos = 0;
 
   public Turret(TurretIO io) {
     turretIO = io;
