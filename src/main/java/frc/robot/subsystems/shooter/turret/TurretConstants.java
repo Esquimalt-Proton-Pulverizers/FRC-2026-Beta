@@ -37,10 +37,10 @@ public final class TurretConstants { // XXX: Add correct values
   public static final double kEncoderZeroOffsetRad = 0;
 
   /** Minimum Turret angle. */
-  public static final double kMinAngleRad = Units.degreesToRadians(-45.0);
+  public static final double kMinAngleRad = Units.degreesToRadians(-190);
 
   /** Maximum Turret angle. */
-  public static final double kMaxAngleRad = Units.degreesToRadians(45.0);
+  public static final double kMaxAngleRad = Units.degreesToRadians(-80);
 
   /** Max voltage magnitude applied to the motor. */
   public static final double kMaxVoltage = 12.0;
