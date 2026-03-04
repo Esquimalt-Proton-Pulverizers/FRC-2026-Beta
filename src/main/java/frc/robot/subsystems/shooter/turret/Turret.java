@@ -31,7 +31,7 @@ public class Turret extends SubsystemBase {
 
   private Drive drive;
 
-  double lastSmartDashboardTargetPos = 0;
+  private double lastSmartDashboardTargetPos = 0;
 
   public Turret(TurretIO io) {
     turretIO = io;
