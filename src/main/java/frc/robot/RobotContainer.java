@@ -50,6 +50,10 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.extender.Extender;
+import frc.robot.subsystems.extender.ExtenderIO;
+import frc.robot.subsystems.extender.ExtenderIOSim;
+import frc.robot.subsystems.extender.ExtenderIOSparkMax;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -111,6 +115,7 @@ public class RobotContainer {
 	private boolean isTransferEnabled = true;
 	private boolean isTurretEnabled = true;
 	private boolean isHoodEnabled = false;
+	private boolean isExtenderEnabled = true;
 	private boolean isFlywheelEnabled = true;
 
 	// Subsystems
@@ -122,6 +127,7 @@ public class RobotContainer {
 	private final Transfer transfer;
 	private final Turret turret;
 	private final Hood hood;
+	private final Extender extender;
 	private final Flywheel flywheel;
 
 	// Drive Commands
@@ -192,6 +198,7 @@ public class RobotContainer {
 				transfer = isTransferEnabled ? new Transfer(new TransferIOBrushedSparkMax()) : new Transfer(new TransferIO() {});
 				turret   = isTurretEnabled 	 ? new Turret(new TurretIOSparkMax()) 					 : new Turret(new TurretIO() {});
 				hood     = isHoodEnabled  	 ? new Hood(new HoodIOSparkMax()) 							 : new Hood(new HoodIO() {});
+				extender = isExtenderEnabled ? new Extender(new ExtenderIOSparkMax())			   : new Extender(new ExtenderIO() {});
 				flywheel = isFlywheelEnabled ? new Flywheel(new FlywheelIOTalonFX()) 				 : new Flywheel(new FlywheelIO() {});
 				shooterSim = null;
 				shooterSimVisualizer = null;
@@ -229,6 +236,7 @@ public class RobotContainer {
 				transfer = new Transfer(new TransferIOSim());
 				turret = new Turret(new TurretIOSim());
 				hood = new Hood(new HoodIOSim());
+				extender = new Extender(new ExtenderIOSim());
 				flywheel = new Flywheel(new FlywheelIOSim());
 
 				shooterSim = new ShooterSim(fuelSim);
@@ -257,6 +265,7 @@ public class RobotContainer {
 				transfer = new Transfer(new TransferIO() {});
 				turret = new Turret(new TurretIO() {});
 				hood = new Hood(new HoodIO() {});
+				extender = new Extender(new ExtenderIO() {});
 				flywheel = new Flywheel(new FlywheelIO() {});
 				shooterSim = null;
 				shooterSimVisualizer = null;
@@ -367,6 +376,24 @@ public class RobotContainer {
 				CommandScheduler.getInstance().schedule(shootWhenReadyCommand);
 			}
 		}));
+
+		// Toggles the extenders state between extended and retracted 
+		driverController.b().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> extender.setRetractedState(), extender), 
+				Commands.runOnce(() -> extender.setExtendedState(), extender), 
+				() -> (extender.getState() == Extender.ExtenderState.EXTENDED)
+			)
+		);
+		
+		driverController.back().onTrue(
+			new ConditionalCommand(
+				new ParallelCommandGroup(
+					// TODO: Reset encoder positions
+					Commands.runOnce(() -> manualOverride = false)
+				),
+				Commands.runOnce(() -> manualOverride = true),
+				() -> manualOverride));
 
     // POV up = back to hub; Pass to our side: POV left/right = passing spot; POV down = center
 		driverController.povUp().onTrue(Commands.runOnce(ShooterCommands::clearShooterTargetOverride));

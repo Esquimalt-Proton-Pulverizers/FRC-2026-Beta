@@ -44,8 +44,9 @@ public class Extender extends SubsystemBase {
     Logger.recordOutput("Subsystems/Extender/Inputs/AppliedVolts", extenderInputs.appliedVolts);
     Logger.recordOutput("Subsystems/Extender/Inputs/SupplyCurrentAmps", extenderInputs.supplyCurrentAmps);
     Logger.recordOutput("Subsystems/Extender/Inputs/TargetPositionRads", extenderInputs.targetPositionRads);
-    Logger.recordOutput("Subsystems/Extender/Inputs/PositionRads", extenderInputs.positionRads);
-    Logger.recordOutput("Subsystems/Extender/Inputs/VelocityRadsPerSec", extenderInputs.velocityRadsPerSec);
+    Logger.recordOutput("Subsystems/Extender/PositionRads", extenderInputs.positionRads);
+    Logger.recordOutput("Subsystems/Extender/VelocityRadsPerSec", extenderInputs.velocityRadsPerSec);
+    Logger.recordOutput("Subsystems/Extender/State", state.name());
 
     if (DriverStation.isDisabled()) {
       extenderIO.stop();
@@ -76,6 +77,11 @@ public class Extender extends SubsystemBase {
     setTargetPosition(kDownExtenderDegrees);
   } // End setUpState
 
+  /** Returns the extenders current state */
+  public ExtenderState getState() {
+    return state;
+  } // End getState
+
   /** Sets the motor encoder position to 0 */
   public void resetEncoders() {
     extenderIO.stop();
@@ -97,6 +103,7 @@ public class Extender extends SubsystemBase {
   public double getPosition() {
     return extenderInputs.positionRads;
   } // End getPosition
+
 
   /** Increases the target rads by "steps" */
   public void stepPosition(double steps) {
