@@ -51,8 +51,8 @@ public class TurretIOSim implements TurretIO {
 
   @Override
   public void resetEncoder() { 
-    currentPositionRad = 0.0;
-  }
+    // TODO: Implement a offset for resetting encoder in Sim
+  } // End resetEncoder
 
   @Override
   public void stop() {

@@ -58,21 +58,20 @@ public class Turret extends SubsystemBase {
   @Override
   public void periodic() {
 
+    double targetPositionRad = DriverStation.isDisabled() ? 0.0 : getClampedHubAngleRad() - kEncoderZeroOffsetRad;
+
     // When not in manual override, aim at the hub, otherwise whenever SmartDashboards target position gets updated, update the turrets target pos
     if (!manualOverrideSupplier.getAsBoolean()) {
 		  setHubAngleRelativeToRobot(ShooterCommands.getTurretAngleFromShot(drive));
 		  setVelocityFeedforwardRadPerSec(-drive.getFieldRelativeChassisSpeeds().omegaRadiansPerSecond);
     } else {
       double target = SmartDashboard.getNumber("Turret/TargetPositionRads", kDefaultTurretRads);
-      if (target != lastSmartDashboardTargetPos) {
+      if (target != targetPositionRad) {
         setHubAngleRelativeToRobot(new Rotation2d(target));
       }
-
-      lastSmartDashboardTargetPos = target;
     }
 
     turretIO.updateInputs(turretInputs);
-    double targetPositionRad = DriverStation.isDisabled() ? 0.0 : getClampedHubAngleRad() - kEncoderZeroOffsetRad;
     Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/MotorConnected", turretInputs.motorConnected);
     Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/TargetPositionRads", targetPositionRad);
     Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/PositionRads", turretInputs.positionRads);

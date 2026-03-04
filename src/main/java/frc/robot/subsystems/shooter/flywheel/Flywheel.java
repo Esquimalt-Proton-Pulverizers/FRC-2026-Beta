@@ -46,7 +46,11 @@ public class Flywheel extends SubsystemBase {
   @Override
   public void periodic() {
     // Read TargetVelocityRadsPerSec from SmartDashboard for live tuning
-    targetVelocityRadsPerSec = SmartDashboard.getNumber("Flywheel/TargetVelocityRadsPerSec", kDefaultTargetVelocityRadsPerSec);
+    double target = SmartDashboard.getNumber("Flywheel/TargetVelocityRadsPerSec", kDefaultTargetVelocityRadsPerSec);
+
+    if (targetVelocityRadsPerSec != target) {
+      setTargetVelocityRadsPerSec(target);
+    }
 
     // Update the flywheel inputs and record the values
     flywheelIO.updateInputs(flywheelInputs);
