@@ -2,6 +2,8 @@ package frc.robot.subsystems.extender;
 
 import com.revrobotics.spark.config.SparkBaseConfig;
 
+import edu.wpi.first.math.util.Units;
+
 public class ExtenderConstants {
 
   // TODO: get motor id
@@ -21,11 +23,11 @@ public class ExtenderConstants {
 
   // TODO: tune position
   /** Target position when the extender is in the UP mode */
-  public static final double kUpExtenderDegrees = 0;
+  public static final double kUpExtenderRads = Units.degreesToRadians(90);
 
   // TODO: tune position
   /** Target position when the extender is in the DOWN mode */
-  public static final double kDownExtenderDegrees = 0;
+  public static final double kDownExtenderRads = 0;
 
   /** Set true to invert the motor */
   public static final boolean kMotorInverted = false;

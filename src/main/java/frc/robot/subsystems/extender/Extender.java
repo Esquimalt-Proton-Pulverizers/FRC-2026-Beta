@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.subsystems.extender.ExtenderConstants.kAtTargetRadsTolerance;
 import static frc.robot.subsystems.extender.ExtenderConstants.kD;
-import static frc.robot.subsystems.extender.ExtenderConstants.kDownExtenderDegrees;
+import static frc.robot.subsystems.extender.ExtenderConstants.kDownExtenderRads;
 import static frc.robot.subsystems.extender.ExtenderConstants.kI;
 import static frc.robot.subsystems.extender.ExtenderConstants.kP;
-import static frc.robot.subsystems.extender.ExtenderConstants.kUpExtenderDegrees;
+import static frc.robot.subsystems.extender.ExtenderConstants.kUpExtenderRads;
 
 public class Extender extends SubsystemBase {
 
@@ -28,6 +28,8 @@ public class Extender extends SubsystemBase {
   
   private ExtenderState state = ExtenderState.RETRACTED;
 
+  private double targetPosition;
+
   public Extender(ExtenderIO io) {
     extenderIO = io; 
 
@@ -35,6 +37,8 @@ public class Extender extends SubsystemBase {
     SmartDashboard.putNumber("Extender/kI", kI);
     SmartDashboard.putNumber("Extender/kD", kD);
     SmartDashboard.putNumber("Extender/TargetPositionRads", extenderInputs.targetPositionRads);
+
+    targetPosition = kUpExtenderRads;
   }
 
   @Override
@@ -57,7 +61,8 @@ public class Extender extends SubsystemBase {
     switch (state) {
       case RETRACTED:
       case EXTENDED:
-        setTargetPosition(extenderInputs.targetPositionRads);
+        extenderIO.setTargetPosition(targetPosition);
+        System.out.println("Target POS: " + targetPosition);
         break;
       default:
         extenderIO.stop();
@@ -68,13 +73,13 @@ public class Extender extends SubsystemBase {
   /** Set state to retracted state (Go to up position) */
   public void setRetractedState() {
     state = ExtenderState.RETRACTED;
-    setTargetPosition(kUpExtenderDegrees);
+    setTargetPosition(kUpExtenderRads);
   } // End setIdleState
 
   /** Set state to extended state (Go to down position and rest on bumpers) */
   public void setExtendedState() {
     state = ExtenderState.EXTENDED;
-    setTargetPosition(kDownExtenderDegrees);
+    setTargetPosition(kDownExtenderRads);
   } // End setUpState
 
   /** Returns the extenders current state */
@@ -91,7 +96,8 @@ public class Extender extends SubsystemBase {
 
   /** Set the target rads, used in RETRACTED/EXTENDED state */
   public void setTargetPosition(double rads) {
-    extenderInputs.targetPositionRads = rads;
+    System.out.println("Setting target pos to: " + rads);
+    targetPosition = rads;
   } // End setTargetPosition
 
   /** Returns the target rads */
@@ -103,7 +109,6 @@ public class Extender extends SubsystemBase {
   public double getPosition() {
     return extenderInputs.positionRads;
   } // End getPosition
-
 
   /** Increases the target rads by "steps" */
   public void stepPosition(double steps) {
