@@ -1,5 +1,7 @@
 package frc.robot.subsystems.shooter.flywheel;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,7 +14,6 @@ import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kIdleVeloc
 import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kP;
 import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kS;
 import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kV;
-import org.littletonrobotics.junction.Logger;
 
 
 /** Flywheel subsystem: one motor with onboard velocity control; state machine Idle / Charging / AtSpeed. */

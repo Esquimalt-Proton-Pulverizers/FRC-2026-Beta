@@ -12,9 +12,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.ShooterCommands;
 import frc.robot.subsystems.drive.Drive;
+import static frc.robot.subsystems.shooter.turret.TurretConstants.kD;
+import static frc.robot.subsystems.shooter.turret.TurretConstants.kDefaultTurretRads;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kEncoderZeroOffsetRad;
+import static frc.robot.subsystems.shooter.turret.TurretConstants.kI;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kMaxAngleRad;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kMinAngleRad;
+import static frc.robot.subsystems.shooter.turret.TurretConstants.kP;
 
 /** Turret subsystem: one motor with onboard position control, aimed at a hub angle. */
 public class Turret extends SubsystemBase {
@@ -30,8 +34,15 @@ public class Turret extends SubsystemBase {
   private BooleanSupplier manualOverrideSupplier = () -> false;
   private Drive drive;
 
+  double lastSmartDashboardTargetPos = 0;
+
   public Turret(TurretIO io) {
     turretIO = io;
+
+    SmartDashboard.putNumber("Turret/kP", kP);
+    SmartDashboard.putNumber("Turret/kI", kI);
+    SmartDashboard.putNumber("Turret/kD", kD);
+    SmartDashboard.putNumber("Turret/TargetPositionRads", turretInputs.targetPositionRads);
   } // End Turret Constructor
 
   /** Set by RobotContainer so calculator does not overwrite Turret when operator is in manual override. */
@@ -46,14 +57,22 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    // When not in manual override, aim at the hub, otherwise whenever SmartDashboards target position gets updated, update the turrets target pos
     if (!manualOverrideSupplier.getAsBoolean()) {
 		  setHubAngleRelativeToRobot(ShooterCommands.getTurretAngleFromShot(drive));
 		  setVelocityFeedforwardRadPerSec(-drive.getFieldRelativeChassisSpeeds().omegaRadiansPerSecond);
+    } else {
+      double target = SmartDashboard.getNumber("Turret/TargetPositionRads", kDefaultTurretRads);
+      if (target != lastSmartDashboardTargetPos) {
+        setHubAngleRelativeToRobot(new Rotation2d(target));
+      }
+
+      lastSmartDashboardTargetPos = target;
     }
 
     turretIO.updateInputs(turretInputs);
     double targetPositionRad = DriverStation.isDisabled() ? 0.0 : getClampedHubAngleRad() - kEncoderZeroOffsetRad;
-    targetPositionRad = SmartDashboard.getNumber("Turret/targetPositionRads", targetPositionRad);
     Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/MotorConnected", turretInputs.motorConnected);
     Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/TargetPositionRads", targetPositionRad);
     Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/PositionRads", turretInputs.positionRads);
@@ -82,6 +101,7 @@ public class Turret extends SubsystemBase {
     turretIO.stop();
     turretIO.resetEncoder();
     setHubAngleRelativeToRobot(new Rotation2d(0));
+    SmartDashboard.putNumber("Turret/TargetPositionRads", 0);
   } // End resetMotorEncoder
 
   /** Set the hub angle (robot frame: 0 = forward). Clamped to min/max in periodic. */

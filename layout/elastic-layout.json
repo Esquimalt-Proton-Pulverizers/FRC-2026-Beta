@@ -1230,28 +1230,41 @@
             },
             "children": [
               {
-                "title": "VelocityRadsPerSec",
-                "x": 95.0,
-                "y": 570.0,
+                "title": "TargetVelocityRadsPerSec",
+                "x": 0.0,
+                "y": 665.0,
                 "width": 190.0,
                 "height": 190.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/Inputs/VelocityRadsPerSec",
+                  "topic": "/SmartDashboard/Flywheel/TargetVelocityRadsPerSec",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
                 }
               },
               {
-                "title": "AppliedVolts",
+                "title": "TargetVelocityRadsPerSec",
+                "x": 0.0,
+                "y": 665.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/TargetVelocityRadsPerSec",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "VelocityRadsPerSec",
                 "x": 95.0,
                 "y": 570.0,
                 "width": 190.0,
                 "height": 190.0,
                 "type": "Large Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/Inputs/AppliedVolts",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/Inputs/VelocityRadsPerSec",
                   "period": 0.06,
                   "data_type": "double"
                 }
@@ -1271,16 +1284,29 @@
             "children": [
               {
                 "title": "TargetPositionRads",
-                "x": 285.0,
-                "y": 570.0,
+                "x": 380.0,
+                "y": 665.0,
                 "width": 190.0,
                 "height": 190.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Turret/Inputs/TargetPositionRads",
+                  "topic": "/SmartDashboard/Turret/TargetPositionRads",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
+                }
+              },
+              {
+                "title": "TargetPositionRads",
+                "x": 380.0,
+                "y": 570.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Turret/Inputs/TargetPositionRads",
+                  "period": 0.06,
+                  "data_type": "double"
                 }
               },
               {
@@ -1304,17 +1330,13 @@
             "title": "ManualOverride",
             "x": 570.0,
             "y": 0.0,
-            "width": 380.0,
-            "height": 190.0,
-            "type": "Boolean Box",
+            "width": 95.0,
+            "height": 95.0,
+            "type": "Toggle Switch",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/ManualOverride",
               "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
+              "data_type": "boolean"
             }
           }
         ]
