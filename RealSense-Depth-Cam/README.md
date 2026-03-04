@@ -7,12 +7,15 @@ At the time of writing, the plan if to use this camera and code for final-alignm
 
 Because of this, we expect nothing in the field of vision other than the post (and the wall, which is >50cm behind the climber post) during final alignment.
 
-NOTE: once the camera is positioned, parts of Alpha (like the bumpers) might be within the RealSense field of vision. If so, the Region of Interest (ROI) may need to be set to exclude the lower frame. Alternatively, there may be another method to crop the image before calculating the 'x' position.
+New script created to replace post-xz-* scripts:
+    post-HSV-Depth-nt.py
+This adds HSV colour masking after the initial distance-clipping mask (>50cm is ignored), mask-cleaning, and uses contours to determine which candidate is most "post-like" based on aspect ratio (taller and thinner). 
 
+Previous script info:
 The two post detection algorithms differ, but both scripts set a 50cm clipping distance (everything further away than 50cm is ignored).
 
 1. post-xz-nt.py 
      This script is very simple with no object recognition: if there's a pixel, it's assumed to be part of the post. So, the centre of the post is just the average of all the x-coordinates of the pixels.
 
 2. post-xz-nt-objrecon.py
-    This script starts with the above script, but adds very simple object recognition: anything that is larger than a few pixels has a quick dimension check: if the height is at least twice the width, then it will be assumed to be a post. Then the centre of the post is just the average of the x-pixels. 
+    This script starts with the above script, but adds very simple object recognition: anything that is larger than a few pixels has a quick dimension check: if the height is at least twice the width, then it will be assumed to be a post. Then the centre of the post is just the average of the x-pixels.
