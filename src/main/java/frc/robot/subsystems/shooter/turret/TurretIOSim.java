@@ -30,6 +30,7 @@ public class TurretIOSim implements TurretIO {
 
     inputs.motorConnected = true;
     inputs.positionRads = currentPositionRad;
+    inputs.targetPositionRads = targetPositionRad;
     inputs.appliedVolts = 0.0;
     inputs.supplyCurrentAmps = 0.0;
   } // End updateInputs
@@ -47,6 +48,11 @@ public class TurretIOSim implements TurretIO {
     this.velocityFeedforwardRadPerSec = velocityFeedforwardRadPerSec;
     isStopped = false;
   } // End setTargetPosition
+
+  @Override
+  public void resetEncoder() { 
+    // TODO: Implement a offset for resetting encoder in Sim
+  } // End resetEncoder
 
   @Override
   public void stop() {

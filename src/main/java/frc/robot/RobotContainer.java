@@ -7,20 +7,23 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.vision.VisionConstants.*;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import static edu.wpi.first.units.Units.Meters;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
+import static edu.wpi.first.units.Units.Meters;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,30 +35,23 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ShootWhenReadyCommand;
 import frc.robot.commands.ShooterCommands;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.generated.TunerConstants;
+import frc.robot.simulation.FuelSim;
 import frc.robot.subsystems.drive.*;
+import frc.robot.subsystems.vision.*;
+import static frc.robot.subsystems.vision.VisionConstants.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.agitator.*;
-import frc.robot.commands.ShootWhenReadyCommand;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.subsystems.shooter.ShooterSim;
-import frc.robot.subsystems.shooter.ShooterSimVisualizer;
+import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.shooter.transfer.*;
 import frc.robot.subsystems.shooter.turret.*;
 import frc.robot.subsystems.shooter.hood.*;
 import frc.robot.subsystems.shooter.flywheel.*;
 import frc.robot.subsystems.shooter.flywheel.Flywheel.FlywheelState;
-import frc.robot.subsystems.vision.*;
-import frc.robot.simulation.FuelSim;
 
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -114,9 +110,9 @@ public class RobotContainer {
 	private boolean isRobotCentric = false;
 
 	// Manual Override
-	@AutoLogOutput(key = "ManualOverride")
+	@AutoLogOutput(key = "ManualOverride/Driver")
 	public static boolean driverManualOverride = false;
-	@AutoLogOutput(key = "ManualOverride")
+	@AutoLogOutput(key = "ManualOverride/Operator")
 	public static boolean operatorManualOverride = false;
 
 	// Dashboard inputs
@@ -132,7 +128,6 @@ public class RobotContainer {
 	private final ShooterSim shooterSim;
 	private final ShooterSimVisualizer shooterSimVisualizer;
 
-	private double simExtenderAngle;
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
     // Initialize Subsystems based on mode (REAL, SIM, or REPLAY)
@@ -173,7 +168,6 @@ public class RobotContainer {
 			case SIM:
         // Configure Simulation timing for accurate physics
         // 5 ticks per 20ms period = 4kHz effective control loop rate
-		simExtenderAngle = 0.0;
         SimulatedArena.overrideSimulationTimings(
             edu.wpi.first.units.Units.Seconds.of(0.02), // 20ms robot period
             5); // 5 Simulation ticks per period
@@ -252,16 +246,14 @@ public class RobotContainer {
 		faceTargetController.enableContinuousInput(-Math.PI, Math.PI);
 
 		teleopDrive = new TeleopDrive(drive, driverController, () -> isRobotCentric, () -> isFacingHub, faceTargetController);
+		teleopDrive.setManualOverrideSupplier(() -> driverManualOverride);
 
 		/// -------------------------------------------------------------------------------------------
 		/// ------------------------------- Shooter Subsystem Commands --------------------------------
 		/// -------------------------------------------------------------------------------------------
-		// Turret aims at predicted target; velocity feedforward for spin compensation
-		turret.setDefaultCommand(
-				Commands.run(() -> {
-							turret.setHubAngleRelativeToRobot(ShooterCommands.getTurretAngleFromShot(drive));
-							turret.setVelocityFeedforwardRadPerSec(-drive.getFieldRelativeChassisSpeeds().omegaRadiansPerSecond);
-						}, turret));
+		// Turret aims at predicted target; velocity feedforward for spin compensation. Only active if not in manualOverride
+		turret.setManualOverrideSupplier(() -> operatorManualOverride);
+		turret.setDrive(drive);
 
 		/// -------------------------------------------------------------------------------------------
 		/// ------------------------------------ Logger Dashboard -------------------------------------
@@ -326,7 +318,6 @@ public class RobotContainer {
 
     // Toggle robot-centric vs field-centric drive
     driverController.rightBumper().onTrue(Commands.runOnce(() -> isRobotCentric = !isRobotCentric, drive));
-
 
     // -------- Auto Pathfind to Target --------
     // Pathfind then follow path to outpost when D-pad up is held
@@ -473,6 +464,44 @@ public class RobotContainer {
 			)
 		);
 
+		// Set Turret angle to 0 (straight ahead) relative to robot
+		operatorController.x().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> turret.setHubAngleRelativeToRobot(new Rotation2d(0.0)), turret), 
+				new InstantCommand(),
+				() -> (operatorManualOverride && turret != null)
+			)
+		);
+
+		// Reset Turret Encoder
+		operatorController.start().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> turret.resetMotorEncoder(), turret), 
+				new InstantCommand(),
+				() -> (operatorManualOverride && turret != null)
+			)
+		);
+		
+		// Turret Manual Position Control
+		double turretStepPosition = Units.degreesToRadians(5);
+		// Step turret position up
+		operatorController.leftStick().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> turret.stepRads(turretStepPosition), turret), 
+				new InstantCommand(), 
+				() -> (operatorManualOverride && turret != null)
+			)
+		);
+		
+		// Step turret position down
+		operatorController.rightStick().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> turret.stepRads(-turretStepPosition), turret), 
+				new InstantCommand(), 
+				() -> (operatorManualOverride && turret != null)
+			)
+		);
+
 		// Flywheel Manual Velocity Control
 		final double stepRpm = 50.0;
 		final double stepRadsPerSec = Units.rotationsPerMinuteToRadiansPerSecond(stepRpm);
@@ -484,6 +513,7 @@ public class RobotContainer {
 				() -> (operatorManualOverride && flywheel != null)
 			)
 		);
+
 		// Lower Flywheel rpm
 		operatorController.povDown().onTrue(
 			new ConditionalCommand(
@@ -526,7 +556,6 @@ public class RobotContainer {
 	public Command getAutonomousCommand() {
 		return autoChooser.get();
 	} // End getAutonomousCommand
-
 
 	/// -----------------------------------------------------------------------------------------------------------------
 	/// --------------------------------------------- Other Useful Methods ----------------------------------------------

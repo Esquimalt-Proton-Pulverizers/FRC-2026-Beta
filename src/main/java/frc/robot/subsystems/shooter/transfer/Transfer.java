@@ -67,7 +67,7 @@ public class Transfer extends SubsystemBase {
         break;
     }
   } // End periodic
-
+  
   /** Set mode to idle (motor stopped). */
   public void setIdleMode() {
     mode = Mode.IDLE;

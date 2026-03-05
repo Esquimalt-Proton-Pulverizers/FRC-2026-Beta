@@ -9,6 +9,7 @@ public interface TurretIO {
   class TurretIOInputs {
     public boolean motorConnected = false;
     public double positionRads = 0.0;
+    public double targetPositionRads = 0.0;
     public double velocityRadsPerSec = 0.0;
     public double appliedVolts = 0.0;
     public double supplyCurrentAmps = 0.0;
@@ -27,6 +28,9 @@ public interface TurretIO {
   default void setTargetPosition(double targetRads, double velocityFeedforwardRadPerSec) {
     setTargetPosition(targetRads);
   }
+
+  /** Sets the encoder position to 0 */
+  default void resetEncoder() {}
 
   /** Stop the motor (coast). */
   default void stop() {}

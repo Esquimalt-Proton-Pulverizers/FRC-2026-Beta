@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems.drive;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -16,7 +18,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import org.littletonrobotics.junction.Logger;
 
 public class Module {
   private final ModuleIO io;
@@ -98,6 +99,10 @@ public class Module {
   public Rotation2d getAngle() {
     return inputs.turnPosition; // XXX: Consider if it should be relative or absolute (inputs.turnAbsolutePosition)
   }
+
+  public double getVelocity() {
+    return inputs.driveVelocityRadPerSec;
+  } 
 
   /** Returns the current drive position of the module in meters. */
   public double getPositionMeters() {

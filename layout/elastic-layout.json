@@ -23,12 +23,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Intake/Mode",
                   "period": 0.06,
-                  "data_type": "string",
-                  "show_submit_button": false
+                  "data_type": "string"
                 }
               },
               {
@@ -37,12 +36,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Intake/Inputs/TargetVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
@@ -51,12 +49,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Intake/Inputs/AppliedVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
@@ -88,7 +85,7 @@
             "children": []
           },
           {
-            "title": "Agitator",
+            "title": "Transfer",
             "x": 1045.0,
             "y": 380.0,
             "width": 285.0,
@@ -104,12 +101,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Mode",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Mode",
                   "period": 0.06,
-                  "data_type": "string",
-                  "show_submit_button": false
+                  "data_type": "string"
                 }
               },
               {
@@ -118,37 +114,35 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/TargetVolts",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/TargetVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
                 "title": "AppliedVolts",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
+                "x": 1140.0,
+                "y": 570.0,
+                "width": 95.0,
+                "height": 190.0,
+                "type": "Large Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/AppliedVolts",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/AppliedVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
                 "title": "SupplyCurrentAmps",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
+                "x": 1140.0,
+                "y": 665.0,
+                "width": 95.0,
+                "height": 95.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/SupplyCurrentAmps",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/SupplyCurrentAmps",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -157,9 +151,62 @@
             ]
           },
           {
-            "title": "Transfer",
+            "title": "Turret",
             "x": 1330.0,
             "y": 380.0,
+            "width": 285.0,
+            "height": 380.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "TargetPositionRads",
+                "x": 1615.0,
+                "y": 570.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Turret/Inputs/TargetPositionRads",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "PositionRads",
+                "x": 1615.0,
+                "y": 570.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Turret/Inputs/PositionRads",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "SupplyCurrentAmps",
+                "x": 1615.0,
+                "y": 570.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Turret/Inputs/SupplyCurrentAmps",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
+          },
+          {
+            "title": "Agitator",
+            "x": 1045.0,
+            "y": 0.0,
             "width": 285.0,
             "height": 380.0,
             "type": "List Layout",
@@ -173,12 +220,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Mode",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Mode",
                   "period": 0.06,
-                  "data_type": "string",
-                  "show_submit_button": false
+                  "data_type": "string"
                 }
               },
               {
@@ -187,37 +233,35 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/TargetVolts",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/TargetVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
                 "title": "AppliedVolts",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
+                "x": 855.0,
+                "y": 570.0,
+                "width": 95.0,
+                "height": 190.0,
+                "type": "Large Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/AppliedVolts",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/AppliedVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
                 "title": "SupplyCurrentAmps",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
+                "x": 855.0,
+                "y": 665.0,
+                "width": 95.0,
+                "height": 95.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/SupplyCurrentAmps",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/SupplyCurrentAmps",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -242,12 +286,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/State",
                   "period": 0.06,
-                  "data_type": "string",
-                  "show_submit_button": false
+                  "data_type": "string"
                 }
               },
               {
@@ -256,26 +299,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/TargetVelocityRpm",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "SupplyCurrentAmps",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/Inputs/SupplyCurrentAmps",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
@@ -284,9 +312,22 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/VelocityRpm",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "SupplyCurrentAmps",
+                "x": 1425.0,
+                "y": 665.0,
+                "width": 95.0,
+                "height": 190.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/Inputs/SupplyCurrentAmps",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -385,7 +426,7 @@
             "title": "Auto Choices",
             "x": 0.0,
             "y": 0.0,
-            "width": 285.0,
+            "width": 190.0,
             "height": 190.0,
             "type": "ComboBox Chooser",
             "properties": {
@@ -396,7 +437,7 @@
           },
           {
             "title": "Field",
-            "x": 285.0,
+            "x": 190.0,
             "y": 0.0,
             "width": 855.0,
             "height": 380.0,
@@ -502,7 +543,7 @@
         "layouts": [
           {
             "title": "Intake",
-            "x": 475.0,
+            "x": 190.0,
             "y": 380.0,
             "width": 285.0,
             "height": 380.0,
@@ -517,12 +558,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Intake/Mode",
                   "period": 0.06,
-                  "data_type": "string",
-                  "show_submit_button": false
+                  "data_type": "string"
                 }
               },
               {
@@ -531,12 +571,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Intake/Inputs/TargetVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
@@ -545,12 +584,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Intake/Inputs/AppliedVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
@@ -570,7 +608,7 @@
             ]
           },
           {
-            "title": "Extender",
+            "title": "Agitator",
             "x": 760.0,
             "y": 380.0,
             "width": 285.0,
@@ -579,10 +617,64 @@
             "properties": {
               "label_position": "TOP"
             },
-            "children": []
+            "children": [
+              {
+                "title": "Mode",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Mode",
+                  "period": 0.06,
+                  "data_type": "string"
+                }
+              },
+              {
+                "title": "TargetVolts",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/TargetVolts",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "AppliedVolts",
+                "x": 855.0,
+                "y": 570.0,
+                "width": 95.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/AppliedVolts",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "SupplyCurrentAmps",
+                "x": 855.0,
+                "y": 665.0,
+                "width": 95.0,
+                "height": 95.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/SupplyCurrentAmps",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           },
           {
-            "title": "Agitator",
+            "title": "Transfer",
             "x": 1045.0,
             "y": 380.0,
             "width": 285.0,
@@ -598,81 +690,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Mode",
-                  "period": 0.06,
-                  "data_type": "string",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "TargetVolts",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/TargetVolts",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "AppliedVolts",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/AppliedVolts",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "SupplyCurrentAmps",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/SupplyCurrentAmps",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              }
-            ]
-          },
-          {
-            "title": "Transfer",
-            "x": 1330.0,
-            "y": 380.0,
-            "width": 285.0,
-            "height": 380.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "Mode",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Mode",
                   "period": 0.06,
-                  "data_type": "string",
-                  "show_submit_button": false
+                  "data_type": "string"
                 }
               },
               {
@@ -681,34 +703,32 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/TargetVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
                 "title": "AppliedVolts",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
+                "x": 1140.0,
+                "y": 570.0,
+                "width": 95.0,
+                "height": 190.0,
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/AppliedVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
                 "title": "SupplyCurrentAmps",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
+                "x": 1140.0,
+                "y": 665.0,
+                "width": 95.0,
+                "height": 95.0,
                 "type": "Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/SupplyCurrentAmps",
@@ -736,12 +756,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/State",
                   "period": 0.06,
-                  "data_type": "string",
-                  "show_submit_button": false
+                  "data_type": "string"
                 }
               },
               {
@@ -750,26 +769,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/TargetVelocityRpm",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "SupplyCurrentAmps",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/Inputs/SupplyCurrentAmps",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
@@ -778,9 +782,87 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/VelocityRpm",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "SupplyCurrentAmps",
+                "x": 1425.0,
+                "y": 665.0,
+                "width": 95.0,
+                "height": 190.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/Inputs/SupplyCurrentAmps",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
+          },
+          {
+            "title": "Extender",
+            "x": 475.0,
+            "y": 380.0,
+            "width": 285.0,
+            "height": 380.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": []
+          },
+          {
+            "title": "Turret",
+            "x": 1330.0,
+            "y": 380.0,
+            "width": 285.0,
+            "height": 380.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "TargetPositionRads",
+                "x": 1615.0,
+                "y": 570.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Turret/Inputs/TargetPositionRads",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "PositionRads",
+                "x": 1615.0,
+                "y": 570.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Turret/Inputs/PositionRads",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "SupplyCurrentAmps",
+                "x": 1615.0,
+                "y": 570.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Turret/Inputs/SupplyCurrentAmps",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -978,7 +1060,7 @@
             "title": "ManualOverride",
             "x": 0.0,
             "y": 380.0,
-            "width": 285.0,
+            "width": 190.0,
             "height": 190.0,
             "type": "Boolean Box",
             "properties": {
@@ -999,9 +1081,9 @@
       "grid_layout": {
         "layouts": [
           {
-            "title": "Flywheel",
+            "title": "Flywheel Tuning",
             "x": 0.0,
-            "y": 95.0,
+            "y": 0.0,
             "width": 285.0,
             "height": 475.0,
             "type": "List Layout",
@@ -1080,15 +1162,176 @@
                 }
               }
             ]
+          },
+          {
+            "title": "Turret Tuning",
+            "x": 285.0,
+            "y": 0.0,
+            "width": 285.0,
+            "height": 475.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "kP",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Turret/kP",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "kI",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Turret/kI",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "kD",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Turret/kD",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "Flywheel",
+            "x": 0.0,
+            "y": 475.0,
+            "width": 285.0,
+            "height": 285.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "TargetVelocityRadsPerSec",
+                "x": 0.0,
+                "y": 665.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Flywheel/TargetVelocityRadsPerSec",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "TargetVelocityRadsPerSec",
+                "x": 0.0,
+                "y": 665.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/TargetVelocityRadsPerSec",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "VelocityRadsPerSec",
+                "x": 95.0,
+                "y": 570.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/Inputs/VelocityRadsPerSec",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Turret",
+            "x": 285.0,
+            "y": 475.0,
+            "width": 285.0,
+            "height": 285.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "TargetPositionRads",
+                "x": 380.0,
+                "y": 665.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Turret/TargetPositionRads",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "TargetPositionRads",
+                "x": 380.0,
+                "y": 570.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Turret/Inputs/TargetPositionRads",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "PositionRads",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Turret/Inputs/PositionRads",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              }
+            ]
           }
         ],
         "containers": [
           {
             "title": "ManualOverride",
-            "x": 0.0,
+            "x": 570.0,
             "y": 0.0,
             "width": 285.0,
-            "height": 95.0,
+            "height": 190.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/ManualOverride",
@@ -1177,7 +1420,7 @@
             ]
           },
           {
-            "title": "Agitator",
+            "title": "Intake",
             "x": 0.0,
             "y": 570.0,
             "width": 285.0,
@@ -1193,12 +1436,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Mode",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Intake/Mode",
                   "period": 0.06,
-                  "data_type": "string",
-                  "show_submit_button": false
+                  "data_type": "string"
                 }
               },
               {
@@ -1207,12 +1449,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/TargetVolts",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Intake/Inputs/TargetVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
@@ -1221,12 +1462,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/AppliedVolts",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Intake/Inputs/AppliedVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
@@ -1237,7 +1477,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/SupplyCurrentAmps",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Intake/Inputs/SupplyCurrentAmps",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -1246,8 +1486,20 @@
             ]
           },
           {
-            "title": "Transfer",
+            "title": "Extender",
             "x": 285.0,
+            "y": 570.0,
+            "width": 285.0,
+            "height": 380.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": []
+          },
+          {
+            "title": "Agitator",
+            "x": 570.0,
             "y": 570.0,
             "width": 285.0,
             "height": 380.0,
@@ -1262,12 +1514,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Mode",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Mode",
                   "period": 0.06,
-                  "data_type": "string",
-                  "show_submit_button": false
+                  "data_type": "string"
                 }
               },
               {
@@ -1276,34 +1527,98 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/TargetVolts",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/TargetVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
                 "title": "AppliedVolts",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
+                "x": 855.0,
+                "y": 570.0,
+                "width": 95.0,
+                "height": 190.0,
+                "type": "Large Text Display",
                 "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/AppliedVolts",
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/AppliedVolts",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
                 "title": "SupplyCurrentAmps",
+                "x": 855.0,
+                "y": 665.0,
+                "width": 95.0,
+                "height": 95.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Agitator/Inputs/SupplyCurrentAmps",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
+          },
+          {
+            "title": "Transfer",
+            "x": 0.0,
+            "y": 950.0,
+            "width": 285.0,
+            "height": 380.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Mode",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Mode",
+                  "period": 0.06,
+                  "data_type": "string"
+                }
+              },
+              {
+                "title": "TargetVolts",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/TargetVolts",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "AppliedVolts",
+                "x": 1140.0,
+                "y": 570.0,
+                "width": 95.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/AppliedVolts",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "SupplyCurrentAmps",
+                "x": 1140.0,
+                "y": 665.0,
+                "width": 95.0,
+                "height": 95.0,
                 "type": "Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Transfer/Inputs/SupplyCurrentAmps",
@@ -1315,9 +1630,62 @@
             ]
           },
           {
+            "title": "Turret",
+            "x": 285.0,
+            "y": 950.0,
+            "width": 285.0,
+            "height": 380.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "TargetPositionRads",
+                "x": 1615.0,
+                "y": 570.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Turret/Inputs/TargetPositionRads",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "PositionRads",
+                "x": 1615.0,
+                "y": 570.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Large Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Turret/Inputs/PositionRads",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "SupplyCurrentAmps",
+                "x": 1615.0,
+                "y": 570.0,
+                "width": 190.0,
+                "height": 190.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Turret/Inputs/SupplyCurrentAmps",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
+          },
+          {
             "title": "Flywheel",
             "x": 570.0,
-            "y": 570.0,
+            "y": 950.0,
             "width": 285.0,
             "height": 380.0,
             "type": "List Layout",
@@ -1331,12 +1699,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/State",
                   "period": 0.06,
-                  "data_type": "string",
-                  "show_submit_button": false
+                  "data_type": "string"
                 }
               },
               {
@@ -1345,26 +1712,11 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/TargetVelocityRpm",
                   "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "SupplyCurrentAmps",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/Inputs/SupplyCurrentAmps",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "data_type": "double"
                 }
               },
               {
@@ -1373,9 +1725,22 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Large Text Display",
                 "properties": {
                   "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/VelocityRpm",
+                  "period": 0.06,
+                  "data_type": "double"
+                }
+              },
+              {
+                "title": "SupplyCurrentAmps",
+                "x": 1425.0,
+                "y": 665.0,
+                "width": 95.0,
+                "height": 190.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Subsystems/Shooter/Flywheel/Inputs/SupplyCurrentAmps",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -1553,7 +1918,7 @@
             "title": "ManualOverride",
             "x": 0.0,
             "y": 475.0,
-            "width": 380.0,
+            "width": 855.0,
             "height": 95.0,
             "type": "Boolean Box",
             "properties": {
