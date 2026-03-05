@@ -177,6 +177,13 @@ public class TeleopDrive extends Command {
         double rot = isFacingHubSupplier.getAsBoolean()
             ? DriveCommands.computeOmegaToFaceHub(drive, faceTargetController)
             : maxRotSpeedRadPerS * omega;
+
+        // When the robot is stationary, hold position with X-pattern base
+        if (Math.abs(vx) < 1e-3 && Math.abs(vy) < 1e-3 && Math.abs(rot) < 1e-3) {
+          drive.stopWithX();
+          break;
+        }
+
         if (isRobotCentricSupplier.getAsBoolean()) {
           drive.runVelocity(new ChassisSpeeds(vx, vy, rot));
         } else {
