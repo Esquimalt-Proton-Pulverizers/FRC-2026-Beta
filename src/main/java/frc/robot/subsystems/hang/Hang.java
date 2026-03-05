@@ -83,7 +83,7 @@ public class Hang extends SubsystemBase {
     }
 
     double clampedTargetVolts = MathUtil.clamp(targetVoltage, kPotExtendedVoltage, kPotRetractedVoltage);
-    double outputVolts = voltageController.calculate(currentVoltage, clampedTargetVolts);
+    double outputVolts = -voltageController.calculate(currentVoltage, clampedTargetVolts);
     outputVolts = MathUtil.clamp(outputVolts, -kMaxVoltage, kMaxVoltage);
 
     hangIO.setVoltage(outputVolts);
@@ -114,24 +114,28 @@ public class Hang extends SubsystemBase {
   public void goToStored() {
     state = HangState.STORED;
     targetVoltage = SmartDashboard.getNumber("Hang/StoredVoltage", kStoredVoltage);
+    voltageController.reset();
   } // End goToStored
 
   /** Command the hang to the LEVEL_1 (extended) preset voltage. */
   public void goToLevel1() {
     state = HangState.LEVEL_1;
     targetVoltage = SmartDashboard.getNumber("Hang/Level1Voltage", kLevel1Voltage);
+    voltageController.reset();
   } // End goToLevel1
 
   /** Command a manual target potentiometer voltage (V). */
   public void setManualTargetVoltage(double voltageV) {
     state = HangState.MANUAL;
     targetVoltage = voltageV;
+    voltageController.reset();
   } // End setManualTargetVoltage
 
   /** Step the target voltage by the given amount (V). */
   public void stepVolts(double stepVolts) {
     state = HangState.MANUAL;
     targetVoltage = MathUtil.clamp(getTargetVoltage() + stepVolts, kPotExtendedVoltage, kPotRetractedVoltage);
+    voltageController.reset();
   } // End stepVolts
 
   /** Set the hang mechanism to idle (no PID output, motor stopped). */

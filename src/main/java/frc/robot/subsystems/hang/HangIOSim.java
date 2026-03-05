@@ -37,7 +37,7 @@ public class HangIOSim implements HangIO {
 
   @Override
   public void setVoltage(double volts) {
-    appliedVolts = MathUtil.clamp(volts, -kMaxVoltage, kMaxVoltage);
+    appliedVolts = volts;
     isStopped = false;
   } // End setVoltage
 

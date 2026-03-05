@@ -8,7 +8,6 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Constants;
 
@@ -43,8 +42,7 @@ public class HangIOSparkMax implements HangIO {
 
   @Override
   public void setVoltage(double volts) {
-    double clamped = MathUtil.clamp(volts, -kMaxVoltage, kMaxVoltage);
-    motor.setVoltage(clamped);
+    motor.setVoltage(volts);
   } // End setVoltage
 
   @Override

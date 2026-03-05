@@ -326,10 +326,12 @@ public class RobotContainer {
     }, drive));
 
 		// Enable Hang/ Retract mode, stop when released
-		driverController.b().onTrue(Commands.runOnce(() -> hang.goToLevel1(), hang));
-		driverController.b().onFalse(Commands.runOnce(() -> hang.setIdle(), hang));
-		driverController.x().onTrue(Commands.runOnce(() -> hang.goToStored(), hang));
-		driverController.x().onFalse(Commands.runOnce(() -> hang.setIdle(), hang));
+		if (hang != null) {
+			driverController.b().onTrue(Commands.runOnce(() -> hang.goToLevel1(), hang));
+			driverController.b().onFalse(Commands.runOnce(() -> hang.setIdle(), hang));
+			driverController.x().onTrue(Commands.runOnce(() -> hang.goToStored(), hang));
+			driverController.x().onFalse(Commands.runOnce(() -> hang.setIdle(), hang));
+		}
 
     // Shoot toggle: on = schedule ShootWhenReadyCommand, set Flywheel to Charging if IDLE; off = cancel (command end() idles Transfer and Agitator)
 		driverController.a().onTrue(Commands.runOnce(() -> {
@@ -490,18 +492,18 @@ public class RobotContainer {
 
 		// Hang Manual Control (step target pot voltage, no position conversion)
 		double hangStepVolts = 0.1;
-		// Step hang out (extend: lower voltage)
+		// Lower Hang (Retract - higher voltage)
 		operatorController.x().onTrue(
 			new ConditionalCommand(
-				Commands.runOnce(() -> hang.stepVolts(-hangStepVolts), hang),
+				Commands.runOnce(() -> hang.stepVolts(hangStepVolts), hang),
 				new InstantCommand(),
 				() -> (operatorManualOverride && hang != null)
 			)
 		);
-		// Step hang in (retract: higher voltage)
+		// Raise Hang (Extend - lower voltage)
 		operatorController.b().onTrue(
 			new ConditionalCommand(
-				Commands.runOnce(() -> hang.stepVolts(hangStepVolts), hang),
+				Commands.runOnce(() -> hang.stepVolts(-hangStepVolts), hang),
 				new InstantCommand(),
 				() -> (operatorManualOverride && hang != null)
 			)
@@ -564,13 +566,14 @@ public class RobotContainer {
 	/// -----------------------------------------------------------------------------------------------------------------
 	/// --------------------------------------------- Other Useful Methods ----------------------------------------------
 	/// -----------------------------------------------------------------------------------------------------------------
-	/** Idle the ball handling subsystems.  */
-	public void idleBallHandling() {
+	/** Idle all Subsystems.  */
+	public void idleAllSubsystems() {
 		CommandScheduler.getInstance().cancel(shootWhenReadyCommand);
 		intake.setIdleMode();
 		agitator.setIdleMode();
 		transfer.setIdleMode();
 		flywheel.setState(FlywheelState.IDLE);
+		if (hang != null) hang.setIdle();
 	} // End idleBallHandling
 
   /**
