@@ -57,7 +57,6 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void periodic() {
-
     double targetPositionRad = DriverStation.isDisabled() ? 0.0 : getClampedHubAngleRad() - kEncoderZeroOffsetRad;
 
     // When not in manual override, aim at the hub, otherwise whenever SmartDashboards target position gets updated, update the turrets target pos
@@ -66,9 +65,11 @@ public class Turret extends SubsystemBase {
 		  setVelocityFeedforwardRadPerSec(-drive.getFieldRelativeChassisSpeeds().omegaRadiansPerSecond);
     } else {
       double target = SmartDashboard.getNumber("Turret/TargetPositionRads", kDefaultTurretRads);
-      if (target != targetPositionRad) {
+      if (target != lastSmartDashboardTargetPos) {
         setHubAngleRelativeToRobot(new Rotation2d(target));
       }
+
+      lastSmartDashboardTargetPos = target;
     }
 
     turretIO.updateInputs(turretInputs);
