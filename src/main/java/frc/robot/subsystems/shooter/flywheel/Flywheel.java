@@ -32,7 +32,7 @@ public class Flywheel extends SubsystemBase {
   private FlywheelState state = FlywheelState.IDLE;
   private double targetVelocityRadsPerSec = kDefaultTargetVelocityRadsPerSec;
 
-  private double lastSmartDashboardTargetPos = 0.0;
+  private double lastSmartDashboardTargetPos = kDefaultTargetVelocityRadsPerSec;
 
   public Flywheel(FlywheelIO io) {
     flywheelIO = io;

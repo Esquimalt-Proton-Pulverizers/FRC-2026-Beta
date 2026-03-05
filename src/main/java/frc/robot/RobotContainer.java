@@ -334,6 +334,7 @@ public class RobotContainer {
 		driverController.a().onTrue(Commands.runOnce(() -> {
 			if (shootWhenReadyCommand.isScheduled()) {
 				CommandScheduler.getInstance().cancel(shootWhenReadyCommand);
+				if (flywheel != null ) flywheel.setState(FlywheelState.IDLE);
 			} else {
 				if (flywheel != null && flywheel.getState() == FlywheelState.IDLE) {
 					flywheel.setState(FlywheelState.CHARGING);

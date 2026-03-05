@@ -29,7 +29,7 @@ public final class FlywheelConstants { // XXX: Add correct values
   public static final double kIdleVelocityRadsPerSec = 0.0;
 
   /** Target velocity (rad/s) for shooting. */
-  public static final double kDefaultTargetVelocityRadsPerSec = Units.rotationsPerMinuteToRadiansPerSecond(4000.0);
+  public static final double kDefaultTargetVelocityRadsPerSec = Units.rotationsPerMinuteToRadiansPerSecond(3200.0);
 
   /** Tolerance for at-target velocity (Charging → AtSpeed). */
   public static final double kAtTargetVelocityToleranceRadsPerSec = Units.rotationsPerMinuteToRadiansPerSecond(50.0);
