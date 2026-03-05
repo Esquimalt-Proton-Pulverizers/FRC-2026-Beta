@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootWhenReadyCommand;
@@ -51,6 +50,7 @@ import frc.robot.subsystems.shooter.turret.*;
 import frc.robot.subsystems.shooter.hood.*;
 import frc.robot.subsystems.shooter.flywheel.*;
 import frc.robot.subsystems.shooter.flywheel.Flywheel.FlywheelState;
+import frc.robot.subsystems.hang.*;
 
 
 /**
@@ -78,6 +78,7 @@ public class RobotContainer {
 	private boolean isTurretEnabled = true;
 	private boolean isHoodEnabled = false;
 	private boolean isFlywheelEnabled = true;
+	private boolean isHangEnabled = false;
 
 	// Subsystems
 	private final Drive drive;
@@ -89,6 +90,7 @@ public class RobotContainer {
 	private final Turret turret;
 	private final Hood hood;
 	private final Flywheel flywheel;
+	private final Hang hang;
 
 	// Drive Commands
 	private final TeleopDrive teleopDrive;
@@ -160,6 +162,7 @@ public class RobotContainer {
 				turret   = isTurretEnabled 	 ? new Turret(new TurretIOSparkMax()) 					 : new Turret(new TurretIO() {});
 				hood     = isHoodEnabled  	 ? new Hood(new HoodIOSparkMax()) 							 : new Hood(new HoodIO() {});
 				flywheel = isFlywheelEnabled ? new Flywheel(new FlywheelIOTalonFX()) 				 : new Flywheel(new FlywheelIO() {});
+				hang 		 = isHangEnabled	   ? new Hang(new HangIOSparkMax()) 							 : new Hang(new HangIO() {});
 				shooterSim = null;
 				shooterSimVisualizer = null;
 				break;
@@ -197,6 +200,7 @@ public class RobotContainer {
 				turret = new Turret(new TurretIOSim());
 				hood = new Hood(new HoodIOSim());
 				flywheel = new Flywheel(new FlywheelIOSim());
+				hang = new Hang(new HangIOSim());
 
 				shooterSim = new ShooterSim(fuelSim);
 				shooterSimVisualizer = new ShooterSimVisualizer(() -> {
@@ -225,6 +229,7 @@ public class RobotContainer {
 				turret = new Turret(new TurretIO() {});
 				hood = new Hood(new HoodIO() {});
 				flywheel = new Flywheel(new FlywheelIO() {});
+				hang = new Hang(new HangIO() {});
 				shooterSim = null;
 				shooterSimVisualizer = null;
 				break;
@@ -296,16 +301,19 @@ public class RobotContainer {
   private void configureDriverBindings() {
     drive.setDefaultCommand(teleopDrive);
 
-    // Switch to X pattern when X button is pressed
-    driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+		// TODO: Toggle Extender Deploy
 
-    // Reset gyro / odometry
-    final Runnable resetGyro = Constants.currentMode == Constants.Mode.SIM
-        ? () -> drive.setPose(
-            driveSimulation.getSimulatedDriveTrainPose()) // reset odometry to actual robot pose during
-        // simulation
-        : () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
-    driverController.start().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+		// Intake toggle: right bumper = intaking ↔ idle, left bumper = reversing ↔ idle
+		driverController.leftBumper().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> intake.setIdleMode(), intake),
+				Commands.runOnce(() -> intake.setReversingMode(), intake),
+				() -> intake.getMode() == Intake.Mode.REVERSING));
+		driverController.rightBumper().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> intake.setIdleMode(), intake),
+				Commands.runOnce(() -> intake.setIntakingMode(), intake),
+				() -> intake.getMode() == Intake.Mode.INTAKING));
 
     // Toggle face-target mode when Y button is pressed
     driverController.y().onTrue(Commands.runOnce(() -> {
@@ -316,14 +324,11 @@ public class RobotContainer {
       }
     }, drive));
 
-    // Toggle robot-centric vs field-centric drive
-    driverController.rightBumper().onTrue(Commands.runOnce(() -> isRobotCentric = !isRobotCentric, drive));
-
-    // -------- Auto Pathfind to Target --------
-    // Pathfind then follow path to outpost when D-pad up is held
-    driverController.leftStick().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "DriveToOutpost"));
-    // Pathfind then follow path to hub when D-pad down is held
-    driverController.rightStick().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "DriveToHub"));
+		// Enable Hang/ Retract mode, stop when released
+		driverController.b().onTrue(Commands.runOnce(() -> hang.goToLevel1(), hang));
+		driverController.b().onFalse(Commands.runOnce(() -> hang.setIdle(), hang));
+		driverController.x().onTrue(Commands.runOnce(() -> hang.goToStored(), hang));
+		driverController.x().onFalse(Commands.runOnce(() -> hang.setIdle(), hang));
 
     // Shoot toggle: on = schedule ShootWhenReadyCommand, set Flywheel to Charging if IDLE; off = cancel (command end() idles Transfer and Agitator)
 		driverController.a().onTrue(Commands.runOnce(() -> {
@@ -337,38 +342,37 @@ public class RobotContainer {
 			}
 		}));
 
-    // POV up = back to hub; Pass to our side: POV left/right = passing spot; POV down = center
-		driverController.povUp().onTrue(Commands.runOnce(ShooterCommands::clearShooterTargetOverride));
-    driverController.povLeft().onTrue(Commands.runOnce(ShooterCommands::setPassingSpotLeft));
-    driverController.povRight().onTrue(Commands.runOnce(ShooterCommands::setPassingSpotRight));
-    driverController.povDown().onTrue(Commands.runOnce(ShooterCommands::setPassingSpotCenter));
+		// Reset Gyro / Odometry, or if Manual Override is true, Reset Gyro
+		final Runnable resetGyro = Constants.currentMode == Constants.Mode.SIM
+        ? () -> drive.setPose(driveSimulation.getSimulatedDriveTrainPose())
+        : () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // Zero Gyro
+		driverController.start().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> isRobotCentric = !isRobotCentric, drive),
+				Commands.runOnce(resetGyro, drive).ignoringDisable(true),
+				() -> operatorManualOverride));
 
-    // Flywheel: Toggles Idle ↔ Charging/AtSpeed (Charging auto-transitions to AtSpeed when at target)
-    if (flywheel != null) {
-      driverController.leftBumper().onTrue(
-          Commands.runOnce(
-              () -> {
-                if (flywheel.getState() == FlywheelState.IDLE) {
-                  flywheel.setState(FlywheelState.CHARGING);
-                } else {
-                  flywheel.setState(FlywheelState.IDLE);
-                }
-              },
-              flywheel));
-    }
 
-		// ----------------------------------- Driver Manual Override + Encoder Reset -----------------------------------
+    // -------- Auto Pathfind to Target --------
+    // Pathfind then follow path to outpost
+    driverController.leftStick().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "DriveToOutpost"));
+
+		// TODO: Enable Ladder Pathfinding
+		// driverController.povUp().onTrue(DriveCommands.pathfindThenFollowPath(drive, "InnerLeftLadder"));
+    // driverController.povLeft().onTrue(DriveCommands.pathfindThenFollowPath(drive, "OutLeftLadder"));
+    // driverController.povRight().onTrue(DriveCommands.pathfindThenFollowPath(drive, "OutRightLadder"));
+    // driverController.povDown().onTrue(DriveCommands.pathfindThenFollowPath(drive, "InnerRightLadder"));
+
+
+		// ------------------------------------------- Driver Manual Override -------------------------------------------
 		// If Manual Override is false, become true. 
 		// If true, reset encoder positions and then become false.
 		driverController.back().onTrue(
 			new ConditionalCommand(
-				new ParallelCommandGroup(
-					// TODO: Reset encoder positions
-					Commands.runOnce(() -> driverManualOverride = false)
-				),
+				Commands.runOnce(() -> driverManualOverride = false),
 				Commands.runOnce(() -> driverManualOverride = true),
 				() -> driverManualOverride));
-  }
+  } // End configureDriverBindings
 
   /** Configure Operator controls. */
   private void configureOperatorBindings(boolean enableOperatorControls) {
@@ -377,27 +381,18 @@ public class RobotContainer {
 			return;
 		}
 
-		// Enable/ Disable Intake
-		operatorController.leftTrigger().onTrue(Commands.runOnce(() -> intake.setIntakingMode(), intake));
-		operatorController.leftTrigger().onFalse(Commands.runOnce(() -> intake.setIdleMode(), intake));
-
-		operatorController.rightTrigger().onTrue(Commands.runOnce(() -> intake.setReversingMode(), intake));
-		operatorController.rightTrigger().onFalse(Commands.runOnce(() -> intake.setIdleMode(), intake));
-
-		// ---------------------------------- Operator Manual Override + Encoder Reset ----------------------------------
+		
+		// ------------------------------------------ Operator Manual Override ------------------------------------------
 		// If Manual Override is false, become true. 
 		// If true, reset encoder positions and then become false.
 		operatorController.back().onTrue(
 			new ConditionalCommand(
-				new ParallelCommandGroup(
-					// TODO: Reset encoder positions
-					Commands.runOnce(() -> operatorManualOverride = false)
-				),
+				Commands.runOnce(() -> operatorManualOverride = false),
 				Commands.runOnce(() -> operatorManualOverride = true),
 				() -> operatorManualOverride));
 
 		// Set Agitator, Transfer, and Flywheel to idle mode when B is pressed
-		operatorController.b().onTrue(
+		operatorController.leftTrigger().onTrue(
 			new ConditionalCommand(
 				Commands.runOnce(() -> {
 					if (agitator != null) agitator.setIdleMode();
@@ -463,24 +458,6 @@ public class RobotContainer {
 				() -> (operatorManualOverride && transfer != null)
 			)
 		);
-
-		// Set Turret angle to 0 (straight ahead) relative to robot
-		operatorController.x().onTrue(
-			new ConditionalCommand(
-				Commands.runOnce(() -> turret.setHubAngleRelativeToRobot(new Rotation2d(0.0)), turret), 
-				new InstantCommand(),
-				() -> (operatorManualOverride && turret != null)
-			)
-		);
-
-		// Reset Turret Encoder
-		operatorController.start().onTrue(
-			new ConditionalCommand(
-				Commands.runOnce(() -> turret.resetMotorEncoder(), turret), 
-				new InstantCommand(),
-				() -> (operatorManualOverride && turret != null)
-			)
-		);
 		
 		// Turret Manual Position Control
 		double turretStepPosition = Units.degreesToRadians(5);
@@ -492,13 +469,39 @@ public class RobotContainer {
 				() -> (operatorManualOverride && turret != null)
 			)
 		);
-		
 		// Step turret position down
 		operatorController.rightStick().onTrue(
 			new ConditionalCommand(
 				Commands.runOnce(() -> turret.stepRads(-turretStepPosition), turret), 
 				new InstantCommand(), 
 				() -> (operatorManualOverride && turret != null)
+			)
+		);
+		// Reset Turret Encoder
+		operatorController.start().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> turret.resetMotorEncoder(), turret), 
+				new InstantCommand(),
+				() -> (operatorManualOverride && turret != null)
+			)
+		);
+
+		// Hang Manual Control (step target pot voltage, no position conversion)
+		double hangStepVolts = 0.1;
+		// Step hang out (extend: lower voltage)
+		operatorController.x().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> hang.stepVolts(-hangStepVolts), hang),
+				new InstantCommand(),
+				() -> (operatorManualOverride && hang != null)
+			)
+		);
+		// Step hang in (retract: higher voltage)
+		operatorController.b().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> hang.stepVolts(hangStepVolts), hang),
+				new InstantCommand(),
+				() -> (operatorManualOverride && hang != null)
 			)
 		);
 
@@ -513,7 +516,6 @@ public class RobotContainer {
 				() -> (operatorManualOverride && flywheel != null)
 			)
 		);
-
 		// Lower Flywheel rpm
 		operatorController.povDown().onTrue(
 			new ConditionalCommand(
