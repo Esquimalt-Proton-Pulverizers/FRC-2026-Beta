@@ -50,8 +50,9 @@ public class Flywheel extends SubsystemBase {
   public void periodic() {
     // Read TargetVelocityRadsPerSec from SmartDashboard for live tuning
     double target = SmartDashboard.getNumber("Flywheel/TargetVelocityRadsPerSec", kDefaultTargetVelocityRadsPerSec);
-
+    
     if (target != lastSmartDashboardTargetPos) {
+      setState(FlywheelState.CHARGING);
       setTargetVelocityRadsPerSec(target);
     }
 
@@ -125,8 +126,8 @@ public class Flywheel extends SubsystemBase {
 
   /** Step the target velocity by the given amount. */
   public void stepVelocityRadsPerSec(double stepRadsPerSec) {
-    setTargetVelocityRadsPerSec(getTargetVelocityRadsPerSec() + stepRadsPerSec);
     setState(FlywheelState.CHARGING);
+    setTargetVelocityRadsPerSec(getTargetVelocityRadsPerSec() + stepRadsPerSec);
   } // End stepVelocityRadsPerSec
 
   /** Whether the flywheel is at target velocity within tolerance. */
