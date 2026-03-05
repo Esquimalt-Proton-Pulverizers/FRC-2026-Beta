@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.StatusCode;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.generated.TunerConstants;
@@ -25,8 +26,12 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private static final String kVKey = "Flywheel/kV";
   private static final String kSKey = "Flywheel/kS";
 
+  private static final double kVelocityRampRateRadsPerSecSq =
+      Units.rotationsPerMinuteToRadiansPerSecond(kVelocityRampRateRpmPerSec);
+
   private final TalonFX motor;
   private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
+  private final SlewRateLimiter velocityRamp = new SlewRateLimiter(kVelocityRampRateRadsPerSecSq);
 
   private double lastP = kP;
   private double lastI = kI;
@@ -86,13 +91,14 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
   @Override
   public void setTargetVelocity(double targetVelocityRadsPerSec) {
-    double targetRps = targetVelocityRadsPerSec / (2.0 * Math.PI);
-    double motorRps = targetRps * kGearRatio;
+    double rampedRadsPerSec = velocityRamp.calculate(targetVelocityRadsPerSec);
+    double motorRps = (rampedRadsPerSec / (2.0 * Math.PI)) * kGearRatio;
     motor.setControl(velocityVoltageRequest.withVelocity(motorRps));
   } // End setTargetVelocity
 
   @Override
   public void stop() {
+    velocityRamp.reset(0.0);
     motor.setControl(new NeutralOut());
   } // End stop
 }

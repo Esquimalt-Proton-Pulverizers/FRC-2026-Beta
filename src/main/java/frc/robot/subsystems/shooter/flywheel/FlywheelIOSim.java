@@ -6,10 +6,11 @@ import edu.wpi.first.math.util.Units;
 /** Flywheel IO for simulation; slew-rate-limited setpoint following. */
 public class FlywheelIOSim implements FlywheelIO {
 
-  /** Max acceleration: 4000 RPM in 2 s (rad/s²). */
-  private static final double kMaxAccelRadPerSecSq = Units.rotationsPerMinuteToRadiansPerSecond(4000.0) / 2.0;
+  /** Same ramp rate as hardware: 1000 RPM/s → 2 s to 2000 RPM, 4 s to 4000 RPM (rad/s²). */
+  private static final double kVelocityRampRateRadsPerSecSq =
+      Units.rotationsPerMinuteToRadiansPerSecond(FlywheelConstants.kVelocityRampRateRpmPerSec);
 
-  private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(kMaxAccelRadPerSecSq);
+  private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(kVelocityRampRateRadsPerSecSq);
 
   private double targetVelocityRadsPerSec = 0.0;
   private boolean isStopped = false;

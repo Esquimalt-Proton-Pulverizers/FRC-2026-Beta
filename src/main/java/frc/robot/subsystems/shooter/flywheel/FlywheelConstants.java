@@ -22,6 +22,9 @@ public final class FlywheelConstants { // XXX: Add correct values
   /** Stator current limit (amps); protects motor and gearbox. */
   public static final double kStatorCurrentLimitAmps = 40.0;
 
+  /** Velocity ramp rate (RPM/s): */
+  public static final double kVelocityRampRateRpmPerSec = 1000.0;
+
   /** Set true if positive velocity spins the flywheel the opposite direction. */
   public static final boolean kMotorInverted = true;
 
