@@ -53,6 +53,9 @@ public class TeleopDrive extends Command {
   private final PIDController rotationController =
       new PIDController(SwerveConstants.ROTATION_KP, SwerveConstants.ROTATION_KI, SwerveConstants.ROTATION_KD);
 
+  /** When true, set DriveMode to MANUAL_OVERRIDE (Manual Override). */
+  private BooleanSupplier manualOverrideSupplier = () -> false;
+
   @AutoLogOutput
   private DriveMode currentDriveMode = DriveMode.NORMAL;
 
@@ -113,10 +116,10 @@ public class TeleopDrive extends Command {
   } // End getTrenchYMeters
 
   private Rotation2d getTrenchLockAngle() {
-    if (Math.abs(MathUtil.inputModulus(drive.getRotation().getDegrees() - 90, -180, 180)) < 90) {
-      return Rotation2d.kCCW_90deg;
+    if (Math.abs(MathUtil.inputModulus(drive.getRotation().getDegrees(), -180, 180)) < 90) {
+      return Rotation2d.kZero;
     }
-    return Rotation2d.kCW_90deg;
+    return Rotation2d.k180deg;
   } // End getTrenchLockAngle
 
   private Rotation2d getBumpLockAngle() {
@@ -127,6 +130,11 @@ public class TeleopDrive extends Command {
     }
     return Rotation2d.kZero;
   } // End getBumpLockAngle
+
+  /** Set by RobotContainer so DriveMode is set to MANUAL_OVERRIDE */
+  public void setManualOverrideSupplier(BooleanSupplier supplier) {
+    manualOverrideSupplier = supplier != null ? supplier : () -> false;
+  } // End setManualOverrideSupplier
 
   @Override
   public void initialize() {
@@ -157,13 +165,25 @@ public class TeleopDrive extends Command {
 
     this.desiredFieldSpeeds = new ChassisSpeeds(linearVelocity.getX(), linearVelocity.getY(), omega);
 
+    if (manualOverrideSupplier.getAsBoolean()) {
+      currentDriveMode = DriveMode.MANUAL_OVERRIDE;
+    }
+
     switch (currentDriveMode) {
+      case MANUAL_OVERRIDE:
       case NORMAL:
         double vx = linearVelocity.getX();
         double vy = linearVelocity.getY();
         double rot = isFacingHubSupplier.getAsBoolean()
             ? DriveCommands.computeOmegaToFaceHub(drive, faceTargetController)
             : maxRotSpeedRadPerS * omega;
+
+        // When the robot is stationary, hold position with X-pattern base
+        if (Math.abs(vx) < 1e-3 && Math.abs(vy) < 1e-3 && Math.abs(rot) < 1e-3) {
+          drive.stopWithX();
+          break;
+        }
+
         if (isRobotCentricSupplier.getAsBoolean()) {
           drive.runVelocity(new ChassisSpeeds(vx, vy, rot));
         } else {
@@ -211,6 +231,7 @@ public class TeleopDrive extends Command {
   private enum DriveMode {
     NORMAL,
     TRENCH_LOCK,
-    BUMP_LOCK
+    BUMP_LOCK,
+    MANUAL_OVERRIDE
   } // End DriveMode
 }

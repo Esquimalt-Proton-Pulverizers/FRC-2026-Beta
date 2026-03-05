@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake On"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Shooter Target Hub"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GoToCenterSweepLeft"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Flywheel On"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FullCenterFuelSweepLeftToRight"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightFuelSweepShooting"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot When Ready"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 6.0
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Starting Position - Left",
+  "choreoAuto": false
+}

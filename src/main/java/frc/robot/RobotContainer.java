@@ -24,6 +24,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.Meters;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,7 +32,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootWhenReadyCommand;
@@ -64,31 +64,7 @@ import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.shooter.ShooterSimVisualizer;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel.FlywheelState;
-import frc.robot.subsystems.shooter.flywheel.FlywheelConstants;
-import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
-import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
-import frc.robot.subsystems.shooter.flywheel.FlywheelIOTalonFX;
-import frc.robot.subsystems.shooter.hood.Hood;
-import frc.robot.subsystems.shooter.hood.HoodConstants;
-import frc.robot.subsystems.shooter.hood.HoodIO;
-import frc.robot.subsystems.shooter.hood.HoodIOSim;
-import frc.robot.subsystems.shooter.hood.HoodIOSparkMax;
-import frc.robot.subsystems.shooter.transfer.Transfer;
-import frc.robot.subsystems.shooter.transfer.TransferIO;
-import frc.robot.subsystems.shooter.transfer.TransferIOBrushedSparkMax;
-import frc.robot.subsystems.shooter.transfer.TransferIOSim;
-import frc.robot.subsystems.shooter.turret.Turret;
-import frc.robot.subsystems.shooter.turret.TurretIO;
-import frc.robot.subsystems.shooter.turret.TurretIOSim;
-import frc.robot.subsystems.shooter.turret.TurretIOSparkMax;
-import frc.robot.subsystems.vision.Vision;
-import static frc.robot.subsystems.vision.VisionConstants.camera0Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
-import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.subsystems.hang.*;
 
 
 /**
@@ -117,6 +93,7 @@ public class RobotContainer {
 	private boolean isHoodEnabled = false;
 	private boolean isExtenderEnabled = true;
 	private boolean isFlywheelEnabled = true;
+	private boolean isHangEnabled = false;
 
 	// Subsystems
 	private final Drive drive;
@@ -129,6 +106,7 @@ public class RobotContainer {
 	private final Hood hood;
 	private final Extender extender;
 	private final Flywheel flywheel;
+	private final Hang hang;
 
 	// Drive Commands
 	private final TeleopDrive teleopDrive;
@@ -150,8 +128,10 @@ public class RobotContainer {
 	private boolean isRobotCentric = false;
 
 	// Manual Override
-	@AutoLogOutput(key = "ManualOverride")
-	public static boolean manualOverride = false;
+	@AutoLogOutput(key = "ManualOverride/Driver")
+	public static boolean driverManualOverride = false;
+	@AutoLogOutput(key = "ManualOverride/Operator")
+	public static boolean operatorManualOverride = false;
 
 	// Dashboard inputs
 	private final LoggedDashboardChooser<Command> autoChooser;
@@ -165,7 +145,6 @@ public class RobotContainer {
 	// Shooter Simulation and Visualizer (only non-null in SIM)
 	private final ShooterSim shooterSim;
 	private final ShooterSimVisualizer shooterSimVisualizer;
-
 
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
@@ -195,11 +174,12 @@ public class RobotContainer {
 				// Subsystems
 				intake   = isIntakeEnabled 	 ? new Intake(new IntakeIOSparkMax()) 					 : new Intake(new IntakeIO() {});
 				agitator = isAgitatorEnabled ? new Agitator(new AgitatorIOSparkMax()) 			 : new Agitator(new AgitatorIO() {});
-				transfer = isTransferEnabled ? new Transfer(new TransferIOBrushedSparkMax()) : new Transfer(new TransferIO() {});
+				transfer = isTransferEnabled ? new Transfer(new TransferIOSparkMax()) : new Transfer(new TransferIO() {});
 				turret   = isTurretEnabled 	 ? new Turret(new TurretIOSparkMax()) 					 : new Turret(new TurretIO() {});
 				hood     = isHoodEnabled  	 ? new Hood(new HoodIOSparkMax()) 							 : new Hood(new HoodIO() {});
 				extender = isExtenderEnabled ? new Extender(new ExtenderIOSparkMax())			   : new Extender(new ExtenderIO() {});
 				flywheel = isFlywheelEnabled ? new Flywheel(new FlywheelIOTalonFX()) 				 : new Flywheel(new FlywheelIO() {});
+				hang 		 = isHangEnabled	   ? new Hang(new HangIOSparkMax()) 							 : new Hang(new HangIO() {});
 				shooterSim = null;
 				shooterSimVisualizer = null;
 				break;
@@ -238,6 +218,7 @@ public class RobotContainer {
 				hood = new Hood(new HoodIOSim());
 				extender = new Extender(new ExtenderIOSim());
 				flywheel = new Flywheel(new FlywheelIOSim());
+				hang = new Hang(new HangIOSim());
 
 				shooterSim = new ShooterSim(fuelSim);
 				shooterSimVisualizer = new ShooterSimVisualizer(() -> {
@@ -267,6 +248,7 @@ public class RobotContainer {
 				hood = new Hood(new HoodIO() {});
 				extender = new Extender(new ExtenderIO() {});
 				flywheel = new Flywheel(new FlywheelIO() {});
+				hang = new Hang(new HangIO() {});
 				shooterSim = null;
 				shooterSimVisualizer = null;
 				break;
@@ -276,7 +258,7 @@ public class RobotContainer {
 		shooter = new Shooter(drive, agitator, transfer, turret, hood, flywheel, isHoodEnabled);
 		shootWhenReadyCommand = new ShootWhenReadyCommand(agitator, transfer, shooter);
 		shooter.setShootCommandScheduledSupplier(shootWhenReadyCommand::isScheduled);
-		shooter.setManualOverrideSupplier(() -> manualOverride);
+		shooter.setManualOverrideSupplier(() -> operatorManualOverride);
 
 		/// -------------------------------------------------------------------------------------------
 		/// ------------------------------------- Drive Commands --------------------------------------		
@@ -288,12 +270,15 @@ public class RobotContainer {
 		faceTargetController.enableContinuousInput(-Math.PI, Math.PI);
 
 		teleopDrive = new TeleopDrive(drive, driverController, () -> isRobotCentric, () -> isFacingHub, faceTargetController);
+		teleopDrive.setManualOverrideSupplier(() -> driverManualOverride);
 
 		/// -------------------------------------------------------------------------------------------
 		/// ------------------------------- Shooter Subsystem Commands --------------------------------
 		/// -------------------------------------------------------------------------------------------
 		// Turret aims at predicted target; velocity feedforward for spin compensation. Only active if not in manualOverride
+		turret.setManualOverrideSupplier(() -> operatorManualOverride);
 		turret.setDrive(drive);
+		turret.setAimAtTargetSupplier(() -> shootWhenReadyCommand.isScheduled());
 
 		/// -------------------------------------------------------------------------------------------
 		/// ------------------------------------ Logger Dashboard -------------------------------------
@@ -312,15 +297,15 @@ public class RobotContainer {
 			// Set up Swerve Calibration Programs
 			DriveCommands.swerveCalibration(autoChooser, drive);
 
-			// Record zeroed Robot components (model_0 turret, model_1 extender) – initial only; updated in updateSimulation()
-			Logger.recordOutput("ComponentPoses/Zeroed", new Pose3d[] {new Pose3d(), new Pose3d()});
+			// Record zeroed Robot components (model_0 turret, model_1 extender, model_2 extending-storage) – initial only; updated in updateSimulation()
+			Logger.recordOutput("ComponentPoses/Zeroed", new Pose3d[] {new Pose3d(), new Pose3d(), new Pose3d()});
 		}
 
 		// Record zeroed Robot components (model_0 turret, model_1 extender) – initial only; updated in updateSimulation()
 		Logger.recordOutput("ComponentPoses/Final",
 				new Pose3d[] {
-					new Pose3d(-0.17, 0.05, 0.35, new Rotation3d(0, 0, 0)), // model_0 turret
-					new Pose3d(0.5, 0, 0.35, new Rotation3d(0, 0, 0))  // model_1 extender
+					new Pose3d(-0.125, -0.17, 0.27, new Rotation3d(0, 0, 0)), // model_0 turret
+					new Pose3d(0.28, 0, 0.15, new Rotation3d(0, 0, 0)),  // model_1 extender
 				});
 			
 
@@ -336,7 +321,7 @@ public class RobotContainer {
   private void configureDriverBindings() {
     drive.setDefaultCommand(teleopDrive);
 
-		// Toggles the extenders state between extended and retracted 
+		// Toggles the Extender state between Extended and Retracted 
 		driverController.leftTrigger().onTrue(
 			new ConditionalCommand(
 				Commands.runOnce(() -> extender.setRetractedState(), extender), 
@@ -347,13 +332,17 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    // Reset gyro / odometry
-    final Runnable resetGyro = Constants.currentMode == Constants.Mode.SIM
-        ? () -> drive.setPose(
-            driveSimulation.getSimulatedDriveTrainPose()) // reset odometry to actual robot pose during
-        // simulation
-        : () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
-    driverController.start().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+		// Intake toggle: right bumper = intaking ↔ idle, left bumper = reversing ↔ idle
+		driverController.leftBumper().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> intake.setIdleMode(), intake),
+				Commands.runOnce(() -> intake.setReversingMode(), intake),
+				() -> intake.getMode() == Intake.Mode.REVERSING));
+		driverController.rightBumper().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> intake.setIdleMode(), intake),
+				Commands.runOnce(() -> intake.setIntakingMode(), intake),
+				() -> intake.getMode() == Intake.Mode.INTAKING));
 
     // Toggle face-target mode when Y button is pressed
     driverController.y().onTrue(Commands.runOnce(() -> {
@@ -364,19 +353,19 @@ public class RobotContainer {
       }
     }, drive));
 
-    // Toggle robot-centric vs field-centric drive
-    driverController.rightBumper().onTrue(Commands.runOnce(() -> isRobotCentric = !isRobotCentric, drive));
-
-    // -------- Auto Pathfind to Target --------
-    // Pathfind then follow path to outpost when D-pad up is held
-    driverController.leftStick().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "DriveToOutpost"));
-    // Pathfind then follow path to hub when D-pad down is held
-    driverController.rightStick().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "DriveToHub"));
+		// Enable Hang/ Retract mode, stop when released
+		if (hang != null) {
+			driverController.b().onTrue(Commands.runOnce(() -> hang.goToLevel1(), hang));
+			driverController.b().onFalse(Commands.runOnce(() -> hang.setIdle(), hang));
+			driverController.x().onTrue(Commands.runOnce(() -> hang.goToStored(), hang));
+			driverController.x().onFalse(Commands.runOnce(() -> hang.setIdle(), hang));
+		}
 
     // Shoot toggle: on = schedule ShootWhenReadyCommand, set Flywheel to Charging if IDLE; off = cancel (command end() idles Transfer and Agitator)
 		driverController.a().onTrue(Commands.runOnce(() -> {
 			if (shootWhenReadyCommand.isScheduled()) {
 				CommandScheduler.getInstance().cancel(shootWhenReadyCommand);
+				if (flywheel != null ) flywheel.setState(FlywheelState.IDLE);
 			} else {
 				if (flywheel != null && flywheel.getState() == FlywheelState.IDLE) {
 					flywheel.setState(FlywheelState.CHARGING);
@@ -385,49 +374,37 @@ public class RobotContainer {
 			}
 		}));
 
-
-		
-		driverController.back().onTrue(
+		// Reset Gyro / Odometry, or if Manual Override is true, Reset Gyro
+		final Runnable resetGyro = Constants.currentMode == Constants.Mode.SIM
+        ? () -> drive.setPose(driveSimulation.getSimulatedDriveTrainPose())
+        : () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // Zero Gyro
+		driverController.start().onTrue(
 			new ConditionalCommand(
-				new ParallelCommandGroup(
-					// TODO: Reset encoder positions
-					Commands.runOnce(() -> manualOverride = false)
-				),
-				Commands.runOnce(() -> manualOverride = true),
-				() -> manualOverride));
+				Commands.runOnce(() -> isRobotCentric = !isRobotCentric, drive),
+				Commands.runOnce(resetGyro, drive).ignoringDisable(true),
+				() -> !driverManualOverride));
 
-    // POV up = back to hub; Pass to our side: POV left/right = passing spot; POV down = center
-		driverController.povUp().onTrue(Commands.runOnce(ShooterCommands::clearShooterTargetOverride));
-    driverController.povLeft().onTrue(Commands.runOnce(ShooterCommands::setPassingSpotLeft));
-    driverController.povRight().onTrue(Commands.runOnce(ShooterCommands::setPassingSpotRight));
-    driverController.povDown().onTrue(Commands.runOnce(ShooterCommands::setPassingSpotCenter));
 
-    // Flywheel: Toggles Idle ↔ Charging/AtSpeed (Charging auto-transitions to AtSpeed when at target)
-    if (flywheel != null) {
-      driverController.leftBumper().onTrue(
-          Commands.runOnce(
-              () -> {
-                if (flywheel.getState() == FlywheelState.IDLE) {
-                  flywheel.setState(FlywheelState.CHARGING);
-                } else {
-                  flywheel.setState(FlywheelState.IDLE);
-                }
-              },
-              flywheel));
-    }
+    // -------- Auto Pathfind to Target --------
+    // Pathfind then follow path to outpost
+    driverController.leftStick().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "DriveToOutpost"));
 
-		// --------------------------------------- Manual Override + Encoder Reset --------------------------------------
+		// TODO: Enable Ladder Pathfinding
+		// driverController.povUp().onTrue(DriveCommands.pathfindThenFollowPath(drive, "InnerLeftLadder"));
+    // driverController.povLeft().onTrue(DriveCommands.pathfindThenFollowPath(drive, "OutLeftLadder"));
+    // driverController.povRight().onTrue(DriveCommands.pathfindThenFollowPath(drive, "OutRightLadder"));
+    // driverController.povDown().onTrue(DriveCommands.pathfindThenFollowPath(drive, "InnerRightLadder"));
+
+
+		// ------------------------------------------- Driver Manual Override -------------------------------------------
 		// If Manual Override is false, become true. 
 		// If true, reset encoder positions and then become false.
 		driverController.back().onTrue(
 			new ConditionalCommand(
-				new ParallelCommandGroup(
-					// TODO: Reset encoder positions
-					Commands.runOnce(() -> manualOverride = false)
-				),
-				Commands.runOnce(() -> manualOverride = true),
-				() -> manualOverride));
-  }
+				Commands.runOnce(() -> driverManualOverride = false),
+				Commands.runOnce(() -> driverManualOverride = true),
+				() -> driverManualOverride));
+  } // End configureDriverBindings
 
   /** Configure Operator controls. */
   private void configureOperatorBindings(boolean enableOperatorControls) {
@@ -436,27 +413,18 @@ public class RobotContainer {
 			return;
 		}
 
-		// Enable/ Disable Intake
-		//operatorController.leftTrigger().onTrue(Commands.runOnce(() -> intake.setIntakingMode(), intake));
-		//operatorController.leftTrigger().onFalse(Commands.runOnce(() -> intake.setIdleMode(), intake));
-//
-		//operatorController.rightTrigger().onTrue(Commands.runOnce(() -> intake.setReversingMode(), intake));
-		//operatorController.rightTrigger().onFalse(Commands.runOnce(() -> intake.setIdleMode(), intake));
 		
-		// --------------------------------------- Manual Override + Encoder Reset --------------------------------------
+		// ------------------------------------------ Operator Manual Override ------------------------------------------
 		// If Manual Override is false, become true. 
 		// If true, reset encoder positions and then become false.
 		operatorController.back().onTrue(
 			new ConditionalCommand(
-				new ParallelCommandGroup(
-					// TODO: Reset encoder positions
-					Commands.runOnce(() -> manualOverride = false)
-				),
-				Commands.runOnce(() -> manualOverride = true),
-				() -> manualOverride));
+				Commands.runOnce(() -> operatorManualOverride = false),
+				Commands.runOnce(() -> operatorManualOverride = true),
+				() -> operatorManualOverride));
 
 		// Set Agitator, Transfer, and Flywheel to idle mode when B is pressed
-		operatorController.b().onTrue(
+		operatorController.leftTrigger().onTrue(
 			new ConditionalCommand(
 				Commands.runOnce(() -> {
 					if (agitator != null) agitator.setIdleMode();
@@ -464,7 +432,7 @@ public class RobotContainer {
 					if (flywheel != null) flywheel.setState(FlywheelState.IDLE);
 				}, agitator, transfer, flywheel),
 				new InstantCommand(),
-				() -> manualOverride));
+				() -> operatorManualOverride));
 
 		// Extender manual override position stepping
 		final double extenderStepPosition = 5;
@@ -494,7 +462,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> intake.stepVoltage(intakeStepVoltage), intake),
 				new InstantCommand(),
-				() -> (manualOverride && intake != null)
+				() -> (operatorManualOverride && intake != null)
 			)
 		);
 		// Lower Intake voltage
@@ -502,7 +470,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> intake.stepVoltage(-intakeStepVoltage), intake),
 				new InstantCommand(),
-				() -> (manualOverride && intake != null)
+				() -> (operatorManualOverride && intake != null)
 			)
 		);
 
@@ -513,7 +481,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> agitator.stepVoltage(agitatorStepVoltage), agitator),
 				new InstantCommand(),
-				() -> (manualOverride && agitator != null)
+				() -> (operatorManualOverride && agitator != null)
 			)
 		);
 		// Lower Agitator voltage
@@ -521,7 +489,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> agitator.stepVoltage(-agitatorStepVoltage), agitator),
 				new InstantCommand(),
-				() -> (manualOverride && agitator != null)
+				() -> (operatorManualOverride && agitator != null)
 			)
 		);
 
@@ -532,7 +500,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> transfer.stepVoltage(transferStepVoltage), transfer),
 				new InstantCommand(),
-				() -> (manualOverride && transfer != null)
+				() -> (operatorManualOverride && transfer != null)
 			)
 		);
 		// Lower Transfer voltage
@@ -540,25 +508,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> transfer.stepVoltage(-transferStepVoltage), transfer),
 				new InstantCommand(),
-				() -> (manualOverride && transfer != null)
-			)
-		);
-
-		// Set Turret angle to 0 (straight ahead) relative to robot
-		operatorController.x().onTrue(
-			new ConditionalCommand(
-				Commands.runOnce(() -> turret.setHubAngleRelativeToRobot(new Rotation2d(0.0)), turret), 
-				new InstantCommand(),
-				() -> (manualOverride && turret != null)
-			)
-		);
-
-		// Reset Turret Encoder
-		operatorController.start().onTrue(
-			new ConditionalCommand(
-				Commands.runOnce(() -> turret.resetMotorEncoder(), turret), 
-				new InstantCommand(),
-				() -> (manualOverride && turret != null)
+				() -> (operatorManualOverride && transfer != null)
 			)
 		);
 		
@@ -569,16 +519,42 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> turret.stepRads(turretStepPosition), turret), 
 				new InstantCommand(), 
-				() -> (manualOverride && turret != null)
+				() -> (operatorManualOverride && turret != null)
 			)
 		);
-		
 		// Step turret position down
 		operatorController.rightStick().onTrue(
 			new ConditionalCommand(
 				Commands.runOnce(() -> turret.stepRads(-turretStepPosition), turret), 
 				new InstantCommand(), 
-				() -> (manualOverride && turret != null)
+				() -> (operatorManualOverride && turret != null)
+			)
+		);
+		// Reset Turret Encoder
+		operatorController.start().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> turret.resetMotorEncoder(), turret), 
+				new InstantCommand(),
+				() -> (operatorManualOverride && turret != null)
+			)
+		);
+
+		// Hang Manual Control (step target pot voltage, no position conversion)
+		double hangStepVolts = 0.1;
+		// Lower Hang (Retract - higher voltage)
+		operatorController.x().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> hang.stepVolts(hangStepVolts), hang),
+				new InstantCommand(),
+				() -> (operatorManualOverride && hang != null)
+			)
+		);
+		// Raise Hang (Extend - lower voltage)
+		operatorController.b().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> hang.stepVolts(-hangStepVolts), hang),
+				new InstantCommand(),
+				() -> (operatorManualOverride && hang != null)
 			)
 		);
 
@@ -590,16 +566,15 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> flywheel.stepVelocityRadsPerSec(stepRadsPerSec), flywheel),
 				new InstantCommand(),
-				() -> (manualOverride && flywheel != null)
+				() -> (operatorManualOverride && flywheel != null)
 			)
 		);
-
 		// Lower Flywheel rpm
 		operatorController.povDown().onTrue(
 			new ConditionalCommand(
 				Commands.runOnce(() -> flywheel.stepVelocityRadsPerSec(-stepRadsPerSec), flywheel),
 				new InstantCommand(),
-				() -> (manualOverride && flywheel != null)
+				() -> (operatorManualOverride && flywheel != null)
 			)
 		);
   } // End configureOperatorBindings
@@ -640,13 +615,14 @@ public class RobotContainer {
 	/// -----------------------------------------------------------------------------------------------------------------
 	/// --------------------------------------------- Other Useful Methods ----------------------------------------------
 	/// -----------------------------------------------------------------------------------------------------------------
-	/** Idle the ball handling subsystems.  */
-	public void idleBallHandling() {
+	/** Idle all Subsystems.  */
+	public void idleAllSubsystems() {
 		CommandScheduler.getInstance().cancel(shootWhenReadyCommand);
 		intake.setIdleMode();
 		agitator.setIdleMode();
 		transfer.setIdleMode();
 		flywheel.setState(FlywheelState.IDLE);
+		if (hang != null) hang.setIdle();
 	} // End idleBallHandling
 
   /**
@@ -723,8 +699,14 @@ public class RobotContainer {
 		Logger.recordOutput("FieldSimulation/RobotPosition", robotPose);
 
 		// Robot-relative component poses for visualization
-		Pose3d turretComponentPose = new Pose3d(-0.17, 0.05, 0.35, new Rotation3d(0, 0, turret.getPosition().getRadians() - Math.PI / 2.0));
-		Pose3d extenderComponentPose = new Pose3d(0.5, 0, 0.35, new Rotation3d(0, 0, 0));
+		Pose3d turretComponentPose = new Pose3d(-0.125, -0.17, 0.27, new Rotation3d(0, 0, turret.getPosition().getRadians() + Math.toRadians(90)));
+		Pose3d extenderComponentPose;
+		if (DriverStation.isTeleopEnabled()) {
+			extenderComponentPose = new Pose3d(0.28, 0, 0.15, new Rotation3d(0, 90 ,0)); // TODO: Update when Extender is implemented to reflect true angle
+		} else {
+			extenderComponentPose = new Pose3d(0.28, 0, 0.15, new Rotation3d(0, 0, 0));
+		}
+		//hopper extender code TBD
 		Logger.recordOutput("ComponentPoses/Final", new Pose3d[] {turretComponentPose, extenderComponentPose});
 
 		// Update field view

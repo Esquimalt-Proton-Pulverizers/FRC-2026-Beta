@@ -1,0 +1,70 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.4980322003577814,
+        "y": 0.6520035778175304
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.4980322003577813,
+        "y": 0.6520035778175304
+      },
+      "isLocked": false,
+      "linkedName": "DriveToOutpost-E"
+    },
+    {
+      "anchor": {
+        "x": 1.9684826974267962,
+        "y": 1.9063265306122448
+      },
+      "prevControl": {
+        "x": 2.016664631292087,
+        "y": 1.2317794564981694
+      },
+      "nextControl": {
+        "x": 1.9201952085181895,
+        "y": 2.5823513753327414
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.687,
+        "y": 3.2
+      },
+      "prevControl": {
+        "x": 1.8638598047914816,
+        "y": 2.9582076308784373
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "OuterRightLadder-E"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.5,
+    "maxAcceleration": 1.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Hanging",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": false
+}

@@ -31,6 +31,9 @@ public class Flywheel extends SubsystemBase {
 
   private FlywheelState state = FlywheelState.IDLE;
   private double targetVelocityRadsPerSec = kDefaultTargetVelocityRadsPerSec;
+
+  private double lastSmartDashboardTargetPos = kDefaultTargetVelocityRadsPerSec;
+
   public Flywheel(FlywheelIO io) {
     flywheelIO = io;
     
@@ -46,7 +49,14 @@ public class Flywheel extends SubsystemBase {
   @Override
   public void periodic() {
     // Read TargetVelocityRadsPerSec from SmartDashboard for live tuning
-    targetVelocityRadsPerSec = SmartDashboard.getNumber("Flywheel/TargetVelocityRadsPerSec", kDefaultTargetVelocityRadsPerSec);
+    double target = SmartDashboard.getNumber("Flywheel/TargetVelocityRadsPerSec", kDefaultTargetVelocityRadsPerSec);
+    
+    if (target != lastSmartDashboardTargetPos) {
+      setState(FlywheelState.CHARGING);
+      setTargetVelocityRadsPerSec(target);
+    }
+
+    lastSmartDashboardTargetPos = target;
 
     // Update the flywheel inputs and record the values
     flywheelIO.updateInputs(flywheelInputs);
@@ -116,8 +126,8 @@ public class Flywheel extends SubsystemBase {
 
   /** Step the target velocity by the given amount. */
   public void stepVelocityRadsPerSec(double stepRadsPerSec) {
-    setTargetVelocityRadsPerSec(getTargetVelocityRadsPerSec() + stepRadsPerSec);
     setState(FlywheelState.CHARGING);
+    setTargetVelocityRadsPerSec(getTargetVelocityRadsPerSec() + stepRadsPerSec);
   } // End stepVelocityRadsPerSec
 
   /** Whether the flywheel is at target velocity within tolerance. */
