@@ -507,10 +507,14 @@ public class RobotContainer {
 				() -> (operatorManualOverride && turret != null)
 			)
 		);
-		// Reset Turret Encoder
+		// Reset Extender and Turret Encoder, and Idle all subsystems.
 		operatorController.start().onTrue(
 			new ConditionalCommand(
-				Commands.runOnce(() -> turret.resetMotorEncoder(), turret), // TODO: make this also idle subsystems, and reset other subsystems' encoders if needed
+				Commands.runOnce(() -> {
+					extender.resetEncoders();
+					turret.resetMotorEncoder();
+					idleAllSubsystems();
+				}, turret, extender),
 				new InstantCommand(),
 				() -> (operatorManualOverride && turret != null)
 			)
