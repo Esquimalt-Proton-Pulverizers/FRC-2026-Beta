@@ -350,7 +350,7 @@ public class RobotContainer {
 			new ConditionalCommand(
 				Commands.runOnce(() -> isRobotCentric = !isRobotCentric, drive),
 				Commands.runOnce(resetGyro, drive).ignoringDisable(true),
-				() -> operatorManualOverride));
+				() -> !driverManualOverride));
 
 
     // -------- Auto Pathfind to Target --------
