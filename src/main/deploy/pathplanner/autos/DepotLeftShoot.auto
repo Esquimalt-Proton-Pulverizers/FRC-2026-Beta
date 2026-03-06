@@ -23,6 +23,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Extender Down"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "GoToDepotLeft"

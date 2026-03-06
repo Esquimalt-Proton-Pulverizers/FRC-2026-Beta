@@ -17,6 +17,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Extender Partial"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "DriveToOutpostFromCenter"

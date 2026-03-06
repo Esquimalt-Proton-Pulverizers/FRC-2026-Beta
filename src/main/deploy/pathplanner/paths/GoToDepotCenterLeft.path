@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 0.6,
-        "y": 7.000656610472129
+        "x": 0.44399305555555557,
+        "y": 6.9948749999999995
       },
       "prevControl": {
-        "x": 0.7934871339840279,
-        "y": 6.839698314108253
+        "x": 0.6374801895395835,
+        "y": 6.833916703636123
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -130.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "Depot Sweep",

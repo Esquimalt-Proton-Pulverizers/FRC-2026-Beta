@@ -3,24 +3,24 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.6,
-        "y": 7.000656610472129
+        "x": 0.444,
+        "y": 6.9948749999999995
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.6,
-        "y": 6.380967169478339
+        "x": 0.444,
+        "y": 6.375185559006209
       },
       "isLocked": false,
       "linkedName": "DepotSweepPickup-S"
     },
     {
       "anchor": {
-        "x": 0.6,
+        "x": 0.444,
         "y": 5.085252883764054
       },
       "prevControl": {
-        "x": 0.5919520851818987,
+        "x": 0.4359520851818987,
         "y": 5.83370896184746
       },
       "nextControl": null,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -130.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "Depot Sweep",
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": -130.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }
