@@ -76,7 +76,7 @@ public class RobotContainer {
 
 	// Subsystems Toggle
 	private boolean isDriveEnabled = true;
-	private boolean isVisionEnabled = true;
+	private boolean isVisionEnabled = false;
 	private boolean isIntakeEnabled = true;
 	private boolean isExtenderEnabled = true;
 	private boolean isAgitatorEnabled = true;
@@ -84,7 +84,7 @@ public class RobotContainer {
 	private boolean isTurretEnabled = true;
 	private boolean isHoodEnabled = false;
 	private boolean isFlywheelEnabled = true;
-	private boolean isHangEnabled = false;
+	private boolean isHangEnabled = true;
 
 	// Subsystems
 	private final Drive drive;

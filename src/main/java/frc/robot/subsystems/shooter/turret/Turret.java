@@ -36,7 +36,7 @@ public class Turret extends SubsystemBase {
   private BooleanSupplier aimAtTargetSupplier = () -> false;
   private Drive drive;
 
-  private double lastSmartDashboardTargetPos = 0;
+  private double lastSmartDashboardTargetPos = Math.PI;
 
   public Turret(TurretIO io) {
     turretIO = io;
@@ -44,7 +44,7 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putNumber("Turret/kP", kP);
     SmartDashboard.putNumber("Turret/kI", kI);
     SmartDashboard.putNumber("Turret/kD", kD);
-    SmartDashboard.putNumber("Turret/TargetPositionRads", turretInputs.targetPositionRads);
+    SmartDashboard.putNumber("Turret/TargetPositionRads", Math.PI);
   } // End Turret Constructor
 
   /** Set by RobotContainer so calculator does not overwrite Turret when operator is in manual override. */
@@ -80,14 +80,14 @@ public class Turret extends SubsystemBase {
         targetPositionRad = MathUtil.clamp(turretInputs.positionRads, kMinAngleRad, kMaxAngleRad);
       }
     } else {
-      double target = SmartDashboard.getNumber("Turret/TargetPositionRads", kDefaultTurretRads);
-      if (target != lastSmartDashboardTargetPos) {
-        setHubAngleRelativeToRobot(Rotation2d.fromRadians(turretToRobotFrameRad(target)));
+      double targetRobotFrameRad = SmartDashboard.getNumber("Turret/TargetPositionRads", Math.PI);
+      if (targetRobotFrameRad != lastSmartDashboardTargetPos) {
+        setHubAngleRelativeToRobot(Rotation2d.fromRadians(targetRobotFrameRad));
       }
-
-      lastSmartDashboardTargetPos = target;
+      
+      lastSmartDashboardTargetPos = targetRobotFrameRad;
       velocityFeedforwardRadPerSec = 0.0;
-      targetPositionRad = MathUtil.clamp(target, kMinAngleRad, kMaxAngleRad);
+      targetPositionRad = getClampedTurretSetpointRad();
     }
 
     turretIO.updateInputs(turretInputs);
@@ -120,7 +120,7 @@ public class Turret extends SubsystemBase {
     turretIO.stop();
     turretIO.resetEncoder();
     setHubAngleRelativeToRobot(kBackInRobotFrame);
-    SmartDashboard.putNumber("Turret/TargetPositionRads", kDefaultTurretRads);
+    SmartDashboard.putNumber("Turret/TargetPositionRads", Math.PI);
   } // End resetMotorEncoder
 
   /** Set the hub angle (robot frame: 0 = forward). Clamped to min/max in periodic. */
