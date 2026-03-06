@@ -3,32 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.4980322003577814,
-        "y": 0.6520035778175304
+        "x": 1.2924578527062993,
+        "y": 1.1176308784383309
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4980322003577813,
-        "y": 0.6520035778175304
+        "x": 1.877964305823606,
+        "y": 1.9064177411290684
       },
       "isLocked": false,
-      "linkedName": "DriveToOutpost-E"
-    },
-    {
-      "anchor": {
-        "x": 1.8880035492457847,
-        "y": 2.5823513753327414
-      },
-      "prevControl": {
-        "x": 1.8642107700838557,
-        "y": 1.7416731782779054
-      },
-      "nextControl": {
-        "x": 1.9121472937000878,
-        "y": 3.435430346051464
-      },
-      "isLocked": false,
-      "linkedName": null
+      "linkedName": "OutpostShooting-E"
     },
     {
       "anchor": {
@@ -36,8 +20,8 @@
         "y": 4.0
       },
       "prevControl": {
-        "x": 1.7994764862466721,
-        "y": 3.6849157054125996
+        "x": 1.77668521093451,
+        "y": 3.766640699907562
       },
       "nextControl": null,
       "isLocked": false,
@@ -64,7 +48,7 @@
   "folder": "Hanging",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -135.0
   },
   "useDefaultConstraints": false
 }

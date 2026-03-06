@@ -23,6 +23,18 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OutpostShooting"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Shoot When Ready"
