@@ -56,6 +56,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Starting Position - Right",
+  "folder": "Right Fuel Sweeps",
   "choreoAuto": false
 }

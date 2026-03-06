@@ -11,9 +11,9 @@
     "Starting Position - Right"
   ],
   "autoFolders": [
-    "Starting Position - Right",
-    "Starting Position - Center",
-    "Starting Position - Left"
+    "Outpost Shooting",
+    "Left Fuel Sweeps",
+    "Right Fuel Sweeps"
   ],
   "defaultMaxVel": 1.0,
   "defaultMaxAccel": 1.0,
