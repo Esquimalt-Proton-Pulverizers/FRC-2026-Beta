@@ -163,14 +163,14 @@ public class RobotContainer {
 				}
 
 				// Subsystems
-				intake   = isIntakeEnabled 	 ? new Intake(new IntakeIOSparkMax()) 					 : new Intake(new IntakeIO() {});
-				extender = isExtenderEnabled ? new Extender(new ExtenderIOSparkMax())			   : new Extender(new ExtenderIO() {});
-				agitator = isAgitatorEnabled ? new Agitator(new AgitatorIOSparkMax()) 			 : new Agitator(new AgitatorIO() {});
+				intake   = isIntakeEnabled 	 ? new Intake(new IntakeIOSparkMax()) 	  : new Intake(new IntakeIO() {});
+				extender = isExtenderEnabled ? new Extender(new ExtenderIOSparkMax()) : new Extender(new ExtenderIO() {});
+				agitator = isAgitatorEnabled ? new Agitator(new AgitatorIOSparkMax()) : new Agitator(new AgitatorIO() {});
 				transfer = isTransferEnabled ? new Transfer(new TransferIOSparkMax()) : new Transfer(new TransferIO() {});
-				turret   = isTurretEnabled 	 ? new Turret(new TurretIOSparkMax()) 					 : new Turret(new TurretIO() {});
-				hood     = isHoodEnabled  	 ? new Hood(new HoodIOSparkMax()) 							 : new Hood(new HoodIO() {});
-				flywheel = isFlywheelEnabled ? new Flywheel(new FlywheelIOTalonFX()) 				 : new Flywheel(new FlywheelIO() {});
-				hang 		 = isHangEnabled	   ? new Hang(new HangIOSparkMax()) 							 : new Hang(new HangIO() {});
+				turret   = isTurretEnabled 	 ? new Turret(new TurretIOSparkMax()) 	  : new Turret(new TurretIO() {});
+				hood     = isHoodEnabled  	 ? new Hood(new HoodIOSparkMax()) 		  : new Hood(new HoodIO() {});
+				flywheel = isFlywheelEnabled ? new Flywheel(new FlywheelIOTalonFX())  : new Flywheel(new FlywheelIO() {});
+				hang 	 = isHangEnabled	 ? new Hang(new HangIOBrushedSparkMax())  : new Hang(new HangIO() {});
 				shooterSim = null;
 				shooterSimVisualizer = null;
 				break;
