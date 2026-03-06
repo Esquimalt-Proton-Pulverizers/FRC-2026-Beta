@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2924578527062993,
-        "y": 1.1176308784383309
+        "x": 2.0167701863354033,
+        "y": 1.9224223602484458
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7790407938793216,
-        "y": 1.287996101753287
+        "x": 2.5033531275084258,
+        "y": 2.092787583563402
       },
       "isLocked": false,
       "linkedName": "OutpostShooting-E"
@@ -48,7 +48,7 @@
   "folder": "Hanging",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -135.0
+    "rotation": -146.04094018032373
   },
   "useDefaultConstraints": false
 }
