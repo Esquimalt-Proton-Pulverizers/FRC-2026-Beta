@@ -10,16 +10,16 @@ public final class HoodConstants { // XXX: Add correct values
   private HoodConstants() {}
 
   /** CAN ID of the Hood motor (NEO 550 on SPARK MAX or Kraken on Talon FX). */
-  public static final int kMotorId = 7;
+  public static final int kMotorId = 9;
 
   /** Idle behavior when output is zero (coast or brake). SPARK MAX only. */
-  public static final SparkBaseConfig.IdleMode kIdleMode = SparkBaseConfig.IdleMode.kCoast;
+  public static final SparkBaseConfig.IdleMode kIdleMode = SparkBaseConfig.IdleMode.kBrake;
 
   /** Neutral mode when output is zero (coast or brake). Talon FX only. */
   public static final NeutralModeValue kNeutralMode = NeutralModeValue.Coast;
 
   /** Smart current limit. SPARK MAX only. */
-  public static final int kSmartCurrentLimitAmps = 25;
+  public static final int kSmartCurrentLimitAmps = 3;
 
   /** Stator current limit. Talon FX only. */
   public static final double kStatorCurrentLimitAmps = 30.0;
