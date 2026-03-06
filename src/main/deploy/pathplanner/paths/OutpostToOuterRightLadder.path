@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1841836636939127,
-        "y": 2.3476337224931667
+        "x": 2.1826205788380335,
+        "y": 2.7838551122637845
       },
       "isLocked": false,
       "linkedName": "ShootingPosition - 11ft Right"
@@ -20,8 +20,8 @@
         "y": 3.2
       },
       "prevControl": {
-        "x": 1.7838044410440692,
-        "y": 2.9695029280139438
+        "x": 1.6768640204743612,
+        "y": 2.9502055606722686
       },
       "nextControl": null,
       "isLocked": false,

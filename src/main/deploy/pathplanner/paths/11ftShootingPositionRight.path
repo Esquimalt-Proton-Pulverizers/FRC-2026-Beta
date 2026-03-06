@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.930301685891747,
-        "y": 1.6970807453416143
+        "x": 1.9844737717804644,
+        "y": 2.2187037043771634
       },
       "isLocked": false,
       "linkedName": "ShootingPosition - 11ft Right"
     },
     {
       "anchor": {
-        "x": 0.0,
-        "y": 0.0
+        "x": 1.7350931677018626,
+        "y": 2.2362910381543917
       },
       "prevControl": {
-        "x": -1.0,
-        "y": 0.0
+        "x": 1.4552649259976878,
+        "y": 2.2559151681027663
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ShootingPosition - 11ft Right"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -152.5255683737228
   },
   "reversed": false,
   "folder": "Shooting Positions",

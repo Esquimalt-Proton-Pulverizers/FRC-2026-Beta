@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.6773364015541059,
-        "y": 5.174997653582585
+        "x": 1.1714991036957558,
+        "y": 5.099180683847105
       },
       "isLocked": false,
       "linkedName": "DepotSweepShoot-S"
@@ -20,8 +20,8 @@
         "y": 5.069157054125998
       },
       "prevControl": {
-        "x": 1.0268766637089615,
-        "y": 5.23011535048802
+        "x": 1.1366685155031493,
+        "y": 5.150871207210235
       },
       "nextControl": null,
       "isLocked": false,

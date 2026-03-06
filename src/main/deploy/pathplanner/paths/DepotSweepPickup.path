@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.444,
-        "y": 6.375185559006209
+        "x": 0.4443837160806863,
+        "y": 6.432998116093292
       },
       "isLocked": false,
       "linkedName": "DepotSweepPickup-S"
@@ -20,8 +20,8 @@
         "y": 5.085252883764054
       },
       "prevControl": {
-        "x": 0.4359520851818987,
-        "y": 5.83370896184746
+        "x": 0.44186229937099547,
+        "y": 5.771613244379315
       },
       "nextControl": null,
       "isLocked": false,

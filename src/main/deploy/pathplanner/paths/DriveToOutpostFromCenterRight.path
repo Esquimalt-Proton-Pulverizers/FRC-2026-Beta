@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.741239308921092,
-        "y": 2.0851449365689496
+        "x": 2.77045505256098,
+        "y": 2.0310037536894523
       },
       "isLocked": false,
       "linkedName": "StartingPosition - CenterRight"
@@ -20,8 +20,8 @@
         "y": 0.6520035778175304
       },
       "prevControl": {
-        "x": 0.15319278025539274,
-        "y": 0.4105414608160579
+        "x": 0.29663932221702793,
+        "y": 0.4845130521728681
       },
       "nextControl": null,
       "isLocked": false,
