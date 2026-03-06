@@ -312,14 +312,14 @@ public class RobotContainer {
   private void configureDriverBindings() {
     drive.setDefaultCommand(teleopDrive);
 
-		// Toggles the Extender state between Extended and Retracted 
-		driverController.leftTrigger().onTrue(
-			new ConditionalCommand(
-				Commands.runOnce(() -> extender.setRetractedState(), extender), 
-				Commands.runOnce(() -> extender.setExtendedState(), extender), 
-				() -> (extender.getState() == Extender.ExtenderState.EXTENDED)
-			)
-		);
+		// Cycle extender: Extended → Partial → Retracted → Extended
+		driverController.leftTrigger().onTrue(Commands.runOnce(() -> {
+			switch (extender.getState()) {
+				case EXTENDED -> extender.setPartialState();
+				case PARTIAL -> extender.setRetractedState();
+				case RETRACTED -> extender.setExtendedState();
+			}
+		}, extender));
 
 		// Intake toggle: right bumper = intaking ↔ idle, left bumper = reversing ↔ idle
 		driverController.leftBumper().onTrue(
