@@ -8,7 +8,7 @@ public final class HangConstants { // XXX: Set correct values for your robot
   private HangConstants() {}
 
   /** CAN ID of the Hang motor (SPARK MAX). */
-  public static final int kMotorId = 20;
+  public static final int kMotorId = 9;
 
   /** Idle behavior when output is zero (coast or brake). */
   public static final SparkBaseConfig.IdleMode kIdleMode = SparkBaseConfig.IdleMode.kBrake;
