@@ -78,7 +78,7 @@ public class RobotContainer {
 	private boolean isDriveEnabled = true;
 	private boolean isVisionEnabled = true;
 	private boolean isIntakeEnabled = true;
-	private boolean isExtenderEnabled = false;
+	private boolean isExtenderEnabled = true;
 	private boolean isAgitatorEnabled = true;
 	private boolean isTransferEnabled = true;
 	private boolean isTurretEnabled = true;
