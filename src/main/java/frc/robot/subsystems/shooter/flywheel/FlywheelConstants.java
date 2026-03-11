@@ -3,7 +3,7 @@ package frc.robot.subsystems.shooter.flywheel;
 import edu.wpi.first.math.util.Units;
 
 /** Constants for the flywheel subsystem. */
-public final class FlywheelConstants { // TODO: Add correct values
+public final class FlywheelConstants { // XXX: Add correct values
 
   private FlywheelConstants() {}
 
@@ -22,14 +22,17 @@ public final class FlywheelConstants { // TODO: Add correct values
   /** Stator current limit (amps); protects motor and gearbox. */
   public static final double kStatorCurrentLimitAmps = 40.0;
 
+  /** Velocity ramp rate (RPM/s): */
+  public static final double kVelocityRampRateRpmPerSec = 1000.0;
+
   /** Set true if positive velocity spins the flywheel the opposite direction. */
-  public static final boolean kMotorInverted = false;
+  public static final boolean kMotorInverted = true; // FIXME: Switch for Alpha/Beta - Alpha is False, Beta is True
 
   /** Idle target velocity (rad/s). */
   public static final double kIdleVelocityRadsPerSec = 0.0;
 
   /** Target velocity (rad/s) for shooting. */
-  public static final double kDefaultTargetVelocityRadsPerSec = Units.rotationsPerMinuteToRadiansPerSecond(4000.0);
+  public static final double kDefaultTargetVelocityRadsPerSec = Units.rotationsPerMinuteToRadiansPerSecond(3200.0);
 
   /** Tolerance for at-target velocity (Charging → AtSpeed). */
   public static final double kAtTargetVelocityToleranceRadsPerSec = Units.rotationsPerMinuteToRadiansPerSecond(50.0);

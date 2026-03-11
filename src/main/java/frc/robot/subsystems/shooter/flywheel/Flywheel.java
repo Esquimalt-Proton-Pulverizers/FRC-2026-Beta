@@ -1,12 +1,20 @@
 package frc.robot.subsystems.shooter.flywheel;
 
-import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.*;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.littletonrobotics.junction.Logger;
+import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kAtTargetVelocityToleranceRadsPerSec;
+import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kD;
+import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kDefaultTargetVelocityRadsPerSec;
+import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kI;
+import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kIdleVelocityRadsPerSec;
+import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kP;
+import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kS;
+import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kV;
+
 
 /** Flywheel subsystem: one motor with onboard velocity control; state machine Idle / Charging / AtSpeed. */
 public class Flywheel extends SubsystemBase {
@@ -24,6 +32,8 @@ public class Flywheel extends SubsystemBase {
   private FlywheelState state = FlywheelState.IDLE;
   private double targetVelocityRadsPerSec = kDefaultTargetVelocityRadsPerSec;
 
+  private double lastSmartDashboardTargetPos = kDefaultTargetVelocityRadsPerSec;
+
   public Flywheel(FlywheelIO io) {
     flywheelIO = io;
     
@@ -33,10 +43,21 @@ public class Flywheel extends SubsystemBase {
     SmartDashboard.putNumber("Flywheel/kD", kD);
     SmartDashboard.putNumber("Flywheel/kV", kV);
     SmartDashboard.putNumber("Flywheel/kS", kS);
+    SmartDashboard.putNumber("Flywheel/TargetVelocityRadsPerSec", targetVelocityRadsPerSec);
   } // End Flywheel Constructor
 
   @Override
   public void periodic() {
+    // Read TargetVelocityRadsPerSec from SmartDashboard for live tuning
+    double target = SmartDashboard.getNumber("Flywheel/TargetVelocityRadsPerSec", kDefaultTargetVelocityRadsPerSec);
+    
+    if (target != lastSmartDashboardTargetPos) {
+      setState(FlywheelState.CHARGING);
+      setTargetVelocityRadsPerSec(target);
+    }
+
+    lastSmartDashboardTargetPos = target;
+
     // Update the flywheel inputs and record the values
     flywheelIO.updateInputs(flywheelInputs);
     Logger.recordOutput("Subsystems/Shooter/Flywheel/Inputs/MotorConnected", flywheelInputs.motorConnected);
@@ -46,11 +67,6 @@ public class Flywheel extends SubsystemBase {
     Logger.recordOutput("Subsystems/Shooter/Flywheel/VelocityRpm", getVelocityRpm());
     Logger.recordOutput("Subsystems/Shooter/Flywheel/TargetVelocityRpm", getTargetVelocityRpm());
     Logger.recordOutput("Subsystems/Shooter/Flywheel/State", state.name());
-
-    if (DriverStation.isDisabled()) {
-      flywheelIO.stop();
-      return;
-    }
 
     // Auto-transition Charging → AtSpeed when at target velocity
     if (state == FlywheelState.CHARGING && atTargetVelocity()) {
@@ -63,6 +79,13 @@ public class Flywheel extends SubsystemBase {
     }
 
     double velocityToUse = state == FlywheelState.IDLE ? kIdleVelocityRadsPerSec : targetVelocityRadsPerSec;
+    Logger.recordOutput("Subsystems/Shooter/Flywheel/TargetVelocityRadsPerSec", velocityToUse);
+
+    if (DriverStation.isDisabled()) {
+      flywheelIO.stop();
+      return;
+    }
+    
     flywheelIO.setTargetVelocity(velocityToUse);
   } // End periodic
 
@@ -100,6 +123,12 @@ public class Flywheel extends SubsystemBase {
   public double getVelocityRpm() {
     return Units.radiansPerSecondToRotationsPerMinute(flywheelInputs.velocityRadsPerSec);
   } // End getVelocityRpm
+
+  /** Step the target velocity by the given amount. */
+  public void stepVelocityRadsPerSec(double stepRadsPerSec) {
+    setState(FlywheelState.CHARGING);
+    setTargetVelocityRadsPerSec(getTargetVelocityRadsPerSec() + stepRadsPerSec);
+  } // End stepVelocityRadsPerSec
 
   /** Whether the flywheel is at target velocity within tolerance. */
   public boolean atTargetVelocity() {

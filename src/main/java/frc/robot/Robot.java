@@ -7,9 +7,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
+import frc.robot.util.HubShiftUtil;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -77,7 +78,8 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     // Optionally switch the thread to high priority to improve loop
     // timing - only impacts real robot, not little to no effect on simulation
-		// (see the template project documentation for details) // TODO: Could enable if Loop Time is under 1 ms
+		// (see the template project documentation for details) 
+    // Do NOT enable, as PathPlanner path generation causes Loop Time Spike
     // Threads.setCurrentThreadPriority(true, 99);
 
     // Runs the Scheduler. This is responsible for polling buttons, adding
@@ -90,7 +92,16 @@ public class Robot extends LoggedRobot {
     // Update field view with robot pose (real robot odometry; sim updates in simulationPeriodic)
     robotContainer.updateFieldPose();
 
-    // Return to non-RT thread priority (do not modify the first argument)  // TODO: Could enable if Loop Time is under 1 ms
+    // Publish match time and shift (shooting) info for dashboard widgets
+    Logger.recordOutput("Dashboard/MatchTime", DriverStation.getMatchTime());
+    HubShiftUtil.ShiftInfo shiftInfo = HubShiftUtil.getOfficialShiftInfo();
+    Logger.recordOutput("Dashboard/ShiftTimeRemaining", shiftInfo.remainingTime());
+    Logger.recordOutput("Dashboard/ShootingActive", shiftInfo.active());
+    Logger.recordOutput(
+        "Dashboard/ShootingStatus", shiftInfo.active() ? "Our hub" : "Their hub");
+
+    // Return to non-RT thread priority (do not modify the first argument)
+    // Do NOT enable, as PathPlanner path generation causes Loop Time Spike
     // Threads.setCurrentThreadPriority(false, 10);
   }
 
@@ -98,7 +109,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
 		robotContainer.resetSimulationField();
-    robotContainer.makeSystemSafe();
+    robotContainer.idleAllSubsystems();
 	}
 
   /** This function is called periodically when disabled. */
@@ -130,6 +141,7 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+    HubShiftUtil.initialize();
   }
 
   /** This function is called periodically during operator control. */

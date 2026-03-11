@@ -3,7 +3,7 @@ package frc.robot.subsystems.shooter.transfer;
 import com.revrobotics.spark.config.SparkBaseConfig;
 
 /** Constants for the Transfer (agitator-to-shooter) subsystem. */
-public final class TransferConstants { // TODO: Add correct values
+public final class TransferConstants { // XXX: Add correct values
 
   private TransferConstants() {}
 
@@ -14,7 +14,7 @@ public final class TransferConstants { // TODO: Add correct values
   public static final SparkBaseConfig.IdleMode kIdleMode = SparkBaseConfig.IdleMode.kCoast;
 
   /** Set true if positive voltage spins the Transfer the opposite direction. */
-  public static final boolean kMotorInverted = false;
+  public static final boolean kMotorInverted = true;
 
   /** Smart current limit. SPARK MAX only. */
   public static final int kSmartCurrentLimitAmps = 25;

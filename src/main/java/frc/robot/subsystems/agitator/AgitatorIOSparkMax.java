@@ -25,6 +25,12 @@ public class AgitatorIOSparkMax implements AgitatorIO {
     sparkMaxConfig.smartCurrentLimit(kSmartCurrentLimitAmps);
     sparkMaxConfig.openLoopRampRate(kOpenLoopRampRateSec);
     sparkMaxConfig.voltageCompensation(Constants.kNominalVoltage);
+    sparkMaxConfig.signals
+        .appliedOutputPeriodMs(37)
+        .busVoltagePeriodMs(37)
+        .outputCurrentPeriodMs(37)
+        .primaryEncoderPositionPeriodMs(509)
+        .primaryEncoderVelocityPeriodMs(509);
     motor.configure(sparkMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   } // End AgitatorIOSparkMax Constructor
 

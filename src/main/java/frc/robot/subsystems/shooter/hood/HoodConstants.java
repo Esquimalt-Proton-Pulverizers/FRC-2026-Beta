@@ -5,21 +5,21 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import edu.wpi.first.math.util.Units;
 
 /** Constants for the Hood (position-controlled shooter angle) subsystem. */
-public final class HoodConstants { // TODO: Add correct values
+public final class HoodConstants { // XXX: Add correct values
 
   private HoodConstants() {}
 
   /** CAN ID of the Hood motor (NEO 550 on SPARK MAX or Kraken on Talon FX). */
-  public static final int kMotorId = 7;
+  public static final int kMotorId = 8;
 
   /** Idle behavior when output is zero (coast or brake). SPARK MAX only. */
-  public static final SparkBaseConfig.IdleMode kIdleMode = SparkBaseConfig.IdleMode.kCoast;
+  public static final SparkBaseConfig.IdleMode kIdleMode = SparkBaseConfig.IdleMode.kBrake;
 
   /** Neutral mode when output is zero (coast or brake). Talon FX only. */
   public static final NeutralModeValue kNeutralMode = NeutralModeValue.Coast;
 
   /** Smart current limit. SPARK MAX only. */
-  public static final int kSmartCurrentLimitAmps = 25;
+  public static final int kSmartCurrentLimitAmps = 3;
 
   /** Stator current limit. Talon FX only. */
   public static final double kStatorCurrentLimitAmps = 30.0;
@@ -36,7 +36,7 @@ public final class HoodConstants { // TODO: Add correct values
   public static final double kEncoderZeroOffsetRad = 0.0;
 
   /** Minimum Hood angle. */
-  public static final double kMinAngleRad = Units.degreesToRadians(30.0);
+  public static final double kMinAngleRad = Units.degreesToRadians(25.0);
 
   /** Maximum Hood angle. */
   public static final double kMaxAngleRad = Units.degreesToRadians(10.0);

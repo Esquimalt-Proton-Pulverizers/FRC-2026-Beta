@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter.transfer;
 
 import static frc.robot.subsystems.shooter.transfer.TransferConstants.*;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
@@ -66,7 +67,7 @@ public class Transfer extends SubsystemBase {
         break;
     }
   } // End periodic
-
+  
   /** Set mode to idle (motor stopped). */
   public void setIdleMode() {
     mode = Mode.IDLE;
@@ -95,6 +96,18 @@ public class Transfer extends SubsystemBase {
   public double getTargetVoltage() {
     return targetVoltage;
   } // End getTargetVoltage
+
+  /** Step the target voltage by the given amount. */
+  public void stepVoltage(double stepVoltage) {
+    if (getMode() == Mode.IDLE) {
+      setStagingMode();
+      setTargetVoltage(stepVoltage);
+    }
+    else {
+      setTargetVoltage(MathUtil.clamp(getTargetVoltage() + stepVoltage, -kMaxVoltage, kMaxVoltage));
+    }
+    if (getTargetVoltage() == kIdleVoltage) setIdleMode();
+  } // End stepVoltage
 
   /** Current mode. */
   public Mode getMode() {
