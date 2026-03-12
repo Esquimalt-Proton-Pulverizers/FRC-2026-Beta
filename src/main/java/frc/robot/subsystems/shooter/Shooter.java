@@ -35,7 +35,8 @@ public class Shooter extends SubsystemBase {
   private BooleanSupplier manualOverrideSupplier = () -> false;
 
   /** Will automatically select the shooting target (Hub, left/right passing zones) when true, when false it will target the hub */
-  public boolean autoSelectShootingTarget = false;
+  public boolean autoSelectShootingTarget = true;
+  
   public Shooter(
       Drive drive,
       Agitator agitator,

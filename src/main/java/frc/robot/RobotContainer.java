@@ -383,16 +383,13 @@ public class RobotContainer {
       }
     }, drive));
 
-		// TODO: Change to a different button, as it currently conflicts with Hang controls
-		driverController.b().onTrue(
-			new ConditionalCommand(
-				Commands.runOnce(() -> shooter.autoSelectShootingTarget = true), 
-				Commands.runOnce(() -> shooter.autoSelectShootingTarget = false), 
-				() -> !shooter.autoSelectShootingTarget
-		));
-		//driverController.y().onTrue(Commands.runOnce(() -> ShooterCommands.clearShooterTargetOverride(), drive));
-		//driverController.x().onTrue(Commands.runOnce(() -> ShooterCommands.setPassingSpotLeft(), drive));
-		//driverController.b().onTrue(Commands.runOnce(() -> ShooterCommands.setPassingSpotRight(), drive));
+		// Toggles automatically selecting shooting target on/off (Currently disabled)
+		//driverController.b().onTrue(
+		//	new ConditionalCommand(
+		//		Commands.runOnce(() -> shooter.autoSelectShootingTarget = true), 
+		//		Commands.runOnce(() -> shooter.autoSelectShootingTarget = false), 
+		//		() -> !shooter.autoSelectShootingTarget
+		//));
 
 
 		// Enable Hang/ Retract mode, stop when released

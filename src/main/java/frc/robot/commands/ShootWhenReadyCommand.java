@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.agitator.Agitator;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.shooter.transfer.Transfer;
 
 /**
@@ -73,13 +74,10 @@ public class ShootWhenReadyCommand extends Command {
 
   /** Automatically selects the shooters target depending on the robots x and y */
   private void automaticallySelectShootingTarget() {
-    System.out.println("Selecting Shooting Pos");
-    if (position.get().getX() < FieldConstants.ALLIANCE_ZONE_M) {
+    if (position.get().getX() < FieldConstants.ALLIANCE_ZONE_M + ShooterConstants.kAutoSelectShootingTargetAllianceZoneTolerance) {
       ShooterCommands.clearShooterTargetOverride();
-      System.out.println("Aiming at hub");
     }
     else  {
-      System.out.println("Aiming at passing spot");
       if (position.get().getY() > FieldConstants.FIELD_CENTER_Y_M) {
         ShooterCommands.setPassingSpotLeft();
       } else {

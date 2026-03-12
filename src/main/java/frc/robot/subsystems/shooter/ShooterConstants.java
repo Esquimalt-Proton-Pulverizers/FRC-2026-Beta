@@ -7,11 +7,10 @@
 
 package frc.robot.subsystems.shooter;
 
-import static edu.wpi.first.units.Units.Seconds;
-
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
+import static edu.wpi.first.units.Units.Seconds;
 import edu.wpi.first.units.measure.Time;
 import frc.robot.subsystems.shooter.hood.HoodConstants;
 
@@ -19,6 +18,9 @@ import frc.robot.subsystems.shooter.hood.HoodConstants;
 public final class ShooterConstants {
 
   private ShooterConstants() {}
+
+  /** An extra amount of distance the robot has to be past the alliance zone for auto selecting target to be enabled */
+  public static final double kAutoSelectShootingTargetAllianceZoneTolerance = 1.5;
 
   /** Transform from robot center to turret pivot. +X = forward, +Y = left, +Z = up (meters). */
   public static final Transform3d robotToTurret =
