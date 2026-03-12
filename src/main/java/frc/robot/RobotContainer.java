@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -34,29 +36,66 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.ShooterTargetCommand;
 import frc.robot.commands.ShootWhenReadyCommand;
 import frc.robot.commands.ShooterCommands;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.generated.TunerConstants;
 import frc.robot.simulation.FuelSim;
-import frc.robot.subsystems.drive.*;
-import frc.robot.subsystems.vision.*;
-import static frc.robot.subsystems.vision.VisionConstants.*;
-
-import java.util.function.BooleanSupplier;
-
-import frc.robot.subsystems.intake.*;
-import frc.robot.subsystems.extender.*;
+import frc.robot.subsystems.agitator.Agitator;
+import frc.robot.subsystems.agitator.AgitatorIO;
+import frc.robot.subsystems.agitator.AgitatorIOSim;
+import frc.robot.subsystems.agitator.AgitatorIOSparkMax;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.GyroIOSim;
+import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.extender.Extender;
 import frc.robot.subsystems.extender.Extender.ExtenderState;
-import frc.robot.subsystems.agitator.*;
-import frc.robot.subsystems.shooter.*;
-import frc.robot.subsystems.shooter.transfer.*;
-import frc.robot.subsystems.shooter.turret.*;
-import frc.robot.subsystems.shooter.hood.*;
-import frc.robot.subsystems.shooter.flywheel.*;
+import frc.robot.subsystems.extender.ExtenderIO;
+import frc.robot.subsystems.extender.ExtenderIOSim;
+import frc.robot.subsystems.extender.ExtenderIOSparkMax;
+import frc.robot.subsystems.hang.Hang;
+import frc.robot.subsystems.hang.HangIO;
+import frc.robot.subsystems.hang.HangIOBrushedSparkMax;
+import frc.robot.subsystems.hang.HangIOSim;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.subsystems.shooter.ShooterSim;
+import frc.robot.subsystems.shooter.ShooterSimVisualizer;
+import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel.FlywheelState;
-import frc.robot.subsystems.hang.*;
+import frc.robot.subsystems.shooter.flywheel.FlywheelConstants;
+import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
+import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.shooter.flywheel.FlywheelIOTalonFX;
+import frc.robot.subsystems.shooter.hood.Hood;
+import frc.robot.subsystems.shooter.hood.HoodConstants;
+import frc.robot.subsystems.shooter.hood.HoodIO;
+import frc.robot.subsystems.shooter.hood.HoodIOSim;
+import frc.robot.subsystems.shooter.hood.HoodIOSparkMax;
+import frc.robot.subsystems.shooter.transfer.Transfer;
+import frc.robot.subsystems.shooter.transfer.TransferIO;
+import frc.robot.subsystems.shooter.transfer.TransferIOSim;
+import frc.robot.subsystems.shooter.transfer.TransferIOSparkMax;
+import frc.robot.subsystems.shooter.turret.Turret;
+import frc.robot.subsystems.shooter.turret.TurretIO;
+import frc.robot.subsystems.shooter.turret.TurretIOSim;
+import frc.robot.subsystems.shooter.turret.TurretIOSparkMax;
+import frc.robot.subsystems.vision.Vision;
+import static frc.robot.subsystems.vision.VisionConstants.camera0Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 
 
 /**
@@ -111,7 +150,6 @@ public class RobotContainer {
 	// Shooter Manager
 	private final Shooter shooter;
 	private final ShootWhenReadyCommand shootWhenReadyCommand;
-	private final ShooterTargetCommand passBallsCommand;
 
 	// Field view (robot pose)
 	private final Field2d field = new Field2d();
@@ -249,8 +287,7 @@ public class RobotContainer {
 
 		// Shooter coordinator and shoot-when-ready command
 		shooter = new Shooter(drive, agitator, transfer, turret, hood, flywheel, isHoodEnabled);
-		shootWhenReadyCommand = new ShootWhenReadyCommand(agitator, transfer, shooter);
-		passBallsCommand = new ShooterTargetCommand(() -> drive.getPose());
+		shootWhenReadyCommand = new ShootWhenReadyCommand(agitator, transfer, shooter, () -> drive.getPose());
 
 		shooter.setShootCommandScheduledSupplier(shootWhenReadyCommand::isScheduled);
 		shooter.setManualOverrideSupplier(() -> operatorManualOverride);
@@ -345,14 +382,14 @@ public class RobotContainer {
         faceTargetController.reset(drive.getRotation().getRadians());
       }
     }, drive));
-		
-		driverController.b().onTrue(Commands.runOnce(() -> { // TODO: Change to a different button, as it currently conflicts with Hang controls
-			if (passBallsCommand.isScheduled()) {
-				CommandScheduler.getInstance().cancel(passBallsCommand);
-			} else {
-				CommandScheduler.getInstance().schedule(passBallsCommand);
-			}
-		}));
+
+		// TODO: Change to a different button, as it currently conflicts with Hang controls
+		driverController.b().onTrue(
+			new ConditionalCommand(
+				Commands.runOnce(() -> shooter.autoSelectShootingTarget = true), 
+				Commands.runOnce(() -> shooter.autoSelectShootingTarget = false), 
+				() -> !shooter.autoSelectShootingTarget
+		));
 		//driverController.y().onTrue(Commands.runOnce(() -> ShooterCommands.clearShooterTargetOverride(), drive));
 		//driverController.x().onTrue(Commands.runOnce(() -> ShooterCommands.setPassingSpotLeft(), drive));
 		//driverController.b().onTrue(Commands.runOnce(() -> ShooterCommands.setPassingSpotRight(), drive));

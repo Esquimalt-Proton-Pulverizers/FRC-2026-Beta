@@ -1,17 +1,19 @@
 package frc.robot.subsystems.shooter;
 
+import java.util.function.BooleanSupplier;
+
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.ShooterCommands;
+import frc.robot.subsystems.agitator.Agitator;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.util.AllianceUtil;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel.FlywheelState;
 import frc.robot.subsystems.shooter.hood.Hood;
-import frc.robot.subsystems.shooter.turret.Turret;
-import frc.robot.subsystems.agitator.Agitator;
 import frc.robot.subsystems.shooter.transfer.Transfer;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.function.BooleanSupplier;
-import org.littletonrobotics.junction.Logger;
+import frc.robot.subsystems.shooter.turret.Turret;
+import frc.robot.util.AllianceUtil;
 
 /** Coordinates Agitator, Transfer, Turret, Hood, Flywheel; updates targets from lookup; exposes ready-to-shoot. */
 public class Shooter extends SubsystemBase {
@@ -32,6 +34,8 @@ public class Shooter extends SubsystemBase {
   /** When true, ShooterCommands.setShooterTarget will not apply calculator to Hood/Flywheel (Manual Override). */
   private BooleanSupplier manualOverrideSupplier = () -> false;
 
+  /** Will automatically select the shooting target (Hub, left/right passing zones) when true, when false it will target the hub */
+  public boolean autoSelectShootingTarget = false;
   public Shooter(
       Drive drive,
       Agitator agitator,
