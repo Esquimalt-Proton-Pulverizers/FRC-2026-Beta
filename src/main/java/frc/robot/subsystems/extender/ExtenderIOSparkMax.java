@@ -1,6 +1,5 @@
 package frc.robot.subsystems.extender;
 
-import com.ctre.phoenix6.Utils;
 import com.revrobotics.PersistMode;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
@@ -39,7 +38,7 @@ public class ExtenderIOSparkMax implements ExtenderIO {
       .encoder
       .positionConversionFactor(1.0 / kGearRatio)
       .velocityConversionFactor(1.0 / kGearRatio);
-    sparkMaxConfig.closedLoop.p(kP).i(kI).d(kD).maxOutput(0.3).minOutput(-0.3); // TODO: Test Tomorrow - Ensure this is enough to lift.
+    sparkMaxConfig.closedLoop.p(kP).i(kI).d(kD).maxOutput(0.3).minOutput(-0.3); // XXX: Tune to ensure enough power
     sparkMaxConfig.signals
         .appliedOutputPeriodMs(31)
         .busVoltagePeriodMs(31)

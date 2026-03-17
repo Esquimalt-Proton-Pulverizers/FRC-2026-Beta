@@ -1,8 +1,13 @@
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.FieldConstants;
 import frc.robot.subsystems.agitator.Agitator;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.shooter.transfer.Transfer;
 
 /**
@@ -21,10 +26,13 @@ public class ShootWhenReadyCommand extends Command {
   private boolean transferOn = false;
   private double timerSec = 0.0;
 
-  public ShootWhenReadyCommand(Agitator agitator, Transfer transfer, Shooter shooter) {
+  private final Supplier<Pose2d> position;
+
+  public ShootWhenReadyCommand(Agitator agitator, Transfer transfer, Shooter shooter, Supplier<Pose2d> position) {
     this.agitator = agitator;
     this.transfer = transfer;
     this.shooter = shooter;
+    this.position = position;
     addRequirements(agitator, transfer, shooter);
   } // End ShootWhenReadyCommand Constructor
 
@@ -37,6 +45,13 @@ public class ShootWhenReadyCommand extends Command {
 
   @Override
   public void execute() {
+    // Aim at hub if in alliance zone, otherwise depending on the side of the field pass balls back into the alliance zone
+    if (shooter.autoSelectShootingTarget) {
+      automaticallySelectShootingTarget();
+    } else {
+      ShooterCommands.clearShooterTargetOverride();
+    }
+
     if (!shooter.isReadyToShoot()) {
       // Reset the modes of the agitator and transfer if we become "unready" to shoot after the command has started
       agitator.setIdleMode();
@@ -56,6 +71,20 @@ public class ShootWhenReadyCommand extends Command {
       agitator.setShootingMode();
     }
   } // End execute
+
+  /** Automatically selects the shooters target depending on the robots x and y */
+  private void automaticallySelectShootingTarget() {
+    if (position.get().getX() < FieldConstants.ALLIANCE_ZONE_M + ShooterConstants.kAutoSelectShootingTargetAllianceZoneTolerance) {
+      ShooterCommands.clearShooterTargetOverride();
+    }
+    else  {
+      if (position.get().getY() > FieldConstants.FIELD_CENTER_Y_M) {
+        ShooterCommands.setPassingSpotLeft();
+      } else {
+    	  ShooterCommands.setPassingSpotRight();
+      }
+    }
+  }
 
   @Override
   public void end(boolean interrupted) {

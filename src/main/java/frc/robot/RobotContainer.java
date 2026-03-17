@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -42,9 +44,6 @@ import frc.robot.simulation.FuelSim;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.vision.*;
 import static frc.robot.subsystems.vision.VisionConstants.*;
-
-import java.util.function.BooleanSupplier;
-
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.extender.*;
 import frc.robot.subsystems.extender.Extender.ExtenderState;
@@ -84,7 +83,7 @@ public class RobotContainer {
 	private boolean isTurretEnabled = true;
 	private boolean isHoodEnabled = false;
 	private boolean isFlywheelEnabled = true;
-	private boolean isHangEnabled = true; // FIXME: Alpha does not have Hang, must be disabled for Alpha
+	private boolean isHangEnabled = true;
 
 	// Subsystems
 	private final Drive drive;
@@ -247,7 +246,8 @@ public class RobotContainer {
 
 		// Shooter coordinator and shoot-when-ready command
 		shooter = new Shooter(drive, agitator, transfer, turret, hood, flywheel, isHoodEnabled);
-		shootWhenReadyCommand = new ShootWhenReadyCommand(agitator, transfer, shooter);
+		shootWhenReadyCommand = new ShootWhenReadyCommand(agitator, transfer, shooter, () -> drive.getPose());
+
 		shooter.setShootCommandScheduledSupplier(shootWhenReadyCommand::isScheduled);
 		shooter.setManualOverrideSupplier(() -> operatorManualOverride);
 
@@ -318,6 +318,7 @@ public class RobotContainer {
 				case EXTENDED -> extender.setPartialState();
 				case PARTIAL -> extender.setExtendedState();
 				case RETRACTED -> extender.setExtendedState();
+				default -> throw new IllegalArgumentException("Unexpected value: " + extender.getState());
 			}
 		}, extender));
 
@@ -341,6 +342,15 @@ public class RobotContainer {
         faceTargetController.reset(drive.getRotation().getRadians());
       }
     }, drive));
+
+		// Toggles automatically selecting shooting target on/off (Currently disabled)
+		//driverController.b().onTrue(
+		//	new ConditionalCommand(
+		//		Commands.runOnce(() -> shooter.autoSelectShootingTarget = true), 
+		//		Commands.runOnce(() -> shooter.autoSelectShootingTarget = false), 
+		//		() -> !shooter.autoSelectShootingTarget
+		//));
+
 
 		// Enable Hang/ Retract mode, stop when released
 		if (hang != null) {
@@ -382,13 +392,12 @@ public class RobotContainer {
 
     // -------- Auto Pathfind to Target --------
     // Pathfind then follow path to outpost
-    driverController.leftStick().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "DriveToOutpost"));
+    driverController.leftStick().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "GoTo-Outpost"));
 
-		driverController.povUp().onTrue(DriveCommands.pathfindThenFollowPath(drive, "InnerLeftLadder"));
-    driverController.povLeft().onTrue(DriveCommands.pathfindThenFollowPath(drive, "OuterLeftLadder"));
-    driverController.povRight().onTrue(DriveCommands.pathfindThenFollowPath(drive, "OuterRightLadder"));
-    driverController.povDown().onTrue(DriveCommands.pathfindThenFollowPath(drive, "InnerRightLadder"));
-
+    driverController.povLeft().onTrue(DriveCommands.pathfindThenFollowPath(drive, "HangingPosition-Left"));
+    driverController.povRight().onTrue(DriveCommands.pathfindThenFollowPath(drive, "HangingPosition-Right"));
+    driverController.povUp().onTrue(DriveCommands.pathfindThenFollowPath(drive, "ShootingPosition-Left-11ft"));
+    driverController.povDown().onTrue(DriveCommands.pathfindThenFollowPath(drive, "ShootingPosition-Right-11ft"));
 
 		// ------------------------------------------- Driver Manual Override -------------------------------------------
 		// If Manual Override is false, become true. 
@@ -407,7 +416,6 @@ public class RobotContainer {
 			return;
 		}
 
-		
 		// ------------------------------------------ Operator Manual Override ------------------------------------------
 		// If Manual Override is false, become true. 
 		// If true, reset encoder positions and then become false.

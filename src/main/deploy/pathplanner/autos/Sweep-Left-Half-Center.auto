@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "GoToCenterSweepLeft"
+            "pathName": "GoTo-Sweep-Center-From-Left"
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HalfCenterFuelSweepLeftToRight"
+            "pathName": "Sweep-Half-Center-LeftToRight"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeftFuelSweepShooting"
+            "pathName": "GoTo-Sweep-Shooting-11ft-From-LeftSweep"
           }
         },
         {
