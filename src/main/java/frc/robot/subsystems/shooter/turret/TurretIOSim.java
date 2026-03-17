@@ -54,7 +54,7 @@ public class TurretIOSim implements TurretIO {
 
   @Override
   public void resetEncoder() { 
-    // TODO: Implement a offset for resetting encoder in Sim
+    // TODO: Implement a offset for resetting encoder in Sim - currently just stops the turret and sets position to 0, which is not ideal if the turret is not facing forward when reset. But maybe thats what is should be?
   } // End resetEncoder
 
   @Override
