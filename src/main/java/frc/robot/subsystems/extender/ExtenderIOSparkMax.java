@@ -1,6 +1,5 @@
 package frc.robot.subsystems.extender;
 
-import com.ctre.phoenix6.Utils;
 import com.revrobotics.PersistMode;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;

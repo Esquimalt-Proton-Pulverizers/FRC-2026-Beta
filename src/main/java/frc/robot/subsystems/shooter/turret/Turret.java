@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.ShooterCommands;
 import frc.robot.subsystems.drive.Drive;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kD;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kDefaultTurretRads;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kI;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kMaxAngleRad;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kMinAngleRad;
