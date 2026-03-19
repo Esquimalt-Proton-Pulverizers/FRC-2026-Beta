@@ -1,6 +1,6 @@
 # This will connect with the Roborio and publish a table 'Post Detection' that includes:
 #     if a post is detected (boolean) 
-#     the horizontal position (x) in pixels
+#     the horizontal position (lateral) in metres
 #     the depth (distance from camera) in metres
 #
 # Connects with RealSense camera and:
@@ -14,40 +14,40 @@
 #         - only contours at least twice as tall as wide are considered
 #         - contours are scored based on area, the largest area is selected
 #         - centre of this contour is considered returned as the x-value in pixels
-#
 #     as camera gets closer to post, precision should increase as edge noise has less weight
 # 
 # Results are published to NetworkTable 'Post Detection'
-#       x: unit is pixels, relative to LHS of image (640x480): 320 is centre
-#       depth: distance from camera in metres
-#
-# NOTE: future version of code could convert 'x' in pixels to distance in metres
-#       This is simple to understand (depth of pixel determines x-offset) 
-#       But it needs to compensate image distortion (not as simple!)
+#       lateral: horizontal displacement perpendicular to depth, in metres
+#       depth: distance from camera (normal to camera-face) in metres
 #
 #
 # Java code to retrieve this information: 
 #   NetworkTable table = NetworkTableInstance.getDefault().getTable("Post Detection");
 #   boolean detected = table.getEntry("post_detected").getBoolean(false);
-#   double postX = table.getEntry("post_x").getDouble(0.0);
+#   double postX = table.getEntry("post_lateral").getDouble(0.0);
 #   double postDepth = table.getEntry("post_depth").getDouble(0.0);
 #
 
-
+import time
 import pyrealsense2 as rs
 import numpy as np
 import cv2
 from networktables import NetworkTables
+import requests
 
-Post_detected = False
+##########
+# set a variable to turn off all displays if we're in actual match
+BenchTesting = True
 
+
+###########
 # Set up RealSense camera before checking for RoboRIO connection
 
 # Initialize and configure the pipeline
 pipeline = rs.pipeline()
 config = rs.config()
 
-# Only need the depth stream
+# get the depth & colour stream
 config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
 config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
 
@@ -65,21 +65,96 @@ clipping_distance = clipping_distance_in_meters / depth_scale
 align_to = rs.stream.color
 align = rs.align(align_to)
 
-# Create the display window once, outside the loop
-cv2.namedWindow('Post Detection', cv2.WINDOW_NORMAL)
+# This adds intrinsics so we can convert x-value in pixels to metres later
+# instrinsics removes the distortions from the camera lens/detector 
+# geometry, so that we get a flat 3D positions from the image
+color_stream = profile.get_stream(rs.stream.color)
+intrinsics = color_stream.as_video_stream_profile().get_intrinsics()
 
 
-# UPDATE NEEDED: loop here to check until RoboRIO is ready
+# If testing, create the display window once, outside the loop
+if BenchTesting == True:
+    cv2.namedWindow('Post Detection', cv2.WINDOW_NORMAL)
+
+
+##################################################
+# wait for RoboRio to boot and respond on network
+
+RoboReady = False
+############# REMOVE THE NEXT LINE
+#RoboReady = True
+
+while RoboReady == False:
+    try:
+        # NOTE: if using this code on Atom Smasher bot, change to 10.72.87.2
+        response = requests.get(f"http://10.73.34.2/nisysapi/server", timeout=5)
+        print("Status_code", response.status_code)
+        if response.status_code == 404:
+            RoboReady = True
+            print("RoboRIO is ready.")
+        else:
+            print("RoboRIO is not ready.")
+    except requests.exceptions.RequestException as e:
+        print("Error connecting to RoboRIO:", e)
 
 # Connect to the RoboRIO
+# NOTE: if using this code on Atom Smasher bot, change to 10.72.87.2
+NetworkTables.initialize(server='10.73.34.2')
 
-NetworkTables.initialize(server='10.72.87.2')
+''' not sure if this is needed:
+# Connection listener: to wait until Networktables server responds
+import threading
 
-# Get the NetworkTables table to publish values to
+cond = threading.Condition()
+notified = [False]
+
+def connectionListener(connected, info):
+    print(info, '; Connected= %s' % connected)
+    with cond:
+        notified[0] = True
+        cond.notify()
+
+NetworkTables.addConnectionListener(connectionListener, immediateNotify=True)
+
+with cond:
+    print("Waiting")
+    if not notified[0]:
+        cond.wait()
+'''
+
+# Get the NetworkTables table to publish depth and x-position
 table = NetworkTables.getTable('Post Detection')
 
-# UPDATE NEEDE: pull from RoboRIO NetworkTable to determine Alliance colour
+# Get the table to pull the alliance colour from
+#dashboardTable = NetworkTables.getTable('AdvantageKit')
+dashboardTable = NetworkTables.getTable('SmartDashboard')
+
+##########################
+# set redalliance True or False 
 redalliance = True
+
+# Uncomment this section if there is time to test
+# if this is not a test, but actually in a match
+if BenchTesting == False:
+    # loop until robot is enabled to pull the alliance colour
+    is_enabled = False
+    while is_enabled == False:
+        print("Robot Enabled Status:", is_enabled)
+        # Default to False if not found
+        is_enabled = dashboardTable.getBoolean('RobotEnabled', False)
+        time.sleep(1)
+
+    # enable-check = dashboardTable.getstring('DriverStation/Enabled', 'Unknown')
+
+    allianceColour = dashboardTable.getstring('AllianceColor', 'Unknown')
+    print(f'Alliance Colour: {allianceColour}')
+
+    if "RED" in upper(allianceColour):
+        redalliance = True
+
+
+# set up all variables outside the loop
+Post_detected = False
 
 try:
     while True:
@@ -107,26 +182,25 @@ try:
 
         # clean up the mask
         # get a rectangular structuring element
-        dkernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 10))
+        dkernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 10))
 
         # Apply morphological closing to fill small gaps in the post shape
-#        depth_mask = cv2.morphologyEx(depth_mask0, cv2.MORPH_OPEN, dkernel)
         depth_mask = cv2.morphologyEx(depth_mask0, cv2.MORPH_CLOSE, dkernel)
-
-#        cv2.imshow('depth_mask0', depth_mask0)
-#        cv2.imshow('depth_mask', depth_mask)
-
         depth_masked_image = cv2.bitwise_and(colour_image, colour_image, mask=depth_mask)
 
-        cv2.imshow('depth_masked_image', depth_masked_image)
+        if BenchTesting == True:
+            cv2.imshow('depth_mask0', depth_mask0)
+            #cv2.imshow('depth_mask', depth_mask)
+            cv2.imshow('depth_masked_image', depth_masked_image)
 
         # create a colour mask
         # convert to HSV to use HSV values for colour masking
         hsv_image = cv2.cvtColor(depth_masked_image, cv2.COLOR_BGR2HSV)
 
-        ##############################################################################
-        # NOTE: best to use ColRngCheck.py to check HSV values with FRC post colours #
-        ##############################################################################
+        ##################################################
+        # NOTE: fine tune HSV values to FRC post colours #
+        #       using ColRngCheck.py                     #
+        ##################################################
         
         # keep red if redalliance
         if redalliance == True:
@@ -140,49 +214,41 @@ try:
             rmask2 = cv2.inRange(hsv_image, lower_red2, upper_red2)
 
             # combine the red masks
-            colour_mask = rmask1 + rmask2
+            colour_depth_mask0 = rmask1 + rmask2
 
         # not red alliance, so keep blue pixels
         else:
             lower_blue = np.array([90, 200, 100])    # lower bound for blue
             upper_blue = np.array([125, 255, 255])  # upper bound for blue
-            colour_mask = cv2.inRange(hsv_image, lower_blue, upper_blue)
+            colour_depth_mask0 = cv2.inRange(hsv_image, lower_blue, upper_blue)
 
         # clean up colour mask
         ckernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2,5))
-        colour_mask1 = cv2.morphologyEx(colour_mask, cv2.MORPH_CLOSE, ckernel)
-        colour_mask2 = cv2.morphologyEx(colour_mask1, cv2.MORPH_OPEN,  ckernel)
+        colour_depth_mask = cv2.morphologyEx(colour_depth_mask0, cv2.MORPH_CLOSE, ckernel)
 
-        # apply colour mask to depth-masked image 
-        post_colour_mask_clean = cv2.bitwise_and(depth_masked_image, depth_masked_image, mask=colour_mask2)
-        post_colour_mask = cv2.bitwise_and(depth_masked_image, depth_masked_image, mask=colour_mask)
-
-#        cv2.imshow('Colour Image', colour_image)
-#        cv2.imshow('Colour Mask0', colour_mask0)
-#        cv2.imshow('Colour Mask1', colour_mask1)
-#        cv2.imshow('Colour Mask2', colour_mask2)
-#        cv2.imshow('post_colour_mask_clean', post_colour_mask_clean)
-#        cv2.imshow('post_colour_mask', post_colour_mask)
-
-        # Build the display image from the mask regardless of detection
-        display = cv2.cvtColor(colour_mask2, cv2.COLOR_GRAY2BGR)
+        if BenchTesting == True:
+            cv2.imshow('Colour Image', colour_image)
+            cv2.imshow('colour_depth_mask0', colour_depth_mask0)
+            cv2.imshow('colour_depth_mask', colour_depth_mask)
+            # Build the display image from the mask regardless of detection
+            display = cv2.cvtColor(colour_depth_mask, cv2.COLOR_GRAY2BGR)
 
         # Find all contours in the mask
-        contours, _ = cv2.findContours(colour_mask2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, _ = cv2.findContours(colour_depth_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         best_contour = None
         best_score = 0
 
         for contour in contours:
-            x, y, w, h = cv2.boundingRect(contour)
+            x, y, width, height= cv2.boundingRect(contour)
 
             # Filter out very small detections (noise)
-            if w < 5 or h < 20:
+            if width < 5 or height< 20:
                 continue
 
             # A post should be significantly taller than it is wide
-            aspect_ratio = h / float(w)
-            if aspect_ratio < 2.0:
+            aspect_ratio = height/ float(width)
+            if aspect_ratio < 1.6:
                 continue
 
             # Score contours: prefer taller, narrower shapes with more area
@@ -198,15 +264,20 @@ try:
 
         else:
             # Get bounding box of the best candidate
-            x, y, w, h = cv2.boundingRect(best_contour)
-
+            x, y, width, height = cv2.boundingRect(best_contour)
+            
             # Only need centre x since the post is vertical
-            centre_x = x + w // 2
+            centre_x = x + width // 2
 
            # Get median depth of valid pixels within the bounding box, converted to metres
-            depth_roi = depth_image[y:y+h, x:x+w]
+            depth_roi = depth_image[y:y+height, x:x+width]
             valid_depths = depth_roi[(depth_roi > 0) & (depth_roi < clipping_distance)]
             depth_in_meters = float(np.median(valid_depths) * depth_scale)
+
+            # Get position in metres in 3D, using the intrinsics 
+            point_3d = rs.rs2_deproject_pixel_to_point(intrinsics, [centre_x, y], depth_in_meters)
+            centre_x_m = point_3d[0]
+            # print(f"3d x {point_3d[0]}  3d y {point_3d[1]}    3d z {point_3d[2]}")
 
             if len(valid_depths) == 0:
                 Post_detected = False
@@ -217,24 +288,28 @@ try:
 
                 # Publish values to NetworkTables
                 table.putBoolean('post_detected', True)
-                table.putNumber('post_x', centre_x)
+                table.putNumber('post_lateral', centre_x)
                 table.putNumber('post_depth', depth_in_meters)
   
-                # Draw a vertical line at the detected x position
-                cv2.line(display, (centre_x, 0), (centre_x, display.shape[0]),
-                         color=(0, 255, 0), thickness=2)
+                if BenchTesting == True:
+                    # Draw a vertical line at the detected x position
+                    cv2.line(display, (centre_x, 0), (centre_x, display.shape[0]),
+                             color=(0, 255, 0), thickness=2)
 
-                # Label at the top of the line
-                cv2.putText(display, f"x={centre_x}  {depth_in_meters:.3f}m",
-                            (centre_x + 10, 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                    # Label at the top of the line
+                    #cv2.putText(display, f"x={centre_x}  {depth_in_meters:.3f}m",
+                    cv2.putText(display, f"x mm={centre_x_m * 1000}  {depth_in_meters:.3f}m",
+                                (centre_x + 10, 30),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
 
         if Post_detected == False:
-            print("No post detected within clipping distance (" + str(clipping_distance) + ")")
             # Publish a flag to indicate no post is detected
             table.putBoolean('post_detected', False)
+            if BenchTesting == True:
+                    print("No post detected within clipping distance (" + str(clipping_distance) + ")")
 
-        cv2.imshow('Post Detection', display)
+        if BenchTesting == True:
+            cv2.imshow('Post Detection', display)
 
         key = cv2.waitKey(1)
         if key & 0xFF == ord('q') or key == 27:
@@ -251,3 +326,4 @@ try:
 
 finally:
     pipeline.stop()
+
