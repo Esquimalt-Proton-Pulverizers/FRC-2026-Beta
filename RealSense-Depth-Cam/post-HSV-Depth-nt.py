@@ -1,4 +1,4 @@
-# This will connect with the Roborio and publish a table 'Post Detection' that includes:
+# This will connect with the Roborio and publish a table 'PostDetection' that includes:
 #     if a post is detected (boolean) 
 #     the horizontal left/right (lateral) position in metres
 #     the depth (horizontal distance normal front of camera front) in metres
@@ -16,13 +16,13 @@
 #         - centre of this contour is considered returned as the x-value in pixels
 #     as camera gets closer to post, precision should increase as edge noise has less weight
 # 
-# Results are published to NetworkTable 'Post Detection'
+# Results are published to NetworkTable 'PostDetection'
 #       lateral: horizontal displacement perpendicular to depth, in metres
 #       depth: distance from camera (normal to camera-face) in metres
 #
 #
 # Java code to retrieve this information: 
-#   NetworkTable table = NetworkTableInstance.getDefault().getTable("Post Detection");
+#   NetworkTable table = NetworkTableInstance.getDefault().getTable("PostDetection");
 #   boolean detected = table.getEntry("post_detected").getBoolean(false);
 #   double postX = table.getEntry("post_lateral").getDouble(0.0);
 #   double postDepth = table.getEntry("post_depth").getDouble(0.0);
@@ -72,7 +72,7 @@ intrinsics = color_stream.as_video_stream_profile().get_intrinsics()
 
 # If testing, create the display window once, outside the loop
 if BenchTesting == True:
-    cv2.namedWindow('Post Detection', cv2.WINDOW_NORMAL)
+    cv2.namedWindow('PostDetection', cv2.WINDOW_NORMAL)
 
 ##################################################
 # wait for RoboRio to boot and respond on network
@@ -117,7 +117,7 @@ with cond:
 # set up variables and NetworkTables outside the loop
 
 # Get the NetworkTables table to publish depth and lateral position
-table = NetworkTables.getTable('Post Detection')
+table = NetworkTables.getTable('PostDetection')
 
 # set redalliance True or False 
 redalliance = False
@@ -131,7 +131,7 @@ if BenchTesting == False:
 
 print(redalliance)
 
-# default to no post detection
+# default to no post detected
 Post_detected = False
 
 try:
