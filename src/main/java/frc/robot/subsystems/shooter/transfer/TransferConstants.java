@@ -7,7 +7,7 @@ public final class TransferConstants { // XXX: Add correct values
 
   private TransferConstants() {}
 
-  /** CAN ID of the Transfer motor (NEO 550 on SPARK MAX or Kraken on Talon FX). */
+  /** CAN ID of the Transfer motor. */
   public static final int kMotorId = 7;
 
   /** Idle behavior when output is zero (coast or brake). SPARK MAX only. */
@@ -19,14 +19,14 @@ public final class TransferConstants { // XXX: Add correct values
   /** Smart current limit. SPARK MAX only. */
   public static final int kSmartCurrentLimitAmps = 25;
 
+  /** Stator current limit. Talon FX only. */
+  public static final double kStatorCurrentLimitAmps = 30.0;
+  
   /** Open-loop ramp time from 0 to full output. Limits current spikes on step changes. SPARK MAX only. */
   public static final double kOpenLoopRampRateSec = 0.3;
 
   /** Max voltage magnitude applied to the motor. */
   public static final double kMaxVoltage = 10.0;
-
-  /** Stator current limit. Talon FX only. */
-  public static final double kStatorCurrentLimitAmps = 30.0;
 
   /** Voltage in Idle state. */
   public static final double kIdleVoltage = 0.0;

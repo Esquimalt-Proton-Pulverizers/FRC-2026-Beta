@@ -48,8 +48,10 @@ public class TransferIOSparkMax implements TransferIO {
   } // End updateInputs
 
   @Override
-  public void setVoltage(double volts) {
-    double clamped = MathUtil.clamp(volts, -kMaxVoltage, kMaxVoltage);
+  public void setVoltage(double volts, boolean ignoreLimits) {
+    double clamped = ignoreLimits
+        ? MathUtil.clamp(volts, -Constants.kNominalVoltage, Constants.kNominalVoltage)
+        : MathUtil.clamp(volts, -kMaxVoltage, kMaxVoltage);
     motor.setVoltage(clamped);
   } // End setVoltage
 
