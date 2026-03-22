@@ -59,7 +59,7 @@ public class Shooter extends SubsystemBase {
     shootCommandScheduledSupplier = supplier != null ? supplier : () -> false;
   } // End setShootCommandScheduledSupplier
 
-  /** Set by RobotContainer so calculator does not overwrite hood/flywheel when operator is in manual override. */
+  /** Set by RobotContainer so calculator does not overwrite Hood/Flywheel when operator is in manual override. */
   public void setManualOverrideSupplier(BooleanSupplier supplier) {
     manualOverrideSupplier = supplier != null ? supplier : () -> false;
   } // End setManualOverrideSupplier

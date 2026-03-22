@@ -26,12 +26,12 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private static final String kVKey = "Flywheel/kV";
   private static final String kSKey = "Flywheel/kS";
 
-  private static final double kVelocityRampRateRadsPerSecSq =
+  private static final double kVelocityRampRateRadPerSecSq =
       Units.rotationsPerMinuteToRadiansPerSecond(kVelocityRampRateRpmPerSec);
 
   private final TalonFX motor;
   private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
-  private final SlewRateLimiter velocityRamp = new SlewRateLimiter(kVelocityRampRateRadsPerSecSq);
+  private final SlewRateLimiter velocityRamp = new SlewRateLimiter(kVelocityRampRateRadPerSecSq);
 
   private double lastP = kP;
   private double lastI = kI;
@@ -90,9 +90,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   } // End updateInputs
 
   @Override
-  public void setTargetVelocity(double targetVelocityRadsPerSec) {
-    double rampedRadsPerSec = velocityRamp.calculate(targetVelocityRadsPerSec);
-    double motorRps = (rampedRadsPerSec / (2.0 * Math.PI)) * kGearRatio;
+  public void setTargetVelocity(double targetVelocityRadPerSec) {
+    double rampedRadPerSec = velocityRamp.calculate(targetVelocityRadPerSec);
+    double motorRps = (rampedRadPerSec / (2.0 * Math.PI)) * kGearRatio;
     motor.setControl(velocityVoltageRequest.withVelocity(motorRps));
   } // End setTargetVelocity
 

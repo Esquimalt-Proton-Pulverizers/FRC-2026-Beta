@@ -4,7 +4,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import edu.wpi.first.math.util.Units;
 
-/** Constants for the Hood (position-controlled shooter angle) subsystem. */
+/** Constants for the Hood (position-controlled Shooter angle) subsystem. */
 public final class HoodConstants { // XXX: Add correct values
 
   private HoodConstants() {}
@@ -33,7 +33,10 @@ public final class HoodConstants { // XXX: Add correct values
   public static final double kD = 0.0;
 
   /** Encoder zero offset. Added to raw encoder so that 0 = defined physical position. */
-  public static final double kEncoderZeroOffsetRad = 0.0;
+  public static final double kEncoderZeroOffsetRad = Units.degreesToRadians(0.0);
+
+  /** Hood angle when the Hood is disabled/locked. */
+  public static final double kDisabledAngleRad = Units.degreesToRadians(25.0);
 
   /** Minimum Hood angle. */
   public static final double kMinAngleRad = Units.degreesToRadians(25.0);
@@ -46,4 +49,7 @@ public final class HoodConstants { // XXX: Add correct values
 
   /** Tolerance for at-target check. */
   public static final double kAtTargetToleranceRad = Units.degreesToRadians(2.0);
+
+  /** Sim only: max Hood setpoint slew rate. */
+  public static final double kSimMaxSlewRadPerSec = Units.degreesToRadians(60.0);
 }

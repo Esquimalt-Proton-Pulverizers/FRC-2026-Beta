@@ -79,7 +79,7 @@ public class TurretIOTalonFX implements TurretIO {
   public void setTargetPosition(double targetRads, double velocityFeedforwardRadPerSec) {
     double targetRotations = Units.radiansToRotations(targetRads);
     double motorTargetRotations = targetRotations * kGearRatio;
-    // Motor velocity (rot/s) = turret rad/s * gearRatio / (2*pi)
+    // Motor velocity (rot/s) = Turret rad/s * gearRatio / (2*pi)
     double motorVelRotPerSec =
         Units.radiansToRotations(velocityFeedforwardRadPerSec) * kGearRatio;
     motor.setControl(

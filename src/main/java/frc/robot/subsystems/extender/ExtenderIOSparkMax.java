@@ -80,15 +80,15 @@ public class ExtenderIOSparkMax implements ExtenderIO {
   } // End updateInputs
 
   @Override
-  public void setTargetPosition(double rads) {
-     double targetRot = Units.radiansToRotations(rads);
-     closedLoopController.setSetpoint(targetRot, SparkBase.ControlType.kPosition);
-     targetPosition = rads;
+  public void setTargetPosition(double positionRad) {
+    double targetRot = Units.radiansToRotations(positionRad);
+    closedLoopController.setSetpoint(targetRot, SparkBase.ControlType.kPosition);
+    targetPosition = positionRad;
   } // End setTargetPosition
 
   @Override
   public void resetEncoders() {
-    encoder.setPosition(Units.degreesToRadians(kEncoderResetRads));
+    encoder.setPosition(Units.radiansToRotations(kMaxRad));
   } // End resetEncoders
 
   @Override

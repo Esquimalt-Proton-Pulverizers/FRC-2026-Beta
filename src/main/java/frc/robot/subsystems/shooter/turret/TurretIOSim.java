@@ -6,7 +6,7 @@ import edu.wpi.first.math.MathUtil;
 public class TurretIOSim implements TurretIO {
 
   private static final double kLoopPeriodSecs = 0.02;
-  /** Max turret rate so that 1 rad takes ~0.2s. */
+  /** Max Turret rate so that 1 rad takes ~0.2s. */
   private static final double kMaxRadPerSec = 1.0 / 0.2;
 
   private double targetPositionRad = 0.0;
@@ -54,7 +54,7 @@ public class TurretIOSim implements TurretIO {
 
   @Override
   public void resetEncoder() { 
-    // TODO: Implement a offset for resetting encoder in Sim - currently just stops the turret and sets position to 0, which is not ideal if the turret is not facing forward when reset. But maybe thats what is should be?
+    // TODO: Implement a offset for resetting encoder in Sim - currently just stops the Turret and sets position to 0, which is not ideal if the Turret is not facing forward when reset. But maybe thats what is should be?
   } // End resetEncoder
 
   @Override

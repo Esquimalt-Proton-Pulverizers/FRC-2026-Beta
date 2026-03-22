@@ -24,7 +24,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.Meters;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -152,7 +151,7 @@ public class RobotContainer {
 					drive = new Drive(new GyroIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {}, (pose) -> {});
 				}
 				
-				// Initialize Vision after drive (Vision needs Drive reference)
+				// Initialize Vision after Drive (Vision needs Drive reference)
 				if (isVisionEnabled) {
 					vision = new Vision(drive,
 							new VisionIOPhotonVision(camera0Name, robotToCamera0), 
@@ -195,7 +194,7 @@ public class RobotContainer {
 						new ModuleIOSim(TunerConstants.BackRight, driveSimulation.getModules()[3]),
 						driveSimulation::setSimulationWorldPose);
 				
-				// Initialize Vision after drive (Vision needs Drive reference)
+				// Initialize Vision after Drive (Vision needs Drive reference)
 				vision = new Vision(drive,
 						new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, driveSimulation::getSimulatedDriveTrainPose),
 						new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, driveSimulation::getSimulatedDriveTrainPose));
@@ -288,15 +287,15 @@ public class RobotContainer {
 			// Set up Swerve Calibration Programs
 			DriveCommands.swerveCalibration(autoChooser, drive);
 
-			// Record zeroed Robot components (model_0 turret, model_1 extender, model_2 extending-storage) – initial only; updated in updateSimulation()
+			// Record zeroed Robot components (model_0 Turret, model_1 Extender, model_2 extending-storage) – initial only; updated in updateSimulation()
 			Logger.recordOutput("ComponentPoses/Zeroed", new Pose3d[] {new Pose3d(), new Pose3d(), new Pose3d()});
 		}
 
-		// Record zeroed Robot components (model_0 turret, model_1 extender) – initial only; updated in updateSimulation()
+		// Record zeroed Robot components (model_0 Turret, model_1 Extender) – initial only; updated in updateSimulation()
 		Logger.recordOutput("ComponentPoses/Final",
 				new Pose3d[] {
-					new Pose3d(-0.125, -0.17, 0.27, new Rotation3d(0, 0, 0)), // model_0 turret
-					new Pose3d(0.28, 0, 0.15, new Rotation3d(0, 0, 0)),  // model_1 extender
+					new Pose3d(-0.125, -0.17, 0.27, new Rotation3d(0, 0, 0)), // model_0 Turret
+					new Pose3d(0.28, 0, 0.15, new Rotation3d(0, 0, 0)),  // model_1 Extender
 				});
 			
 
@@ -312,7 +311,7 @@ public class RobotContainer {
   private void configureDriverBindings() {
     drive.setDefaultCommand(teleopDrive);
 
-		// Cycle extender: Extended → Partial → Retracted → Extended
+		// Cycle Extender, starts in Retracted, goes to Extended, and then cycles between Partial and Extended.
 		driverController.leftTrigger().onTrue(Commands.runOnce(() -> {
 			switch (extender.getState()) {
 				case EXTENDED -> extender.setPartialState();
@@ -444,24 +443,23 @@ public class RobotContainer {
 			)
 		);
 
-		// Extender Manul Position Control
-		final double extenderStepPosition = Units.degreesToRadians(5);
+		// Extender Manual Position Control
 		// Raise Extender Position
 		operatorController.leftTrigger().onTrue(
 			new ConditionalCommand(
 				Commands.runOnce(() -> {
-					extender.stepPosition(extenderStepPosition);
-				}), 
-				new InstantCommand(), 
+					extender.stepPositionRad(ExtenderConstants.kStepRad);
+				}),
+				new InstantCommand(),
 				() -> (operatorManualOverride && extender != null))
 		);
 		// Lower Extender Position
 		operatorController.rightTrigger().onTrue(
 			new ConditionalCommand(
 				Commands.runOnce(() -> {
-					extender.stepPosition(-extenderStepPosition);
-				}), 
-				new InstantCommand(), 
+					extender.stepPositionRad(-ExtenderConstants.kStepRad);
+				}),
+				new InstantCommand(),
 				() -> (operatorManualOverride && extender != null))
 		);
 
@@ -504,20 +502,19 @@ public class RobotContainer {
 		);
 		
 		// Turret Manual Position Control
-		double turretStepPosition = Units.degreesToRadians(5);
-		// Step turret position up
+		// Step Turret position up
 		operatorController.leftStick().onTrue(
 			new ConditionalCommand(
-				Commands.runOnce(() -> turret.stepRads(turretStepPosition), turret), 
-				new InstantCommand(), 
+				Commands.runOnce(() -> turret.stepPositionRad(TurretConstants.kStepRad), turret),
+				new InstantCommand(),
 				() -> (operatorManualOverride && turret != null)
 			)
 		);
-		// Step turret position down
+		// Step Turret position down
 		operatorController.rightStick().onTrue(
 			new ConditionalCommand(
-				Commands.runOnce(() -> turret.stepRads(-turretStepPosition), turret), 
-				new InstantCommand(), 
+				Commands.runOnce(() -> turret.stepPositionRad(-TurretConstants.kStepRad), turret),
+				new InstantCommand(),
 				() -> (operatorManualOverride && turret != null)
 			)
 		);
@@ -554,20 +551,18 @@ public class RobotContainer {
 		);
 
 		// Flywheel Manual Velocity Control
-		final double stepRpm = 50.0;
-		final double stepRadsPerSec = Units.rotationsPerMinuteToRadiansPerSecond(stepRpm);
-		// Raise Flywheel rpm
+		// Raise Flywheel RPM
 		operatorController.povUp().onTrue(
 			new ConditionalCommand(
-				Commands.runOnce(() -> flywheel.stepVelocityRadsPerSec(stepRadsPerSec), flywheel),
+				Commands.runOnce(() -> flywheel.stepVelocityRadPerSec(FlywheelConstants.kStepRadPerSec), flywheel),
 				new InstantCommand(),
 				() -> (operatorManualOverride && flywheel != null)
 			)
 		);
-		// Lower Flywheel rpm
+		// Lower Flywheel RPM
 		operatorController.povDown().onTrue(
 			new ConditionalCommand(
-				Commands.runOnce(() -> flywheel.stepVelocityRadsPerSec(-stepRadsPerSec), flywheel),
+				Commands.runOnce(() -> flywheel.stepVelocityRadPerSec(-FlywheelConstants.kStepRadPerSec), flywheel),
 				new InstantCommand(),
 				() -> (operatorManualOverride && flywheel != null)
 			)
@@ -702,23 +697,23 @@ public class RobotContainer {
 		Pose3d turretComponentPose = new Pose3d(-0.125, -0.17, 0.27, new Rotation3d(0, 0, turret.getRobotFramePosition().getRadians() + Math.toRadians(90)));
 		Pose3d extenderComponentPose;
 		if (DriverStation.isTeleopEnabled()) {
-			extenderComponentPose = new Pose3d(0.28, 0, 0.15, new Rotation3d(0, extender.getPosition() ,0));
+			extenderComponentPose = new Pose3d(0.28, 0, 0.15, new Rotation3d(0, extender.getPositionRad(), 0));
 		} else {
 			extenderComponentPose = new Pose3d(0.28, 0, 0.15, new Rotation3d(0, 0, 0));
 		}
-		//hopper extender code TBD
+		// TODO: Add Hopper
 		Logger.recordOutput("ComponentPoses/Final", new Pose3d[] {turretComponentPose, extenderComponentPose});
 
 		// Update field view
 		field.setRobotPose(robotPose);
 
-		// Shooter sim: launch fuel only when shooter is ready and shoot command is active
+		// Shooter sim: launch fuel only when Shooter is ready and shoot command is active
 		if (shooterSim != null) {
 			shooterSim.update(shooter, shooter::isShootCommandActive, turret, hood, flywheel);
 		}
 		if (shooterSimVisualizer != null) {
-			double hoodAngleRad = isHoodEnabled ? hood.getAngleRad() : HoodConstants.kMinAngleRad;
-			double flywheelSurfaceMps = flywheel.getTargetVelocityRadsPerSec() * FlywheelConstants.kFlywheelRadiusMeters;
+			double hoodAngleRad = isHoodEnabled ? hood.getAngleRad() : HoodConstants.kDisabledAngleRad;
+			double flywheelSurfaceMps = flywheel.getTargetVelocityRadPerSec() * FlywheelConstants.kFlywheelRadiusMeters;
 			double ballExitVelMps = flywheelSurfaceMps * ShooterConstants.kFlywheelSurfaceDivider;
 			shooterSimVisualizer.updateFuel(
 					edu.wpi.first.units.Units.MetersPerSecond.of(ballExitVelMps),

@@ -29,9 +29,8 @@ public final class TurretConstants { // XXX: Add correct values
   /** Turret radians per motor rotation (output / input). 1.0 = 1:1. */
   public static final double kGearRatio = 27.81;
 
-
   /** Encoder zero offset. Added to raw encoder so that 0 = Turret pointing robot-backward. */
-  public static final double kEncoderZeroOffsetRad = 0;
+  public static final double kEncoderZeroOffsetRad = Units.degreesToRadians(0.0);
 
   /** Minimum Turret angle. */
   public static final double kMinAngleRad = Units.degreesToRadians(-90.0);
@@ -47,10 +46,13 @@ public final class TurretConstants { // XXX: Add correct values
 
   /** Angle from robot forward to camera boresight (for fixed camera). */
   public static final Rotation2d kCameraAngleOffset = Rotation2d.kZero;
-  
-  /** The default position for the turret to go to */
-  public static final double kDefaultTurretRads = 0.0;
-  
+
+  /** Hub aim “at target” tolerance. */
+  public static final double kAtHubToleranceRad = Units.degreesToRadians(2.0);
+
+  /** Operator adjust Rad per step. */
+  public static final double kStepRad = Units.degreesToRadians(5.0);
+
   /** PID gains for onboard position control and for sim software control. */
   public static final double kP = 7.0;
   public static final double kI = 0.0;

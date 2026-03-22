@@ -6,7 +6,7 @@ public class ExtenderIOSim implements ExtenderIO {
 
   private static final double kLoopPeriodSecs = 0.02;
 
-  private static final double kMaxradPerSec = 1.0 / 0.2;
+  private static final double kMaxRadPerSec = 1.0 / 0.2;
   
   private double targetPositionRad = 0.0;
   //private double velocityFeedforwardRadPerSec = 0.0;
@@ -17,7 +17,7 @@ public class ExtenderIOSim implements ExtenderIO {
   public void updateInputs(ExtenderIOInputs inputs) {
     if (!isStopped) {
       double errorRad = MathUtil.angleModulus(targetPositionRad - currentPositionRad);
-      double maxStepRad = kMaxradPerSec * kLoopPeriodSecs;
+      double maxStepRad = kMaxRadPerSec * kLoopPeriodSecs;
       double stepRad = MathUtil.clamp(errorRad, -maxStepRad, maxStepRad);
       currentPositionRad += stepRad;
       inputs.velocityRadsPerSec = stepRad / kLoopPeriodSecs;
@@ -33,9 +33,9 @@ public class ExtenderIOSim implements ExtenderIO {
   } // End updateInputs
 
   @Override
-  public void setTargetPosition(double rads) {
-     targetPositionRad = rads;
-     isStopped = false;
+  public void setTargetPosition(double positionRad) {
+    targetPositionRad = positionRad;
+    isStopped = false;
   } // End setTargetPosition
 
   @Override

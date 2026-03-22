@@ -14,7 +14,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import edu.wpi.first.units.measure.Time;
 import frc.robot.subsystems.shooter.hood.HoodConstants;
 
-/** Constants for the shooter assembly (turret position on robot, camera on turret, etc.). */
+/** Constants for the Shooter assembly (Turret position on robot, camera on Turret, etc.). */
 public final class ShooterConstants {
 
   private ShooterConstants() {}
@@ -22,9 +22,9 @@ public final class ShooterConstants {
   /** An extra amount of distance the robot has to be past the alliance zone for auto selecting target to be enabled */
   public static final double kAutoSelectShootingTargetAllianceZoneTolerance = 1.5;
 
-  /** Transform from robot center to turret pivot. +X = forward, +Y = left, +Z = up (meters). */
+  /** Transform from robot center to Turret pivot. +X = forward, +Y = left, +Z = up (meters). */
   public static final Transform3d robotToTurret =
-      new Transform3d(-0.127, -0.2286, 0.3556, new Rotation3d(0.0, 0.0, Math.PI));
+      new Transform3d(-0.127, -0.2286, 0.3556, new Rotation3d(0.0, 0.0, Units.degreesToRadians(180.0)));
 
   /** Distance above funnel the trajectory must pass (20 in), meters. */
   public static final double kDistanceAboveFunnelM = Units.inchesToMeters(20.0);
@@ -57,13 +57,13 @@ public final class ShooterConstants {
   public static final double kScaleLinearVelocityPower = 0.3;
 
   /**
-   * Hood angle (from vertical, rad) when hood is disabled / locked. Steeper (smaller value) raises
-   * the trajectory apex so it clears the funnel; 30° from vertical ≈ 60° elevation from horizontal.
+   * Hood angle from vertical when Hood is disabled / locked. Steeper (smaller value) raises the
+   * trajectory apex so it clears the funnel; 30° from vertical ≈ 60° elevation from horizontal.
    */
-  public static final double kFixedHoodAngleWhenDisabledRad = HoodConstants.kMinAngleRad;
+  public static final double kFixedHoodAngleWhenDisabledRad = HoodConstants.kDisabledAngleRad;
 
-  /** Transform from turret pivot to camera (when camera is on turret). */
+  /** Transform from Turret pivot to camera (when camera is on Turret). */
   public static final Transform3d turretToCamera =
       new Transform3d(
-          0.0, 0.0, 0.0, new Rotation3d(0.0, Math.toRadians(-22.2), Math.PI));
+          0.0, 0.0, 0.0, new Rotation3d(0.0, Math.toRadians(-22.2), Units.degreesToRadians(180.0)));
 }

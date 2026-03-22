@@ -71,7 +71,7 @@ public class ShooterCalculator {
         return MetersPerSecond.of(vel.in(RadiansPerSecond) * radius.in(Meters));
     }
 
-    // calculates the angle of a turret relative to the robot to hit a target
+    // calculates the angle of a Turret relative to the robot to hit a target
     public static Angle calculateAzimuthAngle(Pose2d robot, Translation3d target) {
         return calculateAzimuthAngle(robot, target, 0.0);
     }

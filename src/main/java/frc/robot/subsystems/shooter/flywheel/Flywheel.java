@@ -6,15 +6,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kAtTargetVelocityToleranceRadsPerSec;
-import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kD;
-import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kDefaultTargetVelocityRadsPerSec;
-import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kI;
-import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kIdleVelocityRadsPerSec;
-import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kP;
-import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kS;
-import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.kV;
-
+import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.*;
 
 /** Flywheel subsystem: one motor with onboard velocity control; state machine Idle / Charging / AtSpeed. */
 public class Flywheel extends SubsystemBase {
@@ -30,38 +22,38 @@ public class Flywheel extends SubsystemBase {
   private final FlywheelIO.FlywheelIOInputs flywheelInputs = new FlywheelIO.FlywheelIOInputs();
 
   private FlywheelState state = FlywheelState.IDLE;
-  private double targetVelocityRadsPerSec = kDefaultTargetVelocityRadsPerSec;
+  private double targetVelocityRadPerSec = kDefaultTargetVelocityRadPerSec;
 
-  private double lastSmartDashboardTargetPos = kDefaultTargetVelocityRadsPerSec;
+  private double lastSmartDashboardTargetVelocityRpm = Units.radiansPerSecondToRotationsPerMinute(kDefaultTargetVelocityRadPerSec);
 
   public Flywheel(FlywheelIO io) {
     flywheelIO = io;
-    
+
     // Publish default gains so SmartDashboard has keys for tuning (values read in IO layer)
     SmartDashboard.putNumber("Flywheel/kP", kP);
     SmartDashboard.putNumber("Flywheel/kI", kI);
     SmartDashboard.putNumber("Flywheel/kD", kD);
     SmartDashboard.putNumber("Flywheel/kV", kV);
     SmartDashboard.putNumber("Flywheel/kS", kS);
-    SmartDashboard.putNumber("Flywheel/TargetVelocityRadsPerSec", targetVelocityRadsPerSec);
+    SmartDashboard.putNumber("Flywheel/TargetVelocityRpm", Units.radiansPerSecondToRotationsPerMinute(kDefaultTargetVelocityRadPerSec));
   } // End Flywheel Constructor
 
   @Override
   public void periodic() {
-    // Read TargetVelocityRadsPerSec from SmartDashboard for live tuning
-    double target = SmartDashboard.getNumber("Flywheel/TargetVelocityRadsPerSec", kDefaultTargetVelocityRadsPerSec);
-    
-    if (target != lastSmartDashboardTargetPos) {
+    // Read TargetVelocityRadsPerSec from SmartDashboard for live tuning    
+    double targetRpm = SmartDashboard.getNumber("Flywheel/TargetVelocityRpm", Units.radiansPerSecondToRotationsPerMinute(kDefaultTargetVelocityRadPerSec));
+
+    if (targetRpm != lastSmartDashboardTargetVelocityRpm) {
       setState(FlywheelState.CHARGING);
-      setTargetVelocityRadsPerSec(target);
+      setTargetVelocityRadPerSec(Units.rotationsPerMinuteToRadiansPerSecond(targetRpm));
     }
 
-    lastSmartDashboardTargetPos = target;
+    lastSmartDashboardTargetVelocityRpm = targetRpm;
 
-    // Update the flywheel inputs and record the values
+    // Update the Flywheel inputs and record the values
     flywheelIO.updateInputs(flywheelInputs);
     Logger.recordOutput("Subsystems/Shooter/Flywheel/Inputs/MotorConnected", flywheelInputs.motorConnected);
-    Logger.recordOutput("Subsystems/Shooter/Flywheel/Inputs/VelocityRadsPerSec", flywheelInputs.velocityRadsPerSec);
+    Logger.recordOutput("Subsystems/Shooter/Flywheel/Inputs/VelocityRpm", getVelocityRpm());
     Logger.recordOutput("Subsystems/Shooter/Flywheel/Inputs/AppliedVolts", flywheelInputs.appliedVolts);
     Logger.recordOutput("Subsystems/Shooter/Flywheel/Inputs/SupplyCurrentAmps", flywheelInputs.supplyCurrentAmps);
     Logger.recordOutput("Subsystems/Shooter/Flywheel/VelocityRpm", getVelocityRpm());
@@ -78,63 +70,64 @@ public class Flywheel extends SubsystemBase {
       state = FlywheelState.CHARGING;
     }
 
-    double velocityToUse = state == FlywheelState.IDLE ? kIdleVelocityRadsPerSec : targetVelocityRadsPerSec;
-    Logger.recordOutput("Subsystems/Shooter/Flywheel/TargetVelocityRadsPerSec", velocityToUse);
+    double velocityRadPerSecToUse = getTargetVelocityRadPerSec();
 
     if (DriverStation.isDisabled()) {
       flywheelIO.stop();
       return;
     }
-    
-    flywheelIO.setTargetVelocity(velocityToUse);
+
+    flywheelIO.setTargetVelocity(velocityRadPerSecToUse);
   } // End periodic
 
-  /** Set the flywheel state. */
+  /** Set the Flywheel state. */
   public void setState(FlywheelState newState) {
     state = newState;
   } // End setState
 
-  /** Set the target velocity (rad/s) used when state is Charging or AtSpeed. */
-  public void setTargetVelocityRadsPerSec(double radsPerSec) {
-    targetVelocityRadsPerSec = radsPerSec;
-  } // End setTargetVelocityRadsPerSec
+  /** Set the target velocity used when state is Charging or AtSpeed. */
+  public void setTargetVelocityRadPerSec(double targetVelocityRadPerSec) {
+    this.targetVelocityRadPerSec = targetVelocityRadPerSec;
+    SmartDashboard.putNumber("Flywheel/TargetVelocityRpm", Units.radiansPerSecondToRotationsPerMinute(targetVelocityRadPerSec));
+    lastSmartDashboardTargetVelocityRpm = Units.radiansPerSecondToRotationsPerMinute(targetVelocityRadPerSec);
+  } // End setTargetVelocityRadPerSec
 
-  /** Get the current flywheel state. */
+  /** Get the current Flywheel state. */
   public FlywheelState getState() {
     return state;
   } // End getState
 
-  /** Get the current target velocity (rad/s) for the current state. */
-  public double getTargetVelocityRadsPerSec() {
-    return state == FlywheelState.IDLE ? kIdleVelocityRadsPerSec : targetVelocityRadsPerSec;
-  } // End getTargetVelocityRadsPerSec
+  /** Get the current target velocity for the current state. */
+  public double getTargetVelocityRadPerSec() {
+    return state == FlywheelState.IDLE ? kIdleVelocityRadPerSec : targetVelocityRadPerSec;
+  } // End getTargetVelocityRadPerSec
 
-  /** Get the current target velocity (RPM). */
+  /** Get the current target velocity. */
   public double getTargetVelocityRpm() {
-    return Units.radiansPerSecondToRotationsPerMinute(getTargetVelocityRadsPerSec());
+    return Units.radiansPerSecondToRotationsPerMinute(getTargetVelocityRadPerSec());
   } // End getTargetVelocityRpm
 
-  /** Get the current velocity (rad/s). */
-  public double getVelocityRadsPerSec() {
+  /** Get the current velocity. */
+  public double getVelocityRadPerSec() {
     return flywheelInputs.velocityRadsPerSec;
-  } // End getVelocityRadsPerSec
+  } // End getVelocityRadPerSec
 
-  /** Get the current velocity (RPM). */
+  /** Get the current measured velocity. */
   public double getVelocityRpm() {
     return Units.radiansPerSecondToRotationsPerMinute(flywheelInputs.velocityRadsPerSec);
   } // End getVelocityRpm
 
   /** Step the target velocity by the given amount. */
-  public void stepVelocityRadsPerSec(double stepRadsPerSec) {
+  public void stepVelocityRadPerSec(double stepVelocityRadPerSec) {
     setState(FlywheelState.CHARGING);
-    setTargetVelocityRadsPerSec(getTargetVelocityRadsPerSec() + stepRadsPerSec);
-  } // End stepVelocityRadsPerSec
+    setTargetVelocityRadPerSec(getTargetVelocityRadPerSec() + stepVelocityRadPerSec);
+  } // End stepVelocityRadPerSec
 
-  /** Whether the flywheel is at target velocity within tolerance. */
+  /** Whether the Flywheel is at target velocity within tolerance. */
   public boolean atTargetVelocity() {
-    double currentVelocityRadsPerSec = flywheelInputs.velocityRadsPerSec;
-    double targetVelocityRadsPerSec = getTargetVelocityRadsPerSec();
-    return Math.abs(currentVelocityRadsPerSec - targetVelocityRadsPerSec)
-        <= kAtTargetVelocityToleranceRadsPerSec;
+    double currentVelocityRadPerSec = flywheelInputs.velocityRadsPerSec;
+    double targetVelocityRadPerSec = getTargetVelocityRadPerSec();
+    return Math.abs(currentVelocityRadPerSec - targetVelocityRadPerSec)
+        <= kAtTargetVelocityToleranceRadPerSec;
   } // End atTargetVelocity
 }

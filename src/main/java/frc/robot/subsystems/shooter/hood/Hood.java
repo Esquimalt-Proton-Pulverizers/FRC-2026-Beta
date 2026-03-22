@@ -3,17 +3,18 @@ package frc.robot.subsystems.shooter.hood;
 import static frc.robot.subsystems.shooter.hood.HoodConstants.*;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
-/** Hood subsystem: position-controlled mechanism that sets shooter angle. */
+/** Hood subsystem: position-controlled mechanism that sets Shooter angle. */
 public class Hood extends SubsystemBase {
 
   private final HoodIO hoodIO;
   private final HoodIO.HoodIOInputs hoodInputs = new HoodIO.HoodIOInputs();
 
-  private double targetAngleRad = kMinAngleRad;
+  private double targetAngleRad = kDisabledAngleRad;
 
   public Hood(HoodIO io) {
     hoodIO = io;
@@ -23,10 +24,10 @@ public class Hood extends SubsystemBase {
   public void periodic() {
     hoodIO.updateInputs(hoodInputs);
     Logger.recordOutput("Subsystems/Shooter/Hood/Inputs/MotorConnected", hoodInputs.motorConnected);
-    Logger.recordOutput("Subsystems/Shooter/Hood/TargetDegrees", targetAngleRad * 180.0 / Math.PI);
-    Logger.recordOutput("Subsystems/Shooter/Hood/PositionDegrees", getAngleRad() * 180.0 / Math.PI);
-    Logger.recordOutput("Subsystems/Shooter/Hood/Inputs/PositionRads", hoodInputs.positionRads);
-    Logger.recordOutput("Subsystems/Shooter/Hood/Inputs/VelocityRadsPerSec", hoodInputs.velocityRadsPerSec);
+    Logger.recordOutput("Subsystems/Shooter/Hood/TargetDeg", Units.radiansToDegrees(targetAngleRad));
+    Logger.recordOutput("Subsystems/Shooter/Hood/PositionDeg", Units.radiansToDegrees(getAngleRad()));
+    Logger.recordOutput("Subsystems/Shooter/Hood/Inputs/PositionDeg", Units.radiansToDegrees(hoodInputs.positionRads));
+    Logger.recordOutput("Subsystems/Shooter/Hood/Inputs/VelocityDegPerSec", Units.radiansToDegrees(hoodInputs.velocityRadsPerSec));
     Logger.recordOutput("Subsystems/Shooter/Hood/Inputs/AppliedVolts", hoodInputs.appliedVolts);
     Logger.recordOutput("Subsystems/Shooter/Hood/Inputs/SupplyCurrentAmps", hoodInputs.supplyCurrentAmps);
 

@@ -12,11 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.ShooterCommands;
 import frc.robot.subsystems.drive.Drive;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kD;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kI;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kMaxAngleRad;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kMinAngleRad;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kP;
+import static frc.robot.subsystems.shooter.turret.TurretConstants.*;
 
 /** Turret subsystem: one motor with onboard position control, aimed at a hub angle. */
 public class Turret extends SubsystemBase {
@@ -24,18 +20,17 @@ public class Turret extends SubsystemBase {
   private final TurretIO turretIO;
   private final TurretIO.TurretIOInputs turretInputs = new TurretIO.TurretIOInputs();
 
-  private static final double kAtHubToleranceRad = Units.degreesToRadians(2.0);
   private static final Rotation2d kBackInRobotFrame = Rotation2d.kPi;
   private Rotation2d hubAngleRelativeToRobot = kBackInRobotFrame;
   private double velocityFeedforwardRadPerSec = 0.0;
 
-  /** When false, the turret will automatically aim towards the hub */
+  /** When false, the Turret will automatically aim towards the hub */
   private BooleanSupplier manualOverrideSupplier = () -> false;
-  /** When true (and not manual override), turret aims at shot target; when false, holds current position. */
+  /** When true (and not manual override), Turret aims at shot target; when false, holds current position. */
   private BooleanSupplier aimAtTargetSupplier = () -> false;
   private Drive drive;
 
-  private double lastSmartDashboardTargetPos = Math.PI;
+  private double lastSmartDashboardTargetPosRad = Math.PI;
 
   public Turret(TurretIO io) {
     turretIO = io;
@@ -43,7 +38,7 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putNumber("Turret/kP", kP);
     SmartDashboard.putNumber("Turret/kI", kI);
     SmartDashboard.putNumber("Turret/kD", kD);
-    SmartDashboard.putNumber("Turret/TargetPositionRads", Math.PI);
+    SmartDashboard.putNumber("Turret/TargetPositionDeg", 180.0);
   } // End Turret Constructor
 
   /** Set by RobotContainer so calculator does not overwrite Turret when operator is in manual override. */
@@ -56,7 +51,7 @@ public class Turret extends SubsystemBase {
     this.drive = drive;
   } // End setDrive
 
-  /** Set by RobotContainer so turret only aims at target when e.g. ShootWhenReadyCommand is active. */
+  /** Set by RobotContainer so Turret only aims at target when e.g. ShootWhenReadyCommand is active. */
   public void setAimAtTargetSupplier(BooleanSupplier supplier) {
     aimAtTargetSupplier = supplier != null ? supplier : () -> true;
   } // End setAimAtTargetSupplier
@@ -79,25 +74,25 @@ public class Turret extends SubsystemBase {
         targetPositionRad = MathUtil.clamp(turretInputs.positionRads, kMinAngleRad, kMaxAngleRad);
       }
     } else {
-      double targetRobotFrameRad = SmartDashboard.getNumber("Turret/TargetPositionRads", Math.PI);
-      if (targetRobotFrameRad != lastSmartDashboardTargetPos) {
+      double targetRobotFrameRad = Units.degreesToRadians(SmartDashboard.getNumber("Turret/TargetPositionDeg", 180.0));
+      if (targetRobotFrameRad != lastSmartDashboardTargetPosRad) {
         setHubAngleRelativeToRobot(Rotation2d.fromRadians(targetRobotFrameRad));
       }
-      
-      lastSmartDashboardTargetPos = targetRobotFrameRad;
+
+      lastSmartDashboardTargetPosRad = targetRobotFrameRad;
       velocityFeedforwardRadPerSec = 0.0;
       targetPositionRad = getClampedTurretSetpointRad();
     }
 
     turretIO.updateInputs(turretInputs);
     Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/MotorConnected", turretInputs.motorConnected);
-    Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/TargetPositionRads", Units.radiansToDegrees(targetPositionRad));
-    Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/PositionRads", Units.radiansToDegrees(turretInputs.positionRads));
-    
-    Logger.recordOutput("Subsystems/Shooter/Turret/PositionDegrees", getPosition().getDegrees());
-    Logger.recordOutput("Subsystems/Shooter/Turret/RobotFrameDegrees", getRobotFramePosition().getDegrees());
-    Logger.recordOutput("Subsystems/Shooter/Turret/HubDegrees", getHubAngleRelativeToRobot().getDegrees());
-    Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/VelocityRadsPerSec", turretInputs.velocityRadsPerSec);
+    Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/TargetPositionDeg", Units.radiansToDegrees(targetPositionRad));
+    Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/PositionDeg", Units.radiansToDegrees(turretInputs.positionRads));
+
+    Logger.recordOutput("Subsystems/Shooter/Turret/PositionDeg", getPosition().getDegrees());
+    Logger.recordOutput("Subsystems/Shooter/Turret/RobotFrameDeg", getRobotFramePosition().getDegrees());
+    Logger.recordOutput("Subsystems/Shooter/Turret/HubDeg", getHubAngleRelativeToRobot().getDegrees());
+    Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/VelocityDegPerSec", Units.radiansToDegrees(turretInputs.velocityRadsPerSec));
     Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/AppliedVolts", turretInputs.appliedVolts);
     Logger.recordOutput("Subsystems/Shooter/Turret/Inputs/SupplyCurrentAmps", turretInputs.supplyCurrentAmps);
 
@@ -109,7 +104,7 @@ public class Turret extends SubsystemBase {
     turretIO.setTargetPosition(targetPositionRad, velocityFeedforwardRadPerSec);
   } // End periodic
 
-  /** Set velocity feedforward (rad/s) for spin compensation; e.g. -robot omega. */
+  /** Set velocity feedforward for spin compensation; e.g. -robot omega. */
   public void setVelocityFeedforwardRadPerSec(double radPerSec) {
     velocityFeedforwardRadPerSec = radPerSec;
   } // End setVelocityFeedforwardRadPerSec
@@ -119,7 +114,7 @@ public class Turret extends SubsystemBase {
     turretIO.stop();
     turretIO.resetEncoder();
     setHubAngleRelativeToRobot(kBackInRobotFrame);
-    SmartDashboard.putNumber("Turret/TargetPositionRads", Math.PI);
+    SmartDashboard.putNumber("Turret/TargetPositionDeg", 180.0);
   } // End resetMotorEncoder
 
   /** Set the hub angle (robot frame: 0 = forward). Clamped to min/max in periodic. */
@@ -127,12 +122,12 @@ public class Turret extends SubsystemBase {
     hubAngleRelativeToRobot = angle;
   } // End setHubAngleRelativeToRobot
 
-  /** Step the target Rads by the given amount. */
-  public void stepRads(double stepRads) {
+  /** Step the target position in Turret frame. */
+  public void stepPositionRad(double stepPositionRad) {
     double turretTargetRad =
-        MathUtil.clamp(turretInputs.targetPositionRads + stepRads, kMinAngleRad, kMaxAngleRad);
+        MathUtil.clamp(turretInputs.targetPositionRads + stepPositionRad, kMinAngleRad, kMaxAngleRad);
     setHubAngleRelativeToRobot(Rotation2d.fromRadians(turretToRobotFrameRad(turretTargetRad)));
-  } // End stepRads
+  } // End stepPositionRad
 
   /** Get the current hub angle. */
   public Rotation2d getHubAngleRelativeToRobot() {
@@ -144,12 +139,12 @@ public class Turret extends SubsystemBase {
     return Rotation2d.fromRadians(turretInputs.positionRads);
   } // End getPosition
 
-  /** Get the current target position in turret frame. */
+  /** Get the current target position in Turret frame. */
   public Rotation2d getTargetPosition() {
     return Rotation2d.fromRadians(turretInputs.targetPositionRads);
   } // End getTargetPosition
 
-  /** Get the current turret position in robot frame. 0 = forward, 180° = back. */
+  /** Get the current Turret position in robot frame. 0 = forward, 180° = back. */
   public Rotation2d getRobotFramePosition() {
     return Rotation2d.fromRadians(turretToRobotFrameRad(turretInputs.positionRads));
   } // End getRobotFramePosition
@@ -159,7 +154,7 @@ public class Turret extends SubsystemBase {
     return Rotation2d.fromRadians(turretToRobotFrameRad(turretInputs.targetPositionRads));
   } // End getRobotFrameTargetPosition
 
-  /** Whether the requested robot-frame angle is reachable by the turret. */
+  /** Whether the requested robot-frame angle is reachable by the Turret. */
   public boolean isHubInRange() {
     double turretSetpointRad = robotToTurretFrameRad(hubAngleRelativeToRobot.getRadians());
     return turretSetpointRad >= kMinAngleRad && turretSetpointRad <= kMaxAngleRad;
@@ -171,17 +166,17 @@ public class Turret extends SubsystemBase {
     return Math.abs(MathUtil.angleModulus(turretInputs.positionRads - targetTurretRad)) <= kAtHubToleranceRad;
   } // End aimedAtHub
 
-  /** Convert robot-frame angle (0 = forward) to turret frame (0 = back). */
+  /** Convert robot-frame angle (0 = forward) to Turret frame (0 = back). */
   private static double robotToTurretFrameRad(double robotFrameRad) {
     return MathUtil.inputModulus(robotFrameRad - Math.PI, -Math.PI, Math.PI);
   } // End robotToTurretFrameRad
 
-  /** Convert turret-frame angle (0 = back) to robot frame (0 = forward). */
+  /** Convert Turret-frame angle (0 = back) to robot frame (0 = forward). */
   private static double turretToRobotFrameRad(double turretFrameRad) {
     return MathUtil.inputModulus(turretFrameRad + Math.PI, -Math.PI, Math.PI);
   } // End turretToRobotFrameRad
 
-  /** Hub angle in robot frame clamped to turret limits after conversion into turret frame. */
+  /** Hub angle in robot frame clamped to Turret limits after conversion into Turret frame. */
   private double getClampedTurretSetpointRad() {
     return MathUtil.clamp(robotToTurretFrameRad(hubAngleRelativeToRobot.getRadians()), kMinAngleRad, kMaxAngleRad);
   } // End getClampedTurretSetpointRad

@@ -2,22 +2,17 @@ package frc.robot.subsystems.shooter.hood;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.util.Units;
-
 /** Hood IO for simulation; slew-rate-limited setpoint following. */
 public class HoodIOSim implements HoodIO {
 
-  /** Max setpoint slew rate (rad/s); full range ~30° in ~0.5 s. */
-  private static final double kMaxAngularRateRadPerSec = Units.degreesToRadians(60.0);
-
-  private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(kMaxAngularRateRadPerSec);
+  private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(HoodConstants.kSimMaxSlewRadPerSec);
 
   private double targetPositionRad = 0.0;
-  private double limitedPositionRad = HoodConstants.kMinAngleRad;
+  private double limitedPositionRad = HoodConstants.kDisabledAngleRad;
   private boolean isStopped = false;
 
   public HoodIOSim() {
-    slewRateLimiter.reset(HoodConstants.kMinAngleRad);
+    slewRateLimiter.reset(HoodConstants.kDisabledAngleRad);
   }
 
   @Override
@@ -35,8 +30,8 @@ public class HoodIOSim implements HoodIO {
   } // End updateInputs
 
   @Override
-  public void setTargetPosition(double targetRads) {
-    this.targetPositionRad = targetRads;
+  public void setTargetPosition(double targetPositionRad) {
+    this.targetPositionRad = targetPositionRad;
     isStopped = false;
   } // End setTargetPosition
 

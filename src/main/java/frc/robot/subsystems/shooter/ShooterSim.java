@@ -41,7 +41,7 @@ public class ShooterSim {
     return fuelStored;
   } // End getFuelStored
 
-  /** True when the shooter can accept more fuel (for FuelSim intake gating). */
+  /** True when the Shooter can accept more fuel (for FuelSim intake gating). */
   public boolean canIntake() {
     return fuelStored < CAPACITY;
   }
@@ -62,7 +62,7 @@ public class ShooterSim {
 
     double turretYawRad = turret.getPosition().getRadians();
     double hoodAngleRad = hood.getAngleRad();
-    double flywheelSurfaceMps = flywheel.getTargetVelocityRadsPerSec() * FlywheelConstants.kFlywheelRadiusMeters;
+    double flywheelSurfaceMps = flywheel.getTargetVelocityRadPerSec() * FlywheelConstants.kFlywheelRadiusMeters;
     double ballExitVelMps = flywheelSurfaceMps * ShooterConstants.kFlywheelSurfaceDivider;
 
     // Hood angle is from vertical; FuelSim expects elevation (0 = horizontal, 90 = up)
@@ -75,7 +75,7 @@ public class ShooterSim {
   }
 
   /**
-   * Call from simulation periodic. Launches fuel when timer elapsed, enabled, shooter ready, and shooting active.
+   * Call from simulation periodic. Launches fuel when timer elapsed, enabled, Shooter ready, and shooting active.
    */
   public void update(
       Shooter shooter,
