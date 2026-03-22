@@ -22,6 +22,10 @@ public class ExtenderConstants { // XXX: Add correct values
   /** Extender radians per motor rotation 1.0 = 1:1 */
   public static final double kGearRatio = 48.0 * 38.0 / 18.0; // Gearbox is 48:1, small sprocket (on motor) has 18 teeth, big sprocket has 38 teeth.
 
+  /** Period for sending signals to the motor. */
+  public static final int kSignalsPeriodMs = 31;
+  public static final int kEncoderVelocitySignalPeriodMs = 31;
+  
   /** Target position when the Extender is in the UP mode. */
   public static final double kUpExtenderRad = Units.degreesToRadians(0.0);
 

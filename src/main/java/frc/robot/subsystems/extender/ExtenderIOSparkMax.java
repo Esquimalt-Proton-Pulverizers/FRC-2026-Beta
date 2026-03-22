@@ -16,9 +16,6 @@ import static frc.robot.subsystems.extender.ExtenderConstants.*;
 
 public class ExtenderIOSparkMax implements ExtenderIO {
 
-  private static final int kSignalsPeriodMs = 31;
-  private static final int kEncoderVelocitySignalPeriodMs = 31;
-
   private final SparkMax motor;
   private final SparkClosedLoopController closedLoopController;
   private final RelativeEncoder encoder;

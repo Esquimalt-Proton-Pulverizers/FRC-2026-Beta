@@ -14,9 +14,6 @@ import edu.wpi.first.math.MathUtil;
 /** Intake IO using a single SPARK MAX (NEO 550) with voltage control. */
 public class IntakeIOSparkMax implements IntakeIO {
 
-  private static final int kSignalsPeriodMs = 127;
-  private static final int kEncoderVelocitySignalPeriodMs = 271;
-
   private final SparkMax motor;
 
   public IntakeIOSparkMax() {

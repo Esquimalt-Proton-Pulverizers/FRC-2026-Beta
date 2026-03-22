@@ -12,18 +12,17 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.util.Units;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kD;
+import static frc.robot.subsystems.shooter.turret.TurretConstants.kEncoderVelocitySignalPeriodMs;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kGearRatio;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kI;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kIdleMode;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kMotorId;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kP;
+import static frc.robot.subsystems.shooter.turret.TurretConstants.kSignalsPeriodMs;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kSmartCurrentLimitAmps;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /** Turret IO using a single SPARK MAX (NEO 550) with onboard position control. */
 public class TurretIOSparkMax implements TurretIO {
-
-  private static final int kSignalsPeriodMs = 19;
-  private static final int kEncoderVelocitySignalPeriodMs = 19;
 
   private final SparkMax motor;
   private final SparkClosedLoopController closedLoopController;

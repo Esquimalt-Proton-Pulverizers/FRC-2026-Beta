@@ -14,9 +14,6 @@ import edu.wpi.first.math.MathUtil;
 /** Agitator IO using a single SPARK MAX (NEO 550) with voltage control. */
 public class AgitatorIOSparkMax implements AgitatorIO {
 
-  private static final int kSignalsPeriodMs = 107;
-  private static final int kEncoderVelocitySignalPeriodMs = 251;
-
   private final SparkMax motor;
 
   public AgitatorIOSparkMax() {

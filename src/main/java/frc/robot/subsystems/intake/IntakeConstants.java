@@ -22,6 +22,10 @@ public final class IntakeConstants { // XXX: Add correct values
   /** Open-loop ramp time from 0 to full output. Limits current spikes on step changes. */
   public static final double kOpenLoopRampRateSec = 0.3;
 
+  /** Period for sending signals to the motor. */
+  public static final int kSignalsPeriodMs = 127;
+  public static final int kEncoderVelocitySignalPeriodMs = 271;
+
   /** Max voltage magnitude applied to the motor. */
   public static final double kMaxVoltage = 8.0;
 

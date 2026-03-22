@@ -29,6 +29,15 @@ public final class TurretConstants { // XXX: Add correct values
   /** Turret radians per motor rotation (output / input). 1.0 = 1:1. */
   public static final double kGearRatio = 27.81;
 
+  /** PID gains for onboard position control and for sim software control. */
+  public static final double kP = 7.0;
+  public static final double kI = 0.0;
+  public static final double kD = 0.0;
+
+  /** Period for sending signals to the motor. SPARK MAX only. */
+  public static final int kSignalsPeriodMs = 19;
+  public static final int kEncoderVelocitySignalPeriodMs = 19;
+  
   /** Encoder zero offset. Added to raw encoder so that 0 = Turret pointing robot-backward. */
   public static final double kEncoderZeroOffsetRad = Units.degreesToRadians(0.0);
 
@@ -52,9 +61,4 @@ public final class TurretConstants { // XXX: Add correct values
 
   /** Delta Rad per step. */
   public static final double kStepRad = Units.degreesToRadians(5.0);
-
-  /** PID gains for onboard position control and for sim software control. */
-  public static final double kP = 7.0;
-  public static final double kI = 0.0;
-  public static final double kD = 0.0;
 }

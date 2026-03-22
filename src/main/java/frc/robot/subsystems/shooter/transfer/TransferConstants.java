@@ -25,6 +25,10 @@ public final class TransferConstants { // XXX: Add correct values
   /** Open-loop ramp time from 0 to full output. Limits current spikes on step changes. SPARK MAX only. */
   public static final double kOpenLoopRampRateSec = 0.3;
 
+  /** Period for sending signals to the motor. */
+  public static final int kSignalsPeriodMs = 107;
+  public static final int kEncoderVelocitySignalPeriodMs = 251;
+
   /** Max voltage magnitude applied to the motor. */
   public static final double kMaxVoltage = 10.0;
 

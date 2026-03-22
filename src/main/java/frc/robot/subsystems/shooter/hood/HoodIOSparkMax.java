@@ -16,9 +16,6 @@ import edu.wpi.first.math.util.Units;
 /** Hood IO using a single SPARK MAX (NEO 550) with onboard position control. */
 public class HoodIOSparkMax implements HoodIO {
 
-  private static final int kSignalsPeriodMs = 19;
-  private static final int kEncoderVelocitySignalPeriodMs = 19;
-
   private final SparkMax motor;
   private final SparkClosedLoopController closedLoopController;
   private final RelativeEncoder encoder;

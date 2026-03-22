@@ -32,6 +32,10 @@ public final class HoodConstants { // XXX: Add correct values
   public static final double kI = 0.0;
   public static final double kD = 0.0;
 
+  /** Period for sending signals to the motor. SPARK MAX only. */
+  public static final int kSignalsPeriodMs = 19;
+  public static final int kEncoderVelocitySignalPeriodMs = 19;
+
   /** Encoder zero offset. Added to raw encoder so that 0 = defined physical position. */
   public static final double kEncoderZeroOffsetRad = Units.degreesToRadians(0.0);
 

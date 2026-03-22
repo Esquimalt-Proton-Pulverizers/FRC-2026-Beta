@@ -19,6 +19,10 @@ public final class HangConstants { // XXX: Set correct values for your robot
   /** Open-loop ramp rate (sec from 0 to full). */
   public static final double kOpenLoopRampRateSec = 0.2;
 
+  /** Period for sending signals to the motor. */
+  public static final int kSignalsPeriodMs = 31;
+  public static final int kEncoderVelocitySignalPeriodMs = 31;
+
   /** Whether the motor output should be inverted. */
   public static final boolean kMotorInverted = true;
 
