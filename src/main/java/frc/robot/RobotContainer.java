@@ -249,6 +249,7 @@ public class RobotContainer {
 		shooter.setManualOverrideSupplier(() -> operatorManualOverride);
 
 		// Subsystem Manual Override Ignore Limits Supplier
+		intake.setIgnoreLimitsSupplier(() -> operatorManualOverride);
 		agitator.setIgnoreLimitsSupplier(() -> operatorManualOverride);
 
 		/// -------------------------------------------------------------------------------------------

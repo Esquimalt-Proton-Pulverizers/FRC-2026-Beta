@@ -3,11 +3,13 @@ package frc.robot.subsystems.intake;
 import static frc.robot.subsystems.intake.IntakeConstants.*;
 
 import edu.wpi.first.math.MathUtil;
+import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
-/** Intake subsystem: one motor, voltage controlled (run or coast). */
+/** Intake subsystem: field-to-storage transfer. */
 public class Intake extends SubsystemBase {
 
   /** Intake state: Idle, Intaking (pull in), or Reversing (spit out). */
@@ -22,6 +24,7 @@ public class Intake extends SubsystemBase {
 
   private State state = State.IDLE;
   private double targetVoltage = kIdleVoltage;
+  private BooleanSupplier ignoreLimitsSupplier = () -> false;
 
   public Intake(IntakeIO io) {
     intakeIO = io;
@@ -41,14 +44,14 @@ public class Intake extends SubsystemBase {
       return;
     }
 
-    // Set the Intake voltage based on the current state
+    // Set the Intake voltage based on the current state.
     switch (state) {
       case IDLE:
         intakeIO.stop();
         break;
       case INTAKING:
       case REVERSING:
-        intakeIO.setVoltage(targetVoltage);
+        intakeIO.setVoltage(targetVoltage, ignoreLimitsSupplier.getAsBoolean());
         break;
       default:
         intakeIO.stop();
@@ -79,22 +82,33 @@ public class Intake extends SubsystemBase {
     targetVoltage = volts;
   } // End setTargetVoltage
 
+  /** Set supplier for ignoring limits. */
+  public void setIgnoreLimitsSupplier(BooleanSupplier supplier) {
+    ignoreLimitsSupplier = supplier != null ? supplier : () -> false;
+  } // End setIgnoreLimitsSupplier
+
+  /** Step the target voltage by the given amount. */
+  public void stepVoltage(double stepVoltage) {
+    boolean ignoreLimits = ignoreLimitsSupplier.getAsBoolean();
+    if (getState() == State.IDLE) {
+      setIntakingState();
+      setTargetVoltage(ignoreLimits 
+        ? MathUtil.clamp(stepVoltage, -Constants.kNominalVoltage, Constants.kNominalVoltage)
+        : MathUtil.clamp(stepVoltage, -kMaxVoltage, kMaxVoltage));
+    }
+    else {
+      double stepTargetVoltage = getTargetVoltage() + stepVoltage;
+      setTargetVoltage(ignoreLimits 
+        ? MathUtil.clamp(stepTargetVoltage, -Constants.kNominalVoltage, Constants.kNominalVoltage)
+        : MathUtil.clamp(stepTargetVoltage, -kMaxVoltage, kMaxVoltage));
+    }
+    if (getTargetVoltage() == kIdleVoltage) setIdleState();
+  } // End stepVoltage
+
   /** Get the current target voltage. */
   public double getTargetVoltage() {
     return targetVoltage;
   } // End getTargetVoltage
-
-  /** Step the target voltage by the given amount. */
-  public void stepVoltage(double stepVoltage) {
-    if (getState() == State.IDLE) {
-      setIntakingState();
-      setTargetVoltage(stepVoltage);
-    }
-    else {
-      setTargetVoltage(MathUtil.clamp(getTargetVoltage() + stepVoltage, -kMaxVoltage, kMaxVoltage));
-    }
-    if (getTargetVoltage() == kIdleVoltage) setIdleState();
-  } // End stepVoltage
 
   /** Current state. */
   public State getState() {
