@@ -6,7 +6,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
-/** Constants for the Turret (position-controlled hub aiming) subsystem. */
+/** Constants for the Turret (position-controlled targeting) subsystem. */
 public final class TurretConstants { // XXX: Add correct values
 
   private TurretConstants() {}
@@ -38,8 +38,8 @@ public final class TurretConstants { // XXX: Add correct values
   public static final int kSignalsPeriodMs = 19;
   public static final int kEncoderVelocitySignalPeriodMs = 19;
   
-  /** Encoder zero offset. Added to raw encoder so that 0 = Turret pointing robot-backward. */
-  public static final double kEncoderZeroOffsetRad = Units.degreesToRadians(0.0);
+  /** Default aim direction in robot frame (0 = forward); π = toward robot back. */
+  public static final Rotation2d kDefaultAimDirectionRobotFrame = Rotation2d.kPi;
 
   /** Minimum Turret angle. */
   public static final double kMinAngleRad = Units.degreesToRadians(-90.0);
@@ -50,14 +50,8 @@ public final class TurretConstants { // XXX: Add correct values
   /** Max voltage magnitude applied to the motor. */
   public static final double kMaxVoltage = 12.0;
 
-  /** Vision camera index used for hub aiming (when using fixed camera + tx). */
-  public static final int kVisionCameraIndex = 0;
-
-  /** Angle from robot forward to camera boresight (for fixed camera). */
-  public static final Rotation2d kCameraAngleOffset = Rotation2d.kZero;
-
-  /** Hub aim “at target” tolerance. */
-  public static final double kAtHubToleranceRad = Units.degreesToRadians(2.0);
+  /** Tolerance for considering the Turret on target (setpoint vs measured, Turret frame). */
+  public static final double kAtTargetToleranceRad = Units.degreesToRadians(1.0);
 
   /** Delta Rad per step. */
   public static final double kStepRad = Units.degreesToRadians(5.0);

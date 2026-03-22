@@ -21,6 +21,7 @@ import static frc.robot.subsystems.shooter.turret.TurretConstants.kP;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kSignalsPeriodMs;
 import static frc.robot.subsystems.shooter.turret.TurretConstants.kSmartCurrentLimitAmps;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /** Turret IO using a single SPARK MAX (NEO 550) with onboard position control. */
 public class TurretIOSparkMax implements TurretIO {
 
@@ -31,7 +32,6 @@ public class TurretIOSparkMax implements TurretIO {
   private double lastP = kP;
   private double lastI = kI;
   private double lastD = kD;
-  private double targetPosition;
 
   public TurretIOSparkMax() {
     motor = new SparkMax(kMotorId, SparkLowLevel.MotorType.kBrushless);
@@ -81,7 +81,6 @@ public class TurretIOSparkMax implements TurretIO {
     
     inputs.motorConnected = motor.getLastError() == REVLibError.kOk;
     inputs.positionRads = Units.rotationsToRadians(encoder.getPosition());
-    inputs.targetPositionRads = targetPosition;
     inputs.velocityRadsPerSec = Units.rotationsToRadians(encoder.getVelocity() / 60.0);
     inputs.appliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
     inputs.supplyCurrentAmps = motor.getOutputCurrent();
@@ -96,7 +95,6 @@ public class TurretIOSparkMax implements TurretIO {
   public void setTargetPosition(double targetRads, double velocityFeedforwardRadPerSec) {
     double targetRot = Units.radiansToRotations(targetRads);
     closedLoopController.setSetpoint(targetRot, SparkBase.ControlType.kPosition);
-    targetPosition = targetRads;
     // SPARK MAX position control does not expose velocity feedforward; ignore
   } // End setTargetPosition
   

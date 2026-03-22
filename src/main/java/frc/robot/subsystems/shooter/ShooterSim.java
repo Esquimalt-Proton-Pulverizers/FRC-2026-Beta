@@ -52,7 +52,7 @@ public class ShooterSim {
   }
 
   /**
-   * Launch one fuel from the turret pose using current turret/hood/flywheel state.
+   * Launch one fuel from the Turret pose using current Turret, Hood, and Flywheel state.
    * Decrements fuelStored. No-op if no fuel or robot not registered with FuelSim.
    */
   public void launchFuel(Turret turret, Hood hood, Flywheel flywheel) {
@@ -60,7 +60,7 @@ public class ShooterSim {
 
     fuelStored--;
 
-    double turretYawRad = turret.getPosition().getRadians();
+    double turretYawRad = turret.getRobotFramePosition().getRadians();
     double hoodAngleRad = hood.getAngleRad();
     double flywheelSurfaceMps = flywheel.getTargetVelocityRadPerSec() * FlywheelConstants.kFlywheelRadiusMeters;
     double ballExitVelMps = flywheelSurfaceMps * ShooterConstants.kFlywheelSurfaceDivider;

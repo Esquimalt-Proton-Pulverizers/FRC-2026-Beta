@@ -543,12 +543,12 @@ public class FuelSim {
 
     /**
      * Spawns a fuel onto the field with a specified launch velocity and angles, accounting for robot movement.
-     * Launch position is robot pose + robotToLaunchPoint (e.g. robotToTurret so trajectory starts at turret).
+     * Launch position is robot pose + robotToLaunchPoint (e.g. robotToTurret so trajectory starts at Turret).
      *
      * @param launchVelocity Initial launch velocity
      * @param hoodAngle Hood angle where 0 is launching horizontally and 90 degrees is launching straight up
-     * @param turretYaw <i>Robot-relative</i> turret yaw
-     * @param robotToLaunchPoint Transform from robot center to launch point (e.g. turret pivot); used for launch position
+     * @param turretYaw <i>Robot-relative</i> Turret yaw
+     * @param robotToLaunchPoint Transform from robot center to launch point (e.g. Turret pivot); used for launch position
      * @throws IllegalStateException if robot is not registered
      */
     public void launchFuel(
@@ -580,7 +580,7 @@ public class FuelSim {
 
     /**
      * Spawns a fuel using only a height offset from robot center (legacy). Prefer
-     * {@link #launchFuel(LinearVelocity, Angle, Angle, Transform3d)} with robotToTurret so the trajectory starts at the turret.
+     * {@link #launchFuel(LinearVelocity, Angle, Angle, Transform3d)} with robotToTurret so the trajectory starts at the Turret.
      */
     public void launchFuel(LinearVelocity launchVelocity, Angle hoodAngle, Angle turretYaw, Distance launchHeight) {
         launchFuel(

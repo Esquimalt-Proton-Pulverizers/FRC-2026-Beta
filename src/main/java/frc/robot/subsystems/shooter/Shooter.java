@@ -80,8 +80,8 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput("ShooterCommand/ShootWhenReadyCommandActive", shootCommandScheduledSupplier.getAsBoolean() || shootCommandActive);
     Logger.recordOutput("ShooterCommand/Ready/IsReadyToShoot", isReadyToShoot());
     Logger.recordOutput("ShooterCommand/Ready/AllianceZoneOk", !ShooterCommands.isShooterTargetHub() || AllianceUtil.isInAllianceZone(drive.getPose().getX()));
-    Logger.recordOutput("ShooterCommand/Ready/TurretHubInRange", turret.isHubInRange());
-    Logger.recordOutput("ShooterCommand/Ready/TurretAtTarget", turret.aimedAtHub());
+    Logger.recordOutput("ShooterCommand/Ready/TurretTargetInRange", turret.isTargetInRange());
+    Logger.recordOutput("ShooterCommand/Ready/TurretAtTarget", turret.atTarget());
     Logger.recordOutput("ShooterCommand/Ready/HoodAtTarget", !hoodEnabled || hood.atTarget());
     Logger.recordOutput("ShooterCommand/Ready/FlywheelAtTarget", flywheel.atTargetVelocity());
     Logger.recordOutput("ShooterCommand/Ready/FlywheelNotIdle", flywheel.getState() != State.IDLE);
@@ -89,13 +89,13 @@ public class Shooter extends SubsystemBase {
     ShooterCommands.setShooterTarget(drive, turret, hood, flywheel, hoodEnabled, !manualOverrideSupplier.getAsBoolean());
   } // End periodic
 
-  /** Turret aimed at hub (hub in range and at target), Flywheel not Idle and at target speed; (Optional) Hood at target. When target is hub, robot must be in alliance zone. */
+  /** Turret target in range and on target, Flywheel not Idle and at target speed; (Optional) Hood at target. When shooter target is hub, robot must be in alliance zone. */
   public boolean isReadyToShoot() {
     if (ShooterCommands.isShooterTargetHub() && !AllianceUtil.isInAllianceZone(drive.getPose().getX())) {
       return false;
     }
-    if (!turret.isHubInRange()) return false;
-    if (!turret.aimedAtHub()) return false;
+    if (!turret.isTargetInRange()) return false;
+    if (!turret.atTarget()) return false;
     if (flywheel.getState() == State.IDLE) return false;
     if (!flywheel.atTargetVelocity()) return false;
     if (hoodEnabled && !hood.atTarget()) return false;
