@@ -60,11 +60,15 @@ sudo systemctl start depth-cam.service
 ## Finally
 - Reboot the Pi (with the RealSense camera attached) and check that the attached RoboRIO sees the NetworkTable "post-detection" appear.
 - Note the post-detection python script must always have the name specified in the service file above (regardless of version) and, of course, be located in home/eas/code
-- to check and see if the service is running use this command to view all services:
+- to check and see if the service is running use this command (shows all services and their status):
 ```
 sudo systemctl list-units --type=service
 ```
-- To view the output (log) of the service use this command:
+- To view the output (log) of the service:
 ```
 journalctl -e -u depth-cam.service
+```
+- To stop the service:
+```
+sudo systemctl stop depth-cam.service
 ```
