@@ -1,3 +1,5 @@
+# Version 6.2 (previously named post-HSV-Depth-nt.py)
+#
 # This will connect with the Roborio and publish a table 'PostDetection' that includes:
 #     if a post is detected (boolean) 
 #     the horizontal left/right (lateral) position in metres
@@ -5,21 +7,22 @@
 #
 # Connects with RealSense camera and:
 #   sets clipping distance (ignores everything from 3D camera > clipping distance)
-#   All pixels > clipping distance are set to black
-#   A colour mask is then applied based on HSV values
-#  
-#   makes a grey display-image mask 
-#     uses OpenCV "contours" to choose most post-like piece of image:
+#   1. all pixels > clipping distance are set to black
+#   2. depth mask is applied to colour image
+#   3. HSV colour mask is then applied: all pixels out of colour range (red or blue) are set to black
+#      All pixels in HSV range are set to light grey
+#   4. OpenCV "contours" used to choose most post-like piece of image:
 #         - small contours are ignored as noise (<5 wide or <20 high)
-#         - only contours at least twice as tall as wide are considered
+#         - only contours with minimum aspect ratio (height/width) greater than set value are considered
+#         - Note: minimum aspect-ratio was originally 2.0, but reduced to 1.6 after testing
 #         - contours are scored based on area, the largest area is selected
+#         - future improvement: include average depth of each part of 
 #         - centre of this contour is considered returned as the x-value in pixels
-#     as camera gets closer to post, precision should increase as edge noise has less weight
-# 
-# Results are published to NetworkTable 'PostDetection'
-#       lateral: horizontal displacement perpendicular to depth, in metres
-#       depth: distance from camera (normal to camera-face) in metres
-#
+#         - intrinsics are used to convert the x-value to metres
+#         - as camera gets closer to post, precision should increase as edge noise has less weight
+#   5. Results are published to NetworkTable 'PostDetection'
+#         - lateral: horizontal displacement perpendicular to depth-direction, in metres
+#         - depth: distance from camera (normal to camera-face) in metres
 #
 # Java code to retrieve this information: 
 #   NetworkTable table = NetworkTableInstance.getDefault().getTable("PostDetection");
@@ -37,7 +40,7 @@ import requests
 
 ##########
 # set a variable to turn off all displays if we're in actual match
-BenchTesting = False
+BenchTesting = False 
 
 ###########
 # Set up RealSense camera before checking for RoboRIO connection
@@ -80,7 +83,7 @@ RoboReady = False
 
 while RoboReady == False:
     try:
-        response = requests.get(f"http://10.72.87.2/nisysapi/server", timeout=5)
+        response = requests.get(f"http://10.73.34.2/nisysapi/server", timeout=5)
         print("Status_code", response.status_code)
         if response.status_code == 404:
             RoboReady = True
@@ -91,28 +94,7 @@ while RoboReady == False:
         print("Error connecting to RoboRIO:", e)
 
 # Connect to the RoboRIO
-NetworkTables.initialize(server='10.72.87.2')
-
-''' not sure if this is needed:
-# Connection listener: to wait until Networktables server responds
-import threading
-
-cond = threading.Condition()
-notified = [False]
-
-def connectionListener(connected, info):
-    print(info, '; Connected= %s' % connected)
-    with cond:
-        notified[0] = True
-        cond.notify()
-
-NetworkTables.addConnectionListener(connectionListener, immediateNotify=True)
-
-with cond:
-    print("Waiting")
-    if not notified[0]:
-        cond.wait()
-'''
+NetworkTables.initialize(server='10.73.34.2')
 
 # set up variables and NetworkTables outside the loop
 
@@ -122,20 +104,22 @@ table = NetworkTables.getTable('PostDetection')
 # set redalliance True or False 
 redalliance = False
 
-# Uncomment this section if there is time to test
-# if this is not a test, but actually in a match
 if BenchTesting == False:
     fmsTable = NetworkTables.getTable('FMSInfo')
     time.sleep(1)
     redalliance = fmsTable.getBoolean('IsRedAlliance', None)
 
-print(redalliance)
+print("red alliance is", redalliance)
 
 # default to no post detected
 Post_detected = False
 
 try:
     while True:
+        redcheck = fmsTable.getBoolean('IsRedAlliance', None)
+        if redcheck != None:
+            redalliance = redcheck
+
         frames = pipeline.wait_for_frames()
         depth_frame = frames.get_depth_frame()
         colour_frame = frames.get_color_frame()
@@ -267,7 +251,7 @@ try:
 
                 # Publish values to NetworkTables
                 table.putBoolean('post_detected', True)
-                table.putNumber('post_lateral', centre_x)
+                table.putNumber('post_lateral', centre_x_m)
                 table.putNumber('post_depth', depth_in_meters)
   
                 if BenchTesting == True:
@@ -305,3 +289,4 @@ try:
 
 finally:
     pipeline.stop()
+
