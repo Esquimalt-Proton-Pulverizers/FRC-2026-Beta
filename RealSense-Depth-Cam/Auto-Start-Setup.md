@@ -1,16 +1,16 @@
 # Summary
-Goal: have the RealSense camera Raspberry Pi automatically run the post-detection code when it boots. There should be no reason to attach a monitor or ssh into the Pi (alliance colour needs to be set automatically from within the python script).
+Goal: have the RealSense camera Raspberry Pi automatically run the post-detection code when it boots. There should be no reason to attach a monitor or ssh into the Pi once this procedure has been followed (alliance colour will be set automatically within the python script).
 
-To accomplish this, we set up a service (depth-cam.service) called by systemd. Note: this hasn't been implemented, and may need some modification.
+To accomplish this, we set up a service (depth-cam.service) called by systemd.
 
 # Method
 Either SSH into the Pi, or run the following commands from terminal (with keyboard and screen attached to the Pi)
 
-To SSH into the Pi, open a terminal window on a computer connected to the same local network as the Pi. Type the following:
+To SSH into the Pi, open a terminal window on a computer connected to the same local network as the Pi (or use an ethernet cable to attach your computer directly to the Pi). Open terminal on your computer, then type the following:
 ```
 ssh eas@RealSense-Pi4B-V2.local
 ```
-It should return with a password prompt. Enter 
+It should return with a password prompt. Enter:
 ```
 221
 ```
