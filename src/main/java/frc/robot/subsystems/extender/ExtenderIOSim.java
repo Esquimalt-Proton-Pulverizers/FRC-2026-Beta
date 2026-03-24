@@ -2,14 +2,13 @@ package frc.robot.subsystems.extender;
 
 import edu.wpi.first.math.MathUtil;
 
+/** Extender IO for simulation; rate-limited setpoint following. */
 public class ExtenderIOSim implements ExtenderIO {
 
   private static final double kLoopPeriodSecs = 0.02;
-
   private static final double kMaxRadPerSec = 1.0 / 0.2;
-  
+
   private double targetPositionRad = 0.0;
-  //private double velocityFeedforwardRadPerSec = 0.0;
   private double currentPositionRad = 0.0;
   private boolean isStopped = false;
 
@@ -27,14 +26,13 @@ public class ExtenderIOSim implements ExtenderIO {
 
     inputs.motorConnected = true;
     inputs.positionRads = currentPositionRad;
-    inputs.targetPositionRads = targetPositionRad;
     inputs.appliedVolts = 0.0;
     inputs.supplyCurrentAmps = 0.0;
   } // End updateInputs
 
   @Override
-  public void setTargetPosition(double positionRad) {
-    targetPositionRad = positionRad;
+  public void setTargetPosition(double targetRads) {
+    targetPositionRad = targetRads;
     isStopped = false;
   } // End setTargetPosition
 

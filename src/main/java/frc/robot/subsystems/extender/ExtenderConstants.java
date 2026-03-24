@@ -4,51 +4,53 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 
 import edu.wpi.first.math.util.Units;
 
-/** Constants for the Extender (one motor, voltage controlled) subsystem. */
-public class ExtenderConstants { // XXX: Add correct values
+/** Constants for the Extender (one motor, position-controlled) subsystem. */
+public final class ExtenderConstants { // XXX: Add correct values
+
+  private ExtenderConstants() {}
 
   /** CAN ID of the Extender motor (NEO 550 on SPARK MAX). */
   public static final int kMotorId = 6;
 
-  /** Idle behaviour when ouput is 0 (Coast or Brake)  */
+  /** Idle behavior when output is zero (coast or brake). */
   public static final SparkBaseConfig.IdleMode kIdleMode = SparkBaseConfig.IdleMode.kCoast;
 
-  /** Set true to invert the motor */
+  /** Set true if positive output moves the Extender the opposite direction. */
   public static final boolean kMotorInverted = true;
 
-  /** Smart current limit */
-  public static int kSmartCurrentLimitAmps = 25;
+  /** Smart current limit. */
+  public static final int kSmartCurrentLimitAmps = 25;
 
   /** Extender radians per motor rotation 1.0 = 1:1 */
-  public static final double kGearRatio = 48.0 * 38.0 / 18.0; // Gearbox is 48:1, small sprocket (on motor) has 18 teeth, big sprocket has 38 teeth.
+  public static final double kGearRatio = 48.0 * 38.0 / 18.0;
+
+  /** PID gains for onboard position control. */
+  public static final double kP = 2.0;
+  public static final double kI = 0.0;
+  public static final double kD = 0.0;
 
   /** Period for sending signals to the motor. */
   public static final int kSignalsPeriodMs = 31;
   public static final int kEncoderVelocitySignalPeriodMs = 31;
-  
-  /** Target position when the Extender is in the UP mode. */
+
+  /** Target position when the Extender is in Retracted (up) mode. */
   public static final double kUpExtenderRad = Units.degreesToRadians(0.0);
 
-  /** Target position when the Extender is in the PARTIAL mode. */
+  /** Target position when the Extender is in Partial mode. */
   public static final double kPartialExtenderRad = Units.degreesToRadians(45.0);
 
-  /** Target position when the Extender is in the EXTENDED mode. */
+  /** Target position when the Extender is in Extended mode. */
   public static final double kExtendedExtenderRad = Units.degreesToRadians(90.0);
 
-  /** Min angle (when the Extender is fully retracted). */
+  /** Minimum angle (fully retracted). */
   public static final double kMinRad = Units.degreesToRadians(0.0);
 
-  /** Max angle (when the Extender is fully extended). */
+  /** Maximum angle (fully extended). */
   public static final double kMaxRad = Units.degreesToRadians(95.0);
 
-  /** Tolerance for at-target position. */
+  /** Tolerance for considering the Extender at target (measured vs target). */
   public static final double kAtTargetToleranceRad = Units.degreesToRadians(2.0);
 
   /** Delta Rad per step. */
   public static final double kStepRad = Units.degreesToRadians(5.0);
-
-  /** PID values for to-position target */
-  public static final double kP = 2.0;
-  public static final double kI = 0;
-  public static final double kD = 0;
 }

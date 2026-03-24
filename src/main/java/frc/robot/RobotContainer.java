@@ -250,6 +250,7 @@ public class RobotContainer {
 
 		// Subsystem Manual Override Ignore Limits Supplier
 		intake.setIgnoreLimitsSupplier(() -> operatorManualOverride);
+		extender.setIgnoreLimitsSupplier(() -> operatorManualOverride);
 		agitator.setIgnoreLimitsSupplier(() -> operatorManualOverride);
 		transfer.setIgnoreLimitsSupplier(() -> operatorManualOverride);
 
