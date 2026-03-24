@@ -37,7 +37,7 @@ public final class Constants {
     public static final double CONTROLLER_RUMBLE = 0.3;
   }
 
-  /** Teleop drive speeds, accel, and trench/bump alignment. */
+  /** Teleop drive speeds and trench/bump alignment. */
   public static class SwerveConstants { // XXX: Tune SwerveConstants
     public static final double DEFAULT_DRIVE_SPEED_MPS = 1.6;
     public static final double DEFAULT_ROT_SPEED_RAD_PER_S = 0.75 * 2 * Math.PI;
@@ -45,7 +45,6 @@ public final class Constants {
     public static final double FAST_DRIVE_SPEED_MPS = 4.58;
     /** From Drive.getMaxAngularSpeedRadPerSec(): max linear / drive base radius. Radius = hypot(9.75, 10.75) in → 0.36866 m. */
     public static final double FAST_ROT_SPEED_RAD_PER_S = 4.58 / 0.36866;
-    public static final double MAX_TELEOP_ACCEL_MPS2 = 40.0; // TODO: Determine if this needs to be removed or redefined to not "lag" driver inputs.
     public static final double TRENCH_ALIGN_TIME_S = 0.5;
     public static final double BUMP_ALIGN_TIME_S = 0.3;
 

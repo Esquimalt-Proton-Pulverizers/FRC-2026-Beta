@@ -23,7 +23,6 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.util.SlewRateLimiter2d;
 import frc.robot.util.Zones;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -39,7 +38,6 @@ public class TeleopDrive extends Command {
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private final DoubleSupplier omegaSupplier;
-  private final SlewRateLimiter2d driveLimiter;
   private int flipFactor = 1;
 
   @AutoLogOutput
@@ -77,7 +75,6 @@ public class TeleopDrive extends Command {
     this.xSupplier = () -> -controller.getLeftY() * flipFactor;
     this.ySupplier = () -> -controller.getLeftX() * flipFactor;
     this.omegaSupplier = () -> -controller.getRightX();
-    this.driveLimiter = new SlewRateLimiter2d(SwerveConstants.MAX_TELEOP_ACCEL_MPS2);
 
     trenchYController.setTolerance(SwerveConstants.TRENCH_Y_TOLERANCE_M);
     rotationController.setTolerance(SwerveConstants.ROTATION_TOLERANCE_RAD);
@@ -158,7 +155,6 @@ public class TeleopDrive extends Command {
 
     Translation2d linearVelocity = getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
     linearVelocity = linearVelocity.times(maxDriveSpeedMps);
-    linearVelocity = driveLimiter.calculate(linearVelocity);
 
     double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), ControllerConstants.CONTROLLER_DEADBAND);
     omega = Math.copySign(omega * omega, omega);

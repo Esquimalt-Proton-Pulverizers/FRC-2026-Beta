@@ -109,7 +109,9 @@ public class ModuleIOSim implements ModuleIO {
     var turnConfig = new TalonFXConfiguration();
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turnConfig.Slot0 = this.constants.SteerMotorGains;
-    turnConfig.Slot0.withKD(0.5).withKS(0); // Simulation-specific gains
+    // Sim-only: regulated steer gains use high kD; with Maple+Talon sim that hunts and shows up as
+    // chassis shake / curved drift. Softer kD and kS=0 here stabilizes azimuth without changing real-robot tuning.
+    turnConfig.Slot0.withKD(0.5).withKS(0);
 
     turnConfig.Feedback.FeedbackRemoteSensorID = this.constants.EncoderId;
     turnConfig.Feedback.FeedbackSensorSource =
