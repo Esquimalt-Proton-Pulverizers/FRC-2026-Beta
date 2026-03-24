@@ -1,14 +1,15 @@
 package frc.robot.subsystems.shooter.flywheel;
 
+import static frc.robot.subsystems.shooter.flywheel.FlywheelConstants.*;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
 
 /** Flywheel IO for simulation; slew-rate-limited setpoint following. */
 public class FlywheelIOSim implements FlywheelIO {
 
-  /** Same ramp rate as hardware: 1000 RPM/s → 2 s to 2000 RPM, 4 s to 4000 RPM (rad/s²). */
   private static final double kVelocityRampRateRadPerSecSq =
-      Units.rotationsPerMinuteToRadiansPerSecond(FlywheelConstants.kVelocityRampRateRpmPerSec);
+      Units.rotationsPerMinuteToRadiansPerSecond(kVelocityRampRateRpmPerSec);
 
   private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(kVelocityRampRateRadPerSecSq);
 

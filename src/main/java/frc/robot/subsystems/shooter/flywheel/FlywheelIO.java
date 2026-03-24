@@ -2,7 +2,7 @@ package frc.robot.subsystems.shooter.flywheel;
 
 import org.littletonrobotics.junction.AutoLog;
 
-/** IO interface for the Flywheel (one motor + encoder, velocity control). */
+/** IO interface for the Flywheel (one motor, velocity controlled). */
 public interface FlywheelIO {
 
   @AutoLog
@@ -16,9 +16,9 @@ public interface FlywheelIO {
   /** Update inputs from the hardware. */
   default void updateInputs(FlywheelIOInputs inputs) {}
 
-  /** Set the target velocity (rad/s, Flywheel output). */
+  /** Set the target velocity. */
   default void setTargetVelocity(double targetVelocityRadPerSec) {}
 
-  /** Stop the Flywheel (no power). */
+  /** Stop the motor. */
   default void stop() {}
 }

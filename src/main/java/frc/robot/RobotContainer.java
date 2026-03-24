@@ -251,10 +251,11 @@ public class RobotContainer {
 		// Subsystem Manual Override Ignore Limits Supplier
 		intake.setIgnoreLimitsSupplier(() 	-> operatorManualOverride);
 		extender.setIgnoreLimitsSupplier(() -> operatorManualOverride);
-		hang.setIgnoreLimitsSupplier(() 		-> operatorManualOverride);
 		agitator.setIgnoreLimitsSupplier(() -> operatorManualOverride);
-		hood.setIgnoreLimitsSupplier(() 		-> operatorManualOverride);
 		transfer.setIgnoreLimitsSupplier(() -> operatorManualOverride);
+		hood.setIgnoreLimitsSupplier(() 		-> operatorManualOverride);
+		flywheel.setIgnoreLimitsSupplier(() -> operatorManualOverride);
+		hang.setIgnoreLimitsSupplier(() 		-> operatorManualOverride);
 
 		/// -------------------------------------------------------------------------------------------
 		/// ------------------------------------- Drive Commands --------------------------------------		
