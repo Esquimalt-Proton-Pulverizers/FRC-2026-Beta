@@ -461,18 +461,18 @@ public class RobotContainer {
 		);
 
 		// Hang Manual Position Control
-		// Lower Hang (Retract)
+		// Raise Hang (Extend)
 		operatorController.x().onTrue(
 			new ConditionalCommand(
-				Commands.runOnce(() -> hang.stepPositionRad(HangConstants.kStepRad), hang),
+				Commands.runOnce(() -> hang.stepPositionMeters(HangConstants.kStepMeters), hang),
 				new InstantCommand(),
 				() -> hang != null
 			)
 		);
-		// Raise Hang (Extend)
+		// Lower Hang (Retract)
 		operatorController.b().onTrue(
 			new ConditionalCommand(
-				Commands.runOnce(() -> hang.stepPositionRad(-HangConstants.kStepRad), hang),
+				Commands.runOnce(() -> hang.stepPositionMeters(-HangConstants.kStepMeters), hang),
 				new InstantCommand(),
 				() -> hang != null
 			)
@@ -547,6 +547,7 @@ public class RobotContainer {
 				Commands.runOnce(() -> {
 					extender.resetEncoders();
 					turret.resetMotorEncoder();
+					hang.resetEncoders();
 					idleAllSubsystems();
 				}, turret, extender),
 				new InstantCommand(),

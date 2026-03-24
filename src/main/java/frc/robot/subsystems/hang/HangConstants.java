@@ -1,57 +1,55 @@
 package frc.robot.subsystems.hang;
 
 import com.revrobotics.spark.config.SparkBaseConfig;
+import edu.wpi.first.math.util.Units;
 
-/** Constants for the Hang (climber) subsystem: control to pot voltage setpoints. */
-public final class HangConstants { // XXX: Set correct values for your robot
+/** Constants for the Hang (one motor, position-controlled) subsystem. */
+public final class HangConstants { // XXX: Add correct values
 
   private HangConstants() {}
 
-  /** CAN ID of the Hang motor (SPARK MAX). */
+  /** CAN ID of the Hang motor (NEO 550 on SPARK MAX). */
   public static final int kMotorId = 9;
 
   /** Idle behavior when output is zero (coast or brake). */
   public static final SparkBaseConfig.IdleMode kIdleMode = SparkBaseConfig.IdleMode.kBrake;
 
+  /** Set true if positive output moves the Hang the opposite direction. */
+  public static final boolean kMotorInverted = true;
+
   /** Smart current limit. */
   public static final int kSmartCurrentLimitAmps = 40;
 
-  /** Open-loop ramp rate (sec from 0 to full). */
-  public static final double kOpenLoopRampRateSec = 0.2;
+  /** Linear travel (meters) per motor rotation. */
+  public static final double kMetersPerRotation = 0.01;
+
+  /** Hang meters per motor rotation (output / input). */
+  public static final double kGearRatio = 1.0;
+
+  /** PID gains for onboard position control. */
+  public static final double kP = 2.0;
+  public static final double kI = 0.0;
+  public static final double kD = 0.0;
 
   /** Period for sending signals to the motor. */
   public static final int kSignalsPeriodMs = 31;
   public static final int kEncoderVelocitySignalPeriodMs = 31;
 
-  /** Whether the motor output should be inverted. */
-  public static final boolean kMotorInverted = true;
+  /** Target position when the Hang is in Stored (retracted) mode. */
+  public static final double kStoredPositionMeters = Units.inchesToMeters(0.0);
 
-  /** Analog input channel for the hang potentiometer (RoboRIO2 port). */
-  public static final int kPotChannel = 0;
+  /** Target position when the Hang is in Level_1 (extended) mode. */
+  public static final double kLevel1PositionMeters = Units.inchesToMeters(7.0);
 
-  /**
-   * Potentiometer voltage range: 5 V = retracted (stored), 5 V * 0.33 = extended (level 1).
-   * Voltage decreases as mechanism extends. Control targets these voltages directly (no conversion).
-   */ 
-  public static final double kPotRetractedVoltage = 4.14; //  Was 4.41
-  public static final double kPotExtendedVoltage = -1.0; // Was 1.4
+  /** Minimum extension (fully retracted). */
+  public static final double kMinMeters = Units.inchesToMeters(0.0);
 
-  /** Preset target voltages (V): stored = retracted, level 1 = extended. */
-  public static final double kStoredVoltage = kPotRetractedVoltage;
-  public static final double kLevel1Voltage = kPotExtendedVoltage;
+  /** Maximum extension (fully extended). */
+  public static final double kMaxMeters = Units.inchesToMeters(8.0);
 
-  /** PID gains for voltage setpoint control. */
-  public static final double kP = 40.0;
-  public static final double kI = 0.0;
-  public static final double kD = 0.2;
+  /** Tolerance for considering the Hang at target (measured vs target). */
+  public static final double kAtTargetToleranceMeters = Units.inchesToMeters(0.10);
 
-  /** Max voltage magnitude applied to the motor. */
-  public static final double kMaxVoltage = 5.0;
-
-  /** Potentiometer voltage tolerance for at-target checks (V). */
-  public static final double kAtTargetToleranceVolts = 0.05;
-
-  /** Delta pot setpoint volts per step. */
-  public static final double kStepVolts = 0.1;
+  /** Delta Meter per step. */
+  public static final double kStepMeters = Units.inchesToMeters(0.5);
 }
-
