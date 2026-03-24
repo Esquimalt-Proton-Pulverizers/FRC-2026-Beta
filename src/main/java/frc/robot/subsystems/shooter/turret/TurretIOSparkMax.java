@@ -1,5 +1,7 @@
 package frc.robot.subsystems.shooter.turret;
 
+import static frc.robot.subsystems.shooter.turret.TurretConstants.*;
+
 import com.revrobotics.REVLibError;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -11,15 +13,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.util.Units;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kD;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kEncoderVelocitySignalPeriodMs;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kGearRatio;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kI;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kIdleMode;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kMotorId;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kP;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kSignalsPeriodMs;
-import static frc.robot.subsystems.shooter.turret.TurretConstants.kSmartCurrentLimitAmps;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Turret IO using a single SPARK MAX (NEO 550) with onboard position control. */

@@ -173,7 +173,7 @@ public class Turret extends SubsystemBase {
     return MathUtil.inputModulus(turretFrameRad + Math.PI, -Math.PI, Math.PI);
   } // End turretToRobotFrameRad
 
-  /** Convert target (robot frame) to Turret frame and clamp to mechanical limits if manual override is not enabled. */
+  /** Get and convert target (robot frame) to Turret frame and clamp to mechanical limits if manual override is not enabled. */
   private double getSetpointRad() {
     return manualOverrideSupplier.getAsBoolean() 
         ? robotToTurretFrameRad(targetRelativeToRobot.getRadians())
