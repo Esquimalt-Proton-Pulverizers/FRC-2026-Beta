@@ -31,13 +31,18 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.PhoenixUtil;
 import java.util.Arrays;
+import java.util.Random;
+
 import org.ironmaple.simulation.drivesims.SwerveModuleSimulation;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Physics sim implementation of module IO using MapleSim. The sim models are configured using a set
@@ -45,6 +50,13 @@ import org.ironmaple.simulation.drivesims.SwerveModuleSimulation;
  * through the same code path as real hardware.
  */
 public class ModuleIOSim implements ModuleIO {
+  private static final Object driveMultiplierLock = new Object();
+  private static final double[] driveSpeedMultipliers = {1.0, 1.0, 1.0, 1.0};
+  private static double driveMultiplierLastResampleTimeSec = Double.NaN;
+  private static final Random driveMultiplierRandom = new Random();
+
+  private final int moduleIndex;
+
   private final SwerveModuleConstants<
           TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
       constants;
@@ -82,7 +94,14 @@ public class ModuleIOSim implements ModuleIO {
   private final StatusSignal<Voltage> turnAppliedVolts;
   private final StatusSignal<Current> turnCurrent;
 
-  public ModuleIOSim(SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constants, SwerveModuleSimulation simulation) {
+  public ModuleIOSim(
+      SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constants,
+      SwerveModuleSimulation simulation,
+      int moduleIndex) {
+    if (moduleIndex < 0 || moduleIndex > 3) {
+      throw new IllegalArgumentException("moduleIndex must be 0..3, got " + moduleIndex);
+    }
+    this.moduleIndex = moduleIndex;
     this.constants = PhoenixUtil.regulateModuleConstantForSimulation(constants);
     this.simulation = simulation;
 
@@ -175,7 +194,7 @@ public class ModuleIOSim implements ModuleIO {
     simulation.useDriveMotorController(new PhoenixUtil.TalonFXMotorControllerSim(driveTalon));
     simulation.useSteerMotorController(
         new PhoenixUtil.TalonFXMotorControllerWithRemoteCancoderSim(turnTalon, cancoder));
-  }
+  } // End ModuleIOSim Constructor
 
   @Override
   public void updateInputs(ModuleIOInputs inputs) {
@@ -231,14 +250,56 @@ public class ModuleIOSim implements ModuleIO {
 
   @Override
   public void setDriveVelocity(double velocityRadPerSec) {
+    tickDriveSpeedMultipliersIfNeeded();
+    double scaledRadPerSec = velocityRadPerSec * driveSpeedMultipliers[moduleIndex];
     double velocityRotPerSec =
-        Units.radiansToRotations(velocityRadPerSec) * constants.DriveMotorGearRatio;
+        Units.radiansToRotations(scaledRadPerSec) * constants.DriveMotorGearRatio;
     driveTalon.setControl(
         switch (constants.DriveMotorClosedLoopOutput) {
           case Voltage -> velocityVoltageRequest.withVelocity(velocityRotPerSec);
           case TorqueCurrentFOC -> velocityTorqueCurrentRequest.withVelocity(velocityRotPerSec);
         });
-  }
+  } // End setDriveVelocity
+
+  private static void tickDriveSpeedMultipliersIfNeeded() {
+    synchronized (driveMultiplierLock) {
+      double now = Timer.getFPGATimestamp();
+      double period = Constants.SimulationDrive.kDriveSpeedMultiplierResamplePeriodS;
+      if (Double.isNaN(driveMultiplierLastResampleTimeSec)
+          || now - driveMultiplierLastResampleTimeSec >= period) {
+        resampleDistinctDriveSpeedMultipliers();
+        driveMultiplierLastResampleTimeSec = now;
+        Logger.recordOutput("Subsystems/Drive/Sim/DriveSpeedMultipliers", driveSpeedMultipliers);
+      }
+    }
+  } // End tickDriveSpeedMultipliersIfNeeded
+
+  /**
+   * Fills {@link #driveSpeedMultipliers} with four distinct values in
+   * [{@link Constants.SimulationDrive#kDriveSpeedMultiplierMin},
+   * {@link Constants.SimulationDrive#kDriveSpeedMultiplierMax}].
+   */
+  private static void resampleDistinctDriveSpeedMultipliers() {
+    final double lo = Constants.SimulationDrive.kDriveSpeedMultiplierMin;
+    final double hi = Constants.SimulationDrive.kDriveSpeedMultiplierMax;
+    final double span = hi - lo;
+    double[] next = new double[4];
+    outer:
+    while (true) {
+      for (int i = 0; i < 4; i++) {
+        next[i] = lo + driveMultiplierRandom.nextDouble() * span;
+      }
+      for (int i = 0; i < 4; i++) {
+        for (int j = i + 1; j < 4; j++) {
+          if (Math.abs(next[i] - next[j]) < 1e-9) {
+            continue outer;
+          }
+        }
+      }
+      break;
+    }
+    System.arraycopy(next, 0, driveSpeedMultipliers, 0, 4);
+  } // End resampleDistinctDriveSpeedMultipliers
 
   @Override
   public void setTurnPosition(Rotation2d rotation) {

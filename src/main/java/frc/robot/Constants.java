@@ -61,6 +61,17 @@ public final class Constants {
     public static final double ROTATION_TOLERANCE_RAD = 0.08;
   }
 
+  /**
+   * Drive realism for Maple / {@link frc.robot.subsystems.drive.ModuleIOSim} only (that IO is not
+   * used on the real robot).
+   */
+  public static class SimulationDrive {
+    /** Per-module closed-loop drive velocity scale; four wheels get four distinct values in range. */
+    public static final double kDriveSpeedMultiplierMin = 0.97;
+    public static final double kDriveSpeedMultiplierMax = 1.0;
+    public static final double kDriveSpeedMultiplierResamplePeriodS = 5.0;
+  }
+
   /** Runtime mode. */
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;

@@ -191,10 +191,10 @@ public class RobotContainer {
 				SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
 				drive = new Drive(
 						new GyroIOSim(driveSimulation.getGyroSimulation()),
-						new ModuleIOSim(TunerConstants.FrontLeft, driveSimulation.getModules()[0]),
-						new ModuleIOSim(TunerConstants.FrontRight, driveSimulation.getModules()[1]),
-						new ModuleIOSim(TunerConstants.BackLeft, driveSimulation.getModules()[2]),
-						new ModuleIOSim(TunerConstants.BackRight, driveSimulation.getModules()[3]),
+						new ModuleIOSim(TunerConstants.FrontLeft, driveSimulation.getModules()[0], 0),
+						new ModuleIOSim(TunerConstants.FrontRight, driveSimulation.getModules()[1], 1),
+						new ModuleIOSim(TunerConstants.BackLeft, driveSimulation.getModules()[2], 2),
+						new ModuleIOSim(TunerConstants.BackRight, driveSimulation.getModules()[3], 3),
 						driveSimulation::setSimulationWorldPose);
 				
 				// Initialize Vision after Drive (Vision needs Drive reference)
