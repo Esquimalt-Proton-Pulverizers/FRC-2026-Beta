@@ -28,7 +28,8 @@ After=multi-user.target
  Type=idle
 Restart=always
 User=root
-ExecStart=/bin/bash -c ‘source venv3/bin/activate && cd home/eas/code && python post-HSV-Depth-nt.py’
+WorkingDirectory=/home/eas/code
+ExecStart=/home/eas/venv3/bin/python post-detect.py
 [Install]
 WantedBy=multi-user.target
 ```
@@ -56,7 +57,14 @@ sudo systemctl enable depth-cam.service
 sudo systemctl start depth-cam.service 
 ```
 
-## Test and Final Thoughts
-- That should be everything needed.
+## Finally
 - Reboot the Pi (with the RealSense camera attached) and check that the attached RoboRIO sees the NetworkTable "post-detection" appear.
 - Note the post-detection python script must always have the name specified in the service file above (regardless of version) and, of course, be located in home/eas/code
+- to check and see if the service is running use this command to view all services:
+```
+sudo systemctl list-units --type=service
+```
+- To view the output (log) of the service use this command:
+```
+journalctl -e -u depth-cam.service
+```
