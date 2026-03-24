@@ -164,9 +164,9 @@ public class RobotContainer {
 				agitator = isAgitatorEnabled ? new Agitator(new AgitatorIOSparkMax()) : new Agitator(new AgitatorIO() {});
 				transfer = isTransferEnabled ? new Transfer(new TransferIOSparkMax()) : new Transfer(new TransferIO() {});
 				turret   = isTurretEnabled 	 ? new Turret(new TurretIOSparkMax()) 	  : new Turret(new TurretIO() {});
-				hood     = isHoodEnabled  	 ? new Hood(new HoodIOSparkMax()) 		  : new Hood(new HoodIO() {});
+				hood     = isHoodEnabled  	 ? new Hood(new HoodIOSparkMax()) 		  	: new Hood(new HoodIO() {});
 				flywheel = isFlywheelEnabled ? new Flywheel(new FlywheelIOTalonFX())  : new Flywheel(new FlywheelIO() {});
-				hang 	 = isHangEnabled	 ? new Hang(new HangIOBrushedSparkMax())  : new Hang(new HangIO() {});
+				hang 	 	 = isHangEnabled		 ? new Hang(new HangIOSparkMax())  				: new Hang(new HangIO() {});
 				shooterSim = null;
 				shooterSimVisualizer = null;
 				break;
@@ -249,8 +249,9 @@ public class RobotContainer {
 		shooter.setManualOverrideSupplier(() -> operatorManualOverride);
 
 		// Subsystem Manual Override Ignore Limits Supplier
-		intake.setIgnoreLimitsSupplier(() -> operatorManualOverride);
+		intake.setIgnoreLimitsSupplier(() 	-> operatorManualOverride);
 		extender.setIgnoreLimitsSupplier(() -> operatorManualOverride);
+		hang.setIgnoreLimitsSupplier(() 		-> operatorManualOverride);
 		agitator.setIgnoreLimitsSupplier(() -> operatorManualOverride);
 		transfer.setIgnoreLimitsSupplier(() -> operatorManualOverride);
 
@@ -315,12 +316,14 @@ public class RobotContainer {
   private void configureDriverBindings() {
     drive.setDefaultCommand(teleopDrive);
 
-		// Cycle Extender, starts in Retracted, goes to Extended, and then cycles between Partial and Extended.
+		// Cycle Extender, starts in Retracted, goes to Extended, and then cycles between Partial and Extended. 
+		// If in Manual, goes to Extended.
 		driverController.leftTrigger().onTrue(Commands.runOnce(() -> {
 			switch (extender.getState()) {
-				case EXTENDED -> extender.setPartialState();
-				case PARTIAL -> extender.setExtendedState();
+				case EXTENDED ->  extender.setPartialState();
+				case PARTIAL -> 	extender.setExtendedState();
 				case RETRACTED -> extender.setExtendedState();
+				case MANUAL -> 		extender.setExtendedState();
 				default -> throw new IllegalArgumentException("Unexpected value: " + extender.getState());
 			}
 		}, extender));
@@ -457,19 +460,19 @@ public class RobotContainer {
 				() -> extender != null)
 		);
 
-		// Hang Manual Control (step target pot voltage, no position conversion)
-		// Lower Hang (Retract - higher voltage)
+		// Hang Manual Position Control
+		// Lower Hang (Retract)
 		operatorController.x().onTrue(
 			new ConditionalCommand(
-				Commands.runOnce(() -> hang.stepVolts(HangConstants.kStepVolts), hang),
+				Commands.runOnce(() -> hang.stepPositionRad(HangConstants.kStepRad), hang),
 				new InstantCommand(),
 				() -> hang != null
 			)
 		);
-		// Raise Hang (Extend - lower voltage)
+		// Raise Hang (Extend)
 		operatorController.b().onTrue(
 			new ConditionalCommand(
-				Commands.runOnce(() -> hang.stepVolts(-HangConstants.kStepVolts), hang),
+				Commands.runOnce(() -> hang.stepPositionRad(-HangConstants.kStepRad), hang),
 				new InstantCommand(),
 				() -> hang != null
 			)
