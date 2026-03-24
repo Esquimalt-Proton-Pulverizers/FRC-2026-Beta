@@ -253,6 +253,7 @@ public class RobotContainer {
 		extender.setIgnoreLimitsSupplier(() -> operatorManualOverride);
 		hang.setIgnoreLimitsSupplier(() 		-> operatorManualOverride);
 		agitator.setIgnoreLimitsSupplier(() -> operatorManualOverride);
+		hood.setIgnoreLimitsSupplier(() 		-> operatorManualOverride);
 		transfer.setIgnoreLimitsSupplier(() -> operatorManualOverride);
 
 		/// -------------------------------------------------------------------------------------------

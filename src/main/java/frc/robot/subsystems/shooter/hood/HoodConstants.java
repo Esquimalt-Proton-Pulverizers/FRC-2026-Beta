@@ -15,6 +15,9 @@ public final class HoodConstants { // XXX: Add correct values
   /** Idle behavior when output is zero (coast or brake). SPARK MAX only. */
   public static final SparkBaseConfig.IdleMode kIdleMode = SparkBaseConfig.IdleMode.kBrake;
 
+  /** Set true if positive output moves the Hood the opposite direction. */
+  public static final boolean kMotorInverted = false;
+
   /** Neutral mode when output is zero (coast or brake). Talon FX only. */
   public static final NeutralModeValue kNeutralMode = NeutralModeValue.Coast;
 
@@ -24,7 +27,7 @@ public final class HoodConstants { // XXX: Add correct values
   /** Stator current limit. Talon FX only. */
   public static final double kStatorCurrentLimitAmps = 30.0;
 
-  /** Motor shaft rotations per Hood rotation (output / input). */
+  /** Hood radians per motor rotation (output / input). 1.0 = 1:1. */
   public static final double kGearRatio = 1.0;
 
   /** PID gains for onboard position control and for sim software control. */
@@ -36,22 +39,19 @@ public final class HoodConstants { // XXX: Add correct values
   public static final int kSignalsPeriodMs = 19;
   public static final int kEncoderVelocitySignalPeriodMs = 19;
 
-  /** Encoder zero offset. Added to raw encoder so that 0 = defined physical position. */
-  public static final double kEncoderZeroOffsetRad = Units.degreesToRadians(0.0);
-
   /** Hood angle when the Hood is disabled/locked. */
   public static final double kDisabledAngleRad = Units.degreesToRadians(25.0);
 
   /** Minimum Hood angle. */
   public static final double kMinAngleRad = Units.degreesToRadians(25.0);
-
+  
   /** Maximum Hood angle. */
   public static final double kMaxAngleRad = Units.degreesToRadians(10.0);
 
   /** Max voltage magnitude applied to the motor. */
   public static final double kMaxVoltage = 12.0;
 
-  /** Tolerance for at-target check. */
+  /** Tolerance for considering the Hood at target (measured vs target). */
   public static final double kAtTargetToleranceRad = Units.degreesToRadians(2.0);
 
   /** Sim only: max Hood setpoint slew rate. */
