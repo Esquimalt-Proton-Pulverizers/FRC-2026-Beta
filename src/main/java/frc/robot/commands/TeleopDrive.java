@@ -43,8 +43,9 @@ public class TeleopDrive extends Command {
   @AutoLogOutput
   private final Trigger inTrenchZoneTrigger;
 
-  @AutoLogOutput
-  private final Trigger inBumpZoneTrigger;
+  /// Disabled (Bump Zone is not used)
+  // @AutoLogOutput
+  // private final Trigger inBumpZoneTrigger;
 
   private final PIDController trenchYController =
       new PIDController(SwerveConstants.TRENCH_Y_KP, SwerveConstants.TRENCH_Y_KI, SwerveConstants.TRENCH_Y_KD);
@@ -84,13 +85,16 @@ public class TeleopDrive extends Command {
         .willContain(drive::getPose, drive::getFieldRelativeChassisSpeeds, Seconds.of(SwerveConstants.TRENCH_ALIGN_TIME_S))
         .debounce(0.1);
 
-    inBumpZoneTrigger = Zones.BUMP_ZONES
-        .willContain(drive::getPose, drive::getFieldRelativeChassisSpeeds, Seconds.of(SwerveConstants.BUMP_ALIGN_TIME_S))
-        .debounce(0.1);
+    /// Disabled (Bump Zone is not used)
+    // inBumpZoneTrigger = Zones.BUMP_ZONES
+    //     .willContain(drive::getPose, drive::getFieldRelativeChassisSpeeds, Seconds.of(SwerveConstants.BUMP_ALIGN_TIME_S))
+    //     .debounce(0.1);
 
     inTrenchZoneTrigger.onTrue(Commands.runOnce(() -> currentDriveMode = DriveMode.TRENCH_LOCK));
-    inBumpZoneTrigger.onTrue(Commands.runOnce(() -> currentDriveMode = DriveMode.BUMP_LOCK));
-    inTrenchZoneTrigger.or(inBumpZoneTrigger).onFalse(Commands.runOnce(() -> currentDriveMode = DriveMode.NORMAL));
+    /// Disabled (Bump Zone is not used)
+    // inBumpZoneTrigger.onTrue(Commands.runOnce(() -> currentDriveMode = DriveMode.BUMP_LOCK));
+    // inTrenchZoneTrigger.or(inBumpZoneTrigger).onFalse(Commands.runOnce(() -> currentDriveMode = DriveMode.NORMAL));
+    inTrenchZoneTrigger.onFalse(Commands.runOnce(() -> currentDriveMode = DriveMode.NORMAL));
 
     addRequirements(drive);
   } // End TeleopDrive Constructor
