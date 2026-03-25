@@ -8,7 +8,7 @@ import edu.wpi.first.math.MathUtil;
 public class HangIOSim implements HangIO {
 
   private static final double kLoopPeriodSecs = 0.02;
-  private static final double kMaxMetersPerSec = 0.5;
+  private static final double kMaxMetersPerSec = 0.04064;
 
   private double targetPositionMeters = 0.0;
   private double currentPositionMeters = 0.0;
