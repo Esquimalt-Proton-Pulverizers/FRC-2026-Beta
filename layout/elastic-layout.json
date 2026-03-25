@@ -1392,7 +1392,7 @@
             "height": 95.0,
             "type": "Boolean Box",
             "properties": {
-              "topic": "/AdvantageKit/RealOutputs/ShooterCommand/Ready/TurretHubInRange",
+              "topic": "/AdvantageKit/RealOutputs/ShooterCommand/Ready/TurretTargetInRange",
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4283215696,
@@ -2082,7 +2082,7 @@
             "height": 95.0,
             "type": "Boolean Box",
             "properties": {
-              "topic": "/AdvantageKit/RealOutputs/ShooterCommand/Ready/TurretHubInRange",
+              "topic": "/AdvantageKit/RealOutputs/ShooterCommand/Ready/TurretTargetInRange",
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4283215696,
