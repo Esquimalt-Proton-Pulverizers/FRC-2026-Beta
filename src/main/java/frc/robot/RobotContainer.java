@@ -10,7 +10,11 @@ package frc.robot;
 import java.util.function.BooleanSupplier;
 
 import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.dyn4j.dynamics.BodyFixture;
+import org.dyn4j.geometry.Mass;
+import org.dyn4j.geometry.Rectangle;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -188,6 +192,7 @@ public class RobotContainer {
         SimulatedArena.overrideInstance(new frc.robot.simulation.Arena2026Rebuilt(true));
 
 				driveSimulation = new SwerveDriveSimulation(Drive.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
+				applyRearGapToDriveCollision(driveSimulation);
 				SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
 				drive = new Drive(
 						new GyroIOSim(driveSimulation.getGyroSimulation()),
@@ -654,6 +659,77 @@ public class RobotContainer {
 		driveSimulation.setSimulationWorldPose(new Pose2d(3, 3, new Rotation2d()));
 		SimulatedArena.getInstance().resetFieldForAuto();
 	} // End resetSimulationField
+
+	/**
+	 * Updates the dyn4j chassis collision footprint for the MapleSim drive sim so the rear bumper
+	 * has a centered opening.
+	 *
+	 * This only affects the drive simulation collision detection (not FuelSim).
+	 */
+	private static void applyRearGapToDriveCollision(SwerveDriveSimulation driveSimulation) {
+		// MapleSim / dyn4j dimensions are meters.
+		double bumperLengthX = Constants.Dimensions.FULL_LENGTH.in(Meters);
+		double bumperWidthY = Constants.Dimensions.FULL_WIDTH.in(Meters);
+
+		// Rear gap spec: width = 17" (centered on robot Y=0) and depth = 3" (into the robot in -X).
+		double gapHalfWidthY = 8.5 * 0.0254; // 8.5 in half-width
+		double gapDepthX = 3.0 * 0.0254; // 3 in depth
+
+		double halfLenX = bumperLengthX / 2.0;
+		double halfWidthY = bumperWidthY / 2.0;
+
+		double sideHeightY = halfWidthY - gapHalfWidthY;
+		if (sideHeightY <= 0) {
+			// Avoid generating invalid fixtures if constants are inconsistent.
+			return;
+		}
+
+		// Preserve dyn4j mass/inertia (MapleSim applies forces using its original COM assumptions).
+		// If we recompute mass from the new U-shape fixtures, the COM shifts forward and the
+		// physics can become unstable (robot "haywires" on joystick input).
+		Mass oldMass = driveSimulation.getMass().copy();
+
+		// Remove the default bumper rectangle fixtures and replace with 3 rectangles:
+		// - a front rectangle (full width) stopping at the rear gap start
+		// - a left rear strip
+		// - a right rear strip
+		driveSimulation.removeAllFixtures();
+
+		// Front rectangle: x in [-halfLenX + gapDepthX, +halfLenX]
+		double frontWidthX = bumperLengthX - gapDepthX;
+		double frontCenterX = gapDepthX / 2.0; // midpoint of [-halfLenX + gapDepthX, +halfLenX]
+		Rectangle front = new Rectangle(frontWidthX, bumperWidthY);
+		front.translate(frontCenterX, 0.0);
+		BodyFixture frontFixture = new BodyFixture(front);
+		frontFixture.setFriction(AbstractDriveTrainSimulation.BUMPER_COEFFICIENT_OF_FRICTION);
+		frontFixture.setRestitution(AbstractDriveTrainSimulation.BUMPER_COEFFICIENT_OF_RESTITUTION);
+		frontFixture.setDensity(0.0); // collision-only; keep oldMass for dynamics stability
+		driveSimulation.addFixture(frontFixture);
+
+		// Left & right strips: x in [-halfLenX, -halfLenX + gapDepthX], y outside the gap
+		double stripWidthX = gapDepthX;
+		double stripCenterX = -halfLenX + gapDepthX / 2.0;
+		double sideCenterY = (gapHalfWidthY + halfWidthY) / 2.0;
+
+		Rectangle left = new Rectangle(stripWidthX, sideHeightY);
+		left.translate(stripCenterX, -sideCenterY);
+		BodyFixture leftFixture = new BodyFixture(left);
+		leftFixture.setFriction(AbstractDriveTrainSimulation.BUMPER_COEFFICIENT_OF_FRICTION);
+		leftFixture.setRestitution(AbstractDriveTrainSimulation.BUMPER_COEFFICIENT_OF_RESTITUTION);
+		leftFixture.setDensity(0.0); // collision-only; keep oldMass for dynamics stability
+		driveSimulation.addFixture(leftFixture);
+
+		Rectangle right = new Rectangle(stripWidthX, sideHeightY);
+		right.translate(stripCenterX, sideCenterY);
+		BodyFixture rightFixture = new BodyFixture(right);
+		rightFixture.setFriction(AbstractDriveTrainSimulation.BUMPER_COEFFICIENT_OF_FRICTION);
+		rightFixture.setRestitution(AbstractDriveTrainSimulation.BUMPER_COEFFICIENT_OF_RESTITUTION);
+		rightFixture.setDensity(0.0); // collision-only; keep oldMass for dynamics stability
+		driveSimulation.addFixture(rightFixture);
+
+		// Restore old mass/inertia so COM stays where MapleSim expects.
+		driveSimulation.setMass(oldMass);
+	} // End applyRearGapToDriveCollision
 
   /** Configures FuelSim for robot-ball collision in simulation. */
   private void configureFuelSim() {
