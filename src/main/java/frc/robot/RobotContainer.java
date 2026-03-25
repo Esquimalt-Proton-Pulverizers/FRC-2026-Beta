@@ -346,6 +346,7 @@ public class RobotContainer {
 				case PARTIAL -> 	extender.setExtendedState();
 				case RETRACTED -> extender.setExtendedState();
 				case MANUAL -> 		extender.setExtendedState();
+				case IDLE ->			extender.setExtendedState();
 				default -> throw new IllegalArgumentException("Unexpected value: " + extender.getState());
 			}
 		}, extender));
