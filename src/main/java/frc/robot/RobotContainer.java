@@ -203,14 +203,14 @@ public class RobotContainer {
 						new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, driveSimulation::getSimulatedDriveTrainPose));
 
 				// Subsystems
-				intake = new Intake(new IntakeIOSim());
+				intake 	 = new Intake(new IntakeIOSim());
 				extender = new Extender(new ExtenderIOSim());
 				agitator = new Agitator(new AgitatorIOSim());
 				transfer = new Transfer(new TransferIOSim());
-				turret = new Turret(new TurretIOSim());
-				hood = new Hood(new HoodIOSim());
+				turret 	 = new Turret(new TurretIOSim());
+				hood 		 = new Hood(new HoodIOSim());
 				flywheel = new Flywheel(new FlywheelIOSim());
-				hang = new Hang(new HangIOSim());
+				hang 		 = new Hang(new HangIOSim());
 
 				// Shooter Sim Visualizer
 				if (shooterSimEnabled) {
@@ -243,14 +243,14 @@ public class RobotContainer {
 				vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
 				// Subsystems
-				intake = new Intake(new IntakeIO() {});
+				intake 	 = new Intake(new IntakeIO() {});
 				extender = new Extender(new ExtenderIO() {});
 				agitator = new Agitator(new AgitatorIO() {});
 				transfer = new Transfer(new TransferIO() {});
-				turret = new Turret(new TurretIO() {});
-				hood = new Hood(new HoodIO() {});
+				turret 	 = new Turret(new TurretIO() {});
+				hood 		 = new Hood(new HoodIO() {});
 				flywheel = new Flywheel(new FlywheelIO() {});
-				hang = new Hang(new HangIO() {});
+				hang 		 = new Hang(new HangIO() {});
 				shooterSim = null;
 				shooterSimVisualizer = null;
 				break;
@@ -371,13 +371,13 @@ public class RobotContainer {
 		if (hang != null) {
 			driverController.b().onTrue(
 				new ConditionalCommand(
-					Commands.runOnce(() -> hang.setLevel1State(), hang), 
 					Commands.runOnce(() -> hang.setIdleState(), hang), 
+					Commands.runOnce(() -> hang.setLevel1State(), hang), 
 					() -> hang.getState() == Hang.State.LEVEL_1));
 			driverController.x().onTrue(
 				new ConditionalCommand(
-					Commands.runOnce(() -> hang.setStoredState(), hang), 
 					Commands.runOnce(() -> hang.setIdleState(), hang), 
+					Commands.runOnce(() -> hang.setStoredState(), hang), 
 					() -> hang.getState() == Hang.State.STORED));
 		}
 
@@ -471,7 +471,7 @@ public class RobotContainer {
 
 		// Hang Manual Position Control
 		// Raise Hang (Extend)
-		operatorController.x().onTrue(
+		operatorController.b().onTrue(
 			new ConditionalCommand(
 				Commands.runOnce(() -> hang.stepPositionMeters(HangConstants.kStepMeters), hang),
 				new InstantCommand(),
@@ -479,7 +479,7 @@ public class RobotContainer {
 			)
 		);
 		// Lower Hang (Retract)
-		operatorController.b().onTrue(
+		operatorController.x().onTrue(
 			new ConditionalCommand(
 				Commands.runOnce(() -> hang.stepPositionMeters(-HangConstants.kStepMeters), hang),
 				new InstantCommand(),
@@ -626,12 +626,12 @@ public class RobotContainer {
 	/** Idle all Subsystems.  */
 	public void idleAllSubsystems() {
 		CommandScheduler.getInstance().cancel(shootWhenReadyCommand);
-		intake.setIdleState();
-		// extender.setIdleState();
-		agitator.setIdleState();
-		transfer.setIdleState();
-		flywheel.setState(Flywheel.State.IDLE);
-		if (hang != null) hang.setIdleState();
+		if (intake != null)		intake.setIdleState();
+		if (extender != null) extender.setIdleState();
+		if (agitator != null) agitator.setIdleState();
+		if (transfer != null) transfer.setIdleState();
+		if (flywheel != null) flywheel.setState(Flywheel.State.IDLE);
+		if (hang != null) 		hang.setIdleState();
 	} // End idleBallHandling
 
   /**
