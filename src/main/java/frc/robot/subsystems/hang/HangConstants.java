@@ -39,13 +39,13 @@ public final class HangConstants { // XXX: Add correct values
   public static final double kStoredPositionMeters = Units.inchesToMeters(0.0);
 
   /** Target position when the Hang is in Level_1 (extended) mode. */
-  public static final double kLevel1PositionMeters = Units.inchesToMeters(7.0);
+  public static final double kLevel1PositionMeters = Units.inchesToMeters(7.75);
 
   /** Minimum extension (fully retracted). */
   public static final double kMinMeters = Units.inchesToMeters(0.0);
 
   /** Maximum extension (fully extended). */
-  public static final double kMaxMeters = Units.inchesToMeters(8.0);
+  public static final double kMaxMeters = Units.inchesToMeters(8.5);
 
   /** Tolerance for considering the Hang at target (measured vs target). */
   public static final double kAtTargetToleranceMeters = Units.inchesToMeters(0.10);
