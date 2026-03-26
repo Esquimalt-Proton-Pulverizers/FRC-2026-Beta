@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.379,
+        "x": 3.617,
         "y": 0.432
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.668059393138601,
+        "x": 3.9060593931386016,
         "y": 0.43960730555030875
       },
       "isLocked": false,
@@ -69,7 +69,7 @@
   "folder": "Fuel Sweeps",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 1.6589777777777779,
-        "y": 6.051
+        "x": 1.23915847399858,
+        "y": 4.98536629696471
       },
       "prevControl": {
-        "x": 1.4089777777777779,
-        "y": 6.051
+        "x": 0.9891584739985799,
+        "y": 4.98536629696471
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ShootingPosition-Left-11ft"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -1.7739539277855623
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Depot",
