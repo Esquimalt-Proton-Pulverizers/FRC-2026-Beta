@@ -46,7 +46,7 @@ public class HangIOSparkMax implements HangIO {
         .primaryEncoderPositionPeriodMs(kSignalsPeriodMs)
         .primaryEncoderVelocityPeriodMs(kEncoderVelocitySignalPeriodMs);
 
-    motor.configure(sparkMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    motor.configure(sparkMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     motor.setPeriodicFrameTimeout(0);
   } // End HangIOSparkMax Constructor
 
@@ -69,7 +69,7 @@ public class HangIOSparkMax implements HangIO {
           .outputCurrentPeriodMs(kSignalsPeriodMs)
           .primaryEncoderPositionPeriodMs(kSignalsPeriodMs)
           .primaryEncoderVelocityPeriodMs(kEncoderVelocitySignalPeriodMs);
-      motor.configure(sparkMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+      motor.configure(sparkMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       motor.setPeriodicFrameTimeout(0);
     }
 

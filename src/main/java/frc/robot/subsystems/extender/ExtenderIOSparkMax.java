@@ -47,7 +47,7 @@ public class ExtenderIOSparkMax implements ExtenderIO {
         .primaryEncoderPositionPeriodMs(kSignalsPeriodMs)
         .primaryEncoderVelocityPeriodMs(kEncoderVelocitySignalPeriodMs);
 
-    motor.configure(sparkMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    motor.configure(sparkMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     motor.setPeriodicFrameTimeout(0);
   } // End ExtenderIOSparkMax Constructor
 
@@ -70,7 +70,7 @@ public class ExtenderIOSparkMax implements ExtenderIO {
           .outputCurrentPeriodMs(kSignalsPeriodMs)
           .primaryEncoderPositionPeriodMs(kSignalsPeriodMs)
           .primaryEncoderVelocityPeriodMs(kEncoderVelocitySignalPeriodMs);
-      motor.configure(sparkMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+      motor.configure(sparkMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       motor.setPeriodicFrameTimeout(0);
     }
 
