@@ -3,7 +3,7 @@ package frc.robot.subsystems.intake;
 import com.revrobotics.spark.config.SparkBaseConfig;
 
 /** Constants for the Intake (one motor, voltage controlled) subsystem. */
-public final class IntakeConstants { // XXX: Add correct values
+public final class IntakeConstants {
 
   private IntakeConstants() {}
 
@@ -42,5 +42,5 @@ public final class IntakeConstants { // XXX: Add correct values
   public static final double kReversingVoltage = -2.0;
 
   /** Delta volts per step. */
-  public static final double kStepVolts = 0.25;
+  public static final double kStepVolts = 1.0;
 }

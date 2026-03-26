@@ -20,7 +20,7 @@ public final class AgitatorConstants { // XXX: Add correct values
   public static final int kSmartCurrentLimitAmps = 25;
 
   /** Open-loop ramp time from 0 to full output. Limits current spikes on step changes. */
-  public static final double kOpenLoopRampRateSec = 0.3;
+  public static final double kOpenLoopRampRateSec = 0.0;
 
   /** Period for sending signals to the motor. */
   public static final int kSignalsPeriodMs = 107;
