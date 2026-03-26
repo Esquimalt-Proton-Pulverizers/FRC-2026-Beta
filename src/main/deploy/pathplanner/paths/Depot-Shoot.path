@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.444,
-        "y": 5.085252883764054
+        "x": 0.468,
+        "y": 4.98536629696471
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.1714991036957567,
-        "y": 5.099180683847105
+        "x": 1.1956324137181378,
+        "y": 4.98536629696471
       },
       "isLocked": false,
       "linkedName": "Depot-PickupFuel-E"
     },
     {
       "anchor": {
-        "x": 1.372937000887311,
-        "y": 5.069157054125998
+        "x": 1.23915847399858,
+        "y": 4.98536629696471
       },
       "prevControl": {
-        "x": 1.1366685155031493,
-        "y": 5.150871207210235
+        "x": 0.9891584739985799,
+        "y": 4.98536629696471
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ShootingPosition-Left-11ft"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 158.201
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Depot",

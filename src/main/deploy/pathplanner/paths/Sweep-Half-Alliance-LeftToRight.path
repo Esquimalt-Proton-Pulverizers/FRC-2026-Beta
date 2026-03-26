@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.714693877551021,
-        "y": 6.879937888198758
+        "x": 7.67541111111111,
+        "y": 7.007944444444445
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.747629007689406,
-        "y": 5.835569840950885
+        "x": 7.708346241249496,
+        "y": 5.963576397196572
       },
       "isLocked": false,
       "linkedName": "SweepPosition-Left-Alliance"
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 6.064871339840284,
-        "y": 7.370860692102928
+        "x": 5.8,
+        "y": 7.5
       },
       "prevControl": {
-        "x": 6.258156662898914,
-        "y": 7.212302236351993
+        "x": 6.0047880110722485,
+        "y": 7.356605890912238
       },
       "nextControl": null,
       "isLocked": false,
@@ -63,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Fuel Sweeps",

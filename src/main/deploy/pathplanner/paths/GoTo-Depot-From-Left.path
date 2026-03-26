@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5378541666666665,
-        "y": 7.329840277777778
+        "x": 3.617,
+        "y": 7.637
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5759724751001616,
-        "y": 7.397206303042681
+        "x": 3.367,
+        "y": 7.637
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "StartingPosition-Left"
     },
     {
       "anchor": {
-        "x": 0.44399305555555557,
-        "y": 6.9948749999999995
+        "x": 0.468,
+        "y": 7.05
       },
       "prevControl": {
-        "x": 0.6824330106701172,
-        "y": 6.919732549913741
+        "x": 0.718,
+        "y": 7.05
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DepotSweepPickup-S"
     }
   ],
   "rotationTargets": [],
@@ -48,7 +48,7 @@
   "folder": "Depot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
