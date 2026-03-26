@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.240975877192983,
-        "y": 7.516074561403508
+        "x": 5.8,
+        "y": 7.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.712083333333334,
-        "y": 7.535307017543859
+        "x": 5.270757890640285,
+        "y": 7.5
       },
       "isLocked": false,
       "linkedName": "Sweep-Shooting-Left-S"
     },
     {
       "anchor": {
-        "x": 3.481118421052632,
-        "y": 7.516074561403508
+        "x": 4.0,
+        "y": 7.5
       },
       "prevControl": {
-        "x": 3.869640274551347,
-        "y": 7.666667913206413
+        "x": 4.416686438768182,
+        "y": 7.5
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.9391909457355834
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Fuel Sweeps",
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": -0.6295986084102695
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }

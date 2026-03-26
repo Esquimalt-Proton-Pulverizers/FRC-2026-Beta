@@ -7,25 +7,25 @@
         {
           "type": "named",
           "data": {
-            "name": "Extender Down"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake On"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Set Shooter Target Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Extender Down"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "GoTo-Sweep-Alliance-From-Left"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake On"
           }
         },
         {

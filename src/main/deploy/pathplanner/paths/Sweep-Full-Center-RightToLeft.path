@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 6.240975877192983,
-        "y": 7.516074561403508
+        "x": 5.8,
+        "y": 7.5
       },
       "prevControl": {
-        "x": 6.44826565004811,
-        "y": 7.362001444022454
+        "x": 6.007289772855127,
+        "y": 7.345926882618945
       },
       "nextControl": null,
       "isLocked": false,
@@ -63,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.6295986084102695
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Fuel Sweeps",
