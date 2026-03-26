@@ -142,6 +142,10 @@ public class RobotContainer {
 	private final ShooterSim shooterSim;
 	private final ShooterSimVisualizer shooterSimVisualizer;
 
+	// Sim: fake RealSense output by publishing NetworkTables `PostDetection`.
+	private PostDetectionSimPublisher postDetectionSimPublisher = null;
+
+
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
     // Initialize Subsystems based on mode (REAL, SIM, or REPLAY)
@@ -216,6 +220,7 @@ public class RobotContainer {
 				hood 		 = new Hood(new HoodIOSim());
 				flywheel = new Flywheel(new FlywheelIOSim());
 				hang 		 = new Hang(new HangIOSim());
+				postDetectionSimPublisher = new PostDetectionSimPublisher();
 
 				// Shooter Sim Visualizer
 				if (shooterSimEnabled) {
@@ -783,6 +788,11 @@ public class RobotContainer {
 		// Robot pose for visualization
 		Pose2d robotPose = driveSimulation.getSimulatedDriveTrainPose();
 		Logger.recordOutput("FieldSimulation/RobotPosition", robotPose);
+
+		// PostDetection sim stream (used by AutoHangCommand vision alignment)
+		if (postDetectionSimPublisher != null) {
+			postDetectionSimPublisher.update(robotPose);
+		}
 
 		// Robot-relative component poses for visualization
 		Pose3d turretComponentPose 	 = new Pose3d(-0.095, -0.17, 0.31, new Rotation3d(0, 0, turret.getRobotFramePosition().getRadians() - Math.toRadians(90)));
