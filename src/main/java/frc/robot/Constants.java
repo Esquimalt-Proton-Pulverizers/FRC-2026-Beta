@@ -34,7 +34,8 @@ public final class Constants {
   /** Controller deadband and rumble. */
   public static class ControllerConstants {
     public static final double CONTROLLER_DEADBAND = 0.15;
-    public static final double CONTROLLER_RUMBLE = 0.3;
+    public static final double CONTROLLER_RUMBLE_STRENGTH = 0.3;
+    public static final double CONTROLLER_RUMBLE_PULSE_SECONDS = 0.25;
   }
 
   /** Teleop drive speeds and trench/bump alignment. */

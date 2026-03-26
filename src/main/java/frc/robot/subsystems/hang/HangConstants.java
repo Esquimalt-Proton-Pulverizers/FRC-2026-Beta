@@ -47,6 +47,13 @@ public final class HangConstants { // XXX: Add correct values
   /** Maximum extension (fully extended). */
   public static final double kMaxMeters = Units.inchesToMeters(8.5);
 
+  /**
+   * Hook center (front face of hook, side facing the back of the robot). 
+   * Robot +X forward, +Y left (meters).
+   */
+  public static final double kHookCenterXMeters = Units.inchesToMeters(-12.417);
+  public static final double kHookCenterYMeters = Units.inchesToMeters(0.40597);
+
   /** Tolerance for considering the Hang at target (measured vs target). */
   public static final double kAtTargetToleranceMeters = Units.inchesToMeters(0.10);
 

@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AutoHangCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootWhenReadyCommand;
 import frc.robot.commands.ShooterCommands;
@@ -414,8 +415,10 @@ public class RobotContainer {
     // Pathfind then follow path to outpost
     driverController.leftStick().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "GoTo-Outpost"));
 
-    driverController.povLeft().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "HangingPosition-Left"));
-    driverController.povRight().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "HangingPosition-Right"));
+    driverController.povLeft().whileTrue(AutoHangCommand.create(
+				drive, hang, driverController, "HangingPosition-Left", PostDetectionReader.getInstance()));
+    driverController.povRight().whileTrue(AutoHangCommand.create(
+				drive, hang, driverController, "HangingPosition-Right", PostDetectionReader.getInstance()));
 
 		// ------------------------------------------- Driver Manual Override -------------------------------------------
 		// If Manual Override is false, become true. 
