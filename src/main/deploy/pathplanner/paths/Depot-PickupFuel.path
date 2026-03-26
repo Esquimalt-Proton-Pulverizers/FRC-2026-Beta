@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 0.468,
-        "y": 7.049929617307611
+        "y": 7.05
       },
       "prevControl": null,
       "nextControl": {
         "x": 0.4683837160806863,
-        "y": 6.488052733400903
+        "y": 6.488123116093292
       },
       "isLocked": false,
       "linkedName": "Depot-PickupFuel-S"
