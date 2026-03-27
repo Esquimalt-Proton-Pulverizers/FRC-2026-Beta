@@ -38,6 +38,9 @@ public final class ShooterConstants {
 
   /** Time before the hub is active that we treat the hub as active for the preshoot */
   public static final Time kActivePreshootTime = Seconds.of(2.0);
+  
+  /** Target aim offset (degrees). */
+  public static final double kTargetAimOffsetDeg = 0.0;
 
   /**
    * Multiplier on calculator exit velocity for the Real Robot (e.g. air resistance). 1.0 = no change;
