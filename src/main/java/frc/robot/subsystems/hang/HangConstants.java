@@ -27,7 +27,7 @@ public final class HangConstants { // XXX: Add correct values
   public static final double kGearRatio = 5.0;
 
   /** PID gains for onboard position control. */
-  public static final double kP = 8.0;
+  public static final double kP = 24.0;
   public static final double kI = 0.0;
   public static final double kD = 0.0;
 
@@ -38,8 +38,8 @@ public final class HangConstants { // XXX: Add correct values
   /** Target position when the Hang is in Stored (retracted) mode. */
   public static final double kStoredPositionMeters = Units.inchesToMeters(0.0);
   
-  /** Target position when the Hang is in Half (retracted half way) mode. */
-  public static final double kHalfPositionMeters = Units.inchesToMeters(2.5);
+  /** Target position when the Hang is in Hanging (retracted part way) mode. */
+  public static final double kHangingPositionMeters = Units.inchesToMeters(2.0);
 
   /** Target position when the Hang is in Level_1 (extended) mode. */
   public static final double kLevel1PositionMeters = Units.inchesToMeters(7.75);
