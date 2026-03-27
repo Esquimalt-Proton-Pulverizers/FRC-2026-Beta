@@ -1,6 +1,38 @@
 # Autos
 
-## Available Autos
+## Auto Starting Positions & Description
+
+<!-- Dropdown effect: https://blog.markdowntools.com/posts/markdown-collapsible-sections-guide -->
+<details>
+<summary>Starting Positions</summary>
+  
+### Left
+<img width="374" height="547" alt="image" src="https://github.com/user-attachments/assets/fcd55010-bbee-4d14-986f-3eff51374f16" />
+
+
+### Left-Trench
+<img width="432" height="478" alt="image" src="https://github.com/user-attachments/assets/30aa8369-1a41-4610-b5b2-b324bd0e4747" />
+
+### CenterLeft
+<img width="357" height="495" alt="image" src="https://github.com/user-attachments/assets/3b082415-85f6-4cea-8b1b-093647f2fc62" />
+
+### Center
+<img width="409" height="518" alt="image" src="https://github.com/user-attachments/assets/970421fa-7ff8-4bc1-a667-478468a1fc83" />
+
+### CenterRight
+<img width="404" height="575" alt="image" src="https://github.com/user-attachments/assets/d4a7a337-3c74-4cf4-9359-7990e1cb6cc7" />
+
+### Right-Trench
+<img width="441" height="505" alt="image" src="https://github.com/user-attachments/assets/f42aa777-ecd4-4522-b06f-1ab9a0d86dec" />
+
+### Right
+<img width="441" height="505" alt="image" src="https://github.com/user-attachments/assets/dccd9ed8-ed4c-44f6-901e-baf528574a1d" />
+
+</details>
+
+<details>
+
+<summary>Available Autos</summary>
 The first green dot is the starting position, and the red dot is the end position. All the other green dots are waypoints
 
 ### Depot-Center
@@ -33,49 +65,51 @@ Travels from the center starting position then moves back (while rotating 180°)
 
 ### Shooting-CenterLeft
 Travels from the center left starting position then moves back (while rotating ~150°), then shoots <br>
-<img width="353" height="165" alt="image" src="https://github.com/user-attachments/assets/c837241b-27ab-4f08-bbb9-56dc8f030984" />
+<img width="349" height="171" alt="image" src="https://github.com/user-attachments/assets/838c3c26-25a3-40f8-a7f2-86ddee16e77b" />
 
 ### Shooting-CenterRight
 Travels from the center right starting position then moves back (while rotating ~150°), then shoots <br>
-<img width="349" height="173" alt="image" src="https://github.com/user-attachments/assets/dce1f28b-8360-4797-8b54-708f3313c170" />
+<img width="352" height="175" alt="image" src="https://github.com/user-attachments/assets/00e38bb3-4c5d-4f28-aab1-b9a1ab21c203" />
 
 ### Sweep-Left-Full-Alliance
 Starts at the left starting position, them moves to the neutral zone's balls. Then sweeps *all* the balls only on the alliance side. Then tries to shoot, but currently does not have enough time. <br>
-<img width="349" height="175" alt="image" src="https://github.com/user-attachments/assets/d3e95844-5e04-4236-b9fc-affce6974e71" />
+<img width="349" height="178" alt="image" src="https://github.com/user-attachments/assets/4396e80f-14fa-455b-b963-969149224a45" />
 
 ### Sweep-Left-Full-Center
 Starts at the left starting position, them moves to the neutral zone's balls. Then sweeps *all* the balls cutting through the middle. Then tries to shoot, but currently does not have enough time. Very agressive auto. <br>
-<img width="349" height="172" alt="image" src="https://github.com/user-attachments/assets/ba3813ca-8183-4fb0-81ff-74ab767248e1" />
+<img width="346" height="175" alt="image" src="https://github.com/user-attachments/assets/a99a9770-c00e-4a84-903e-ebd04ec62d7c" />
 
 ### Sweep-Left-Half-Alliance
 Starts at the left starting position, them moves to the neutral zone's balls. Then sweeps *half* the balls only on the alliance side. Then tries to shoot, but currently *may* not have enough time. <br>
-<img width="353" height="178" alt="image" src="https://github.com/user-attachments/assets/0385c737-852f-44cf-b448-e6c163d2e3db" />
+<img width="351" height="174" alt="image" src="https://github.com/user-attachments/assets/95f71765-ef09-4fa6-99fc-3298ed83eb52" />
 
 ### Sweep-Left-Half-Center
 Starts at the left starting position, them moves to the neutral zone's balls. Then sweeps *half* the balls cutting through the middle. Then tries to shoot, but currently *may* not have enough time. Agressive auto. <br>
-<img width="351" height="173" alt="image" src="https://github.com/user-attachments/assets/6301acd1-0056-4b55-bb05-34ce5d350c11" />
+<img width="350" height="167" alt="image" src="https://github.com/user-attachments/assets/9576a22d-274d-4645-a91c-0e78e47b126b" />
 
 ### Sweep-Right-Full-Alliance
 Starts at the right starting position, them moves to the neutral zone's balls. Then sweeps *all* the balls only on the alliance side. Then tries to shoot, but currently does not have enough time. <br>
-<img width="352" height="173" alt="image" src="https://github.com/user-attachments/assets/e740fa54-8c3f-4124-b801-432c6aed56d4" />
+<img width="347" height="171" alt="image" src="https://github.com/user-attachments/assets/ebf537e3-0668-479f-a561-32b07d8d8aec" />
 
 ### Sweep-Right-Full-Center
 Starts at the right starting position, them moves to the neutral zone's balls. Then sweeps *all* the balls cutting through the middle. Then tries to shoot, but currently does not have enough time. Very agressive auto. <br>
-<img width="350" height="167" alt="image" src="https://github.com/user-attachments/assets/9987baa2-1743-4199-9ab7-7f032116680f" />
+<img width="347" height="176" alt="image" src="https://github.com/user-attachments/assets/8e7c056b-aec4-461b-872f-7a2ca2379f20" />
 
 ### Sweep-Right-Half-Alliance
 Starts at the right starting position, them moves to the neutral zone's balls. Then sweeps *half* the balls only on the alliance side. Then tries to shoot, but currently *may* not have enough time. <br>
-<img width="353" height="176" alt="image" src="https://github.com/user-attachments/assets/9c306724-3541-4e94-8ee8-b64bc368fdb4" />
+<img width="345" height="171" alt="image" src="https://github.com/user-attachments/assets/7ac14953-b9e3-410e-bf23-3314a4d18167" />
 
 ### Sweep-Right-Half-Center
 Starts at the right starting position, them moves to the neutral zone's balls. Then sweeps *half* the balls cutting through the middle. Then tries to shoot, but currently *may* not have enough time. Agressive auto. <br>
-<img width="354" height="175" alt="image" src="https://github.com/user-attachments/assets/cf6905c0-b278-4311-b00c-d6cafd6ad787" />
+<img width="350" height="173" alt="image" src="https://github.com/user-attachments/assets/4f45c5a6-2d26-43fc-8601-7b9cb3863992" />
 
 ### Hang-Center `WIP`
 DO NOT USE, WIP
 
 ### Hang-Center-Shoot `WIP`
 DO NOT USE, WIP
+
+</details>
 
 ## Making Autos
 We use FRC PathPlanner to create our autos. To use PathPlanner reference the [documentation](pathplanner.dev/home.html). <br>
