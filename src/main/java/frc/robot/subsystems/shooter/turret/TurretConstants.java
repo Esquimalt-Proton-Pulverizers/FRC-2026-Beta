@@ -27,7 +27,7 @@ public final class TurretConstants { // XXX: Add correct values
   public static final double kStatorCurrentLimitAmps = 30.0;
 
   /** Turret radians per motor rotation (output / input). 1.0 = 1:1. */
-  public static final double kGearRatio = 27.81;
+  public static final double kGearRatio = 25.4;
 
   /** PID gains for onboard position control. */
   public static final double kP = 14.0;
