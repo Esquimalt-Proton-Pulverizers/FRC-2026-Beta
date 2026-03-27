@@ -57,6 +57,12 @@ public class DriveCommands {
   private static final double MAX_ANGULAR_RATE = 0.75 * 2 * Math.PI; // 3/4 rotation per second in rad/s
   private static final double TURBO_MULTIPLE = 2.0; // Minimum fraction when turbo is not applied
 
+  /** Robot-centric backup speed for {@link #timedDriveBackRobotCentric(Drive)} (m/s). */
+  private static final double AUTO_DRIVE_BACK_SPEED_MPS = 0.25;
+
+  /** Duration for {@link #timedDriveBackRobotCentric(Drive)} (s). */
+  private static final double AUTO_DRIVE_BACK_TIMEOUT_SEC = 0.5;
+
   // Characterization constants
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
@@ -111,6 +117,18 @@ public class DriveCommands {
     Rotation2d targetAngle = angleFromPivotToHub.plus(TurretConstants.kDefaultAimDirectionRobotFrame);
     return faceTargetController.calculate(drive.getRotation().getRadians(), targetAngle.getRadians());
   } // End computeOmegaToFaceHub
+
+  /**
+   * Drives straight backward in the robot frame at constant speed, then stops. Intended for
+   * PathPlanner named commands.
+   */
+  public static Command timedDriveBackRobotCentric(Drive drive) {
+    return Commands.runEnd(
+            () -> drive.runVelocity(new ChassisSpeeds(-AUTO_DRIVE_BACK_SPEED_MPS, 0.0, 0.0)),
+            drive::stop,
+            drive)
+        .withTimeout(AUTO_DRIVE_BACK_TIMEOUT_SEC);
+  } // End timedDriveBackRobotCentric
 
   // ============================================================================
   // Private Helper Methods

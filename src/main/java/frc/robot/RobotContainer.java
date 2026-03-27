@@ -649,6 +649,9 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Hang Level 1", Commands.runOnce(() -> hang.setLevel1State(), hang));
 		NamedCommands.registerCommand("Hang Half", Commands.runOnce(() -> hang.setHalfState(), hang));
 		NamedCommands.registerCommand("Hang Stored", Commands.runOnce(() -> hang.setStoredState(), hang));
+
+		// Drive Commands (auto)
+		NamedCommands.registerCommand("Drive Back Hang Align", DriveCommands.timedDriveBackRobotCentric(drive));
 	} // End registerCommands
 
 	/**
