@@ -1,6 +1,38 @@
 # Autos
 
-## Available Autos
+## Auto Starting Positions & Description
+
+<!-- Dropdown effect: https://blog.markdowntools.com/posts/markdown-collapsible-sections-guide -->
+<details>
+<summary>Starting Positions</summary>
+  
+### Left
+<img width="374" height="547" alt="image" src="https://github.com/user-attachments/assets/fcd55010-bbee-4d14-986f-3eff51374f16" />
+
+
+### Left-Trench
+<img width="432" height="478" alt="image" src="https://github.com/user-attachments/assets/30aa8369-1a41-4610-b5b2-b324bd0e4747" />
+
+### CenterLeft
+<img width="357" height="495" alt="image" src="https://github.com/user-attachments/assets/3b082415-85f6-4cea-8b1b-093647f2fc62" />
+
+### Center
+<img width="409" height="518" alt="image" src="https://github.com/user-attachments/assets/970421fa-7ff8-4bc1-a667-478468a1fc83" />
+
+### CenterRight
+<img width="404" height="575" alt="image" src="https://github.com/user-attachments/assets/d4a7a337-3c74-4cf4-9359-7990e1cb6cc7" />
+
+### Right-Trench
+<img width="441" height="505" alt="image" src="https://github.com/user-attachments/assets/f42aa777-ecd4-4522-b06f-1ab9a0d86dec" />
+
+### Right
+<img width="441" height="505" alt="image" src="https://github.com/user-attachments/assets/dccd9ed8-ed4c-44f6-901e-baf528574a1d" />
+
+</details>
+
+<details>
+
+<summary>Available Autos</summary>
 The first green dot is the starting position, and the red dot is the end position. All the other green dots are waypoints
 
 ### Depot-Center
@@ -76,6 +108,8 @@ DO NOT USE, WIP
 
 ### Hang-Center-Shoot `WIP`
 DO NOT USE, WIP
+
+</details>
 
 ## Making Autos
 We use FRC PathPlanner to create our autos. To use PathPlanner reference the [documentation](pathplanner.dev/home.html). <br>
