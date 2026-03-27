@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.SafeRetractExtenderCommand;
 import frc.robot.commands.ShootWhenReadyCommand;
 import frc.robot.commands.ShooterCommands;
 import frc.robot.commands.TeleopDrive;
@@ -114,6 +115,9 @@ public class RobotContainer {
 	// Shooter Manager
 	private final Shooter shooter;
 	private final ShootWhenReadyCommand shootWhenReadyCommand;
+
+	// Safe Extender Retracter
+	private final Command safeRetractExtenderCommand;
 
 	// Field view (robot pose)
 	private final Field2d field = new Field2d();
@@ -273,6 +277,10 @@ public class RobotContainer {
 		shooter.setShootCommandScheduledSupplier(shootWhenReadyCommand::isScheduled);
 		shooter.setManualOverrideSupplier(() -> operatorManualOverride);
 
+		safeRetractExtenderCommand =
+				SafeRetractExtenderCommand.create(
+						shootWhenReadyCommand, flywheel, extender, turret, b -> driverTurretOverride = b);
+
 		// Subsystem Manual Override Ignore Limits Supplier
 		intake.setIgnoreLimitsSupplier(() 	-> operatorManualOverride);
 		extender.setIgnoreLimitsSupplier(() -> operatorManualOverride);
@@ -355,41 +363,15 @@ public class RobotContainer {
 				case IDLE ->			extender.setExtendedState();
 				default -> throw new IllegalArgumentException("Unexpected value: " + extender.getState());
 			}
+
+			// Disable Intake when Extender is Retracted or Partial
+			if (extender.getState() == Extender.State.RETRACTED || extender.getState() == Extender.State.PARTIAL) {
+				intake.setIdleState();
+			}
 		}, extender));
 
 		// Set to Retracted, must turn off AutoShoot, and set Turret Target to 0
-		driverController.povDown().onTrue(
-			Commands.sequence(
-				Commands.runOnce(() -> {
-					// Turn off AutoShoot (ShootWhenReady) so the shooter/transfer/agitator command stops.
-					if (shootWhenReadyCommand.isScheduled()) {
-						CommandScheduler.getInstance().cancel(shootWhenReadyCommand);
-					}
-
-					// Ensure flywheel is not actively spinning from a prior manual or auto shot.
-					if (flywheel != null) flywheel.setState(Flywheel.State.IDLE);
-
-					// Turret only "chases" a setpoint in manual mode, so temporarily enable a driver-only manual override.
-					// We set the SmartDashboard target to 1 deg first so the next update to 0deg is guaranteed to be detected.
-					driverTurretOverride = true;
-					SmartDashboard.putNumber("Turret/TargetPositionDeg", 1.0);
-				}, extender, turret, flywheel),
-				Commands.parallel(
-					// Turret: switch target to 0 deg, then wait until it's on target (or timeout).
-					Commands.sequence(
-						Commands.waitSeconds(0.02),
-						Commands.runOnce(() -> SmartDashboard.putNumber("Turret/TargetPositionDeg", 0.0)),
-						Commands.waitUntil(() -> turret != null && turret.atTarget()).withTimeout(1.0),
-						Commands.runOnce(() -> driverTurretOverride = false)
-					),
-					// Extender: wait exactly 0.25s after the pre-setup, then retract.
-					Commands.sequence(
-						Commands.waitSeconds(0.25),
-						Commands.runOnce(() -> extender.setRetractedState(), extender)
-					)
-				)
-			)
-		);
+		driverController.povDown().onTrue(safeRetractExtenderCommand);
 
 		// Intake toggle: right bumper = Intaking ↔ Idle, left bumper = Reversing ↔ Idle
 		driverController.leftBumper().onTrue(
@@ -648,6 +630,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Extender Down", Commands.runOnce(() -> extender.setExtendedState(), extender));
 		NamedCommands.registerCommand("Extender Partial", Commands.runOnce(() -> extender.setPartialState(), extender));
 		NamedCommands.registerCommand("Extender Up", Commands.runOnce(() -> extender.setRetractedState(), extender));
+		NamedCommands.registerCommand("Safe Retract Extender", safeRetractExtenderCommand);
 
 		// Flywheel Commands
 		NamedCommands.registerCommand("Flywheel On", Commands.runOnce(() -> flywheel.setState(Flywheel.State.CHARGING), flywheel));

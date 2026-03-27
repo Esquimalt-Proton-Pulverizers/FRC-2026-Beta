@@ -25,7 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "GoTo-HangingRight"
+            "pathName": "GoTo-HangingRight-From-Center"
           }
         },
         {
@@ -37,13 +37,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Flywheel Off"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Cancel Shoot When Ready"
+            "name": "Safe Retract Extender"
           }
         },
         {
