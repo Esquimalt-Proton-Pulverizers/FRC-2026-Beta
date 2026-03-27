@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.580486111111111,
-        "y": 4.022819444444444
+        "x": 3.617,
+        "y": 4.035
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.892634444589194,
-        "y": 3.266578522707073
+        "x": 3.440223304703363,
+        "y": 3.858223304703363
       },
       "isLocked": false,
       "linkedName": "StartingPosition-Center"
     },
     {
       "anchor": {
-        "x": 0.4980322003577814,
-        "y": 0.6520035778175304
+        "x": 0.4318,
+        "y": 0.6659565
       },
       "prevControl": {
-        "x": 1.0900552380978268,
-        "y": 1.3012628537834052
+        "x": 0.6085766952966369,
+        "y": 0.8427331952966368
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -48,7 +48,7 @@
   "folder": "Outpost",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

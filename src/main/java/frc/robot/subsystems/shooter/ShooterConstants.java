@@ -25,7 +25,7 @@ public final class ShooterConstants {
 
   /** Transform from robot center to Turret pivot. +X = forward, +Y = left, +Z = up (meters). */
   public static final Transform3d robotToTurret =
-      new Transform3d(-0.127, -0.2286, 0.3556, new Rotation3d(0.0, 0.0, Units.degreesToRadians(180.0)));
+      new Transform3d(-0.07, -0.165, 0.45, new Rotation3d(0.0, 0.0, Units.degreesToRadians(0.0)));
 
   /** Distance above funnel the trajectory must pass (20 in), meters. */
   public static final double kDistanceAboveFunnelM = Units.inchesToMeters(20.0);
@@ -38,6 +38,9 @@ public final class ShooterConstants {
 
   /** Time before the hub is active that we treat the hub as active for the preshoot */
   public static final Time kActivePreshootTime = Seconds.of(2.0);
+  
+  /** Target aim offset (degrees). */
+  public static final double kTargetAimOffsetDeg = 0.0;
 
   /**
    * Multiplier on calculator exit velocity for the Real Robot (e.g. air resistance). 1.0 = no change;

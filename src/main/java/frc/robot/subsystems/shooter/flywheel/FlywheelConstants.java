@@ -13,7 +13,7 @@ public final class FlywheelConstants { // XXX: Add correct values
   public static final int kMotorId = 7;
 
   /** Max velocity ramp rate per second (RPM/s). */
-  public static final double kVelocityRampRateRpmPerSec = 1000.0;
+  public static final double kVelocityRampRateRpmPerSec = 2000.0;
 
   /** Neutral mode when the motor is not driven (coast or brake). */
   public static final NeutralModeValue kNeutralMode = NeutralModeValue.Coast;
@@ -25,7 +25,7 @@ public final class FlywheelConstants { // XXX: Add correct values
   public static final double kStatorCurrentLimitAmps = 40.0;
 
   /** PIDF gains for onboard velocity control and for sim. */
-  public static final double kP = 0.002;
+  public static final double kP = 0.02;
   public static final double kI = 0.0;
   public static final double kD = 0.0;
   public static final double kV = 0.117;
@@ -47,10 +47,10 @@ public final class FlywheelConstants { // XXX: Add correct values
   public static final double kMinTargetVelocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(0.0);
 
   /** Maximum Flywheel velocity. */
-  public static final double kMaxTargetVelocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(5000.0);
+  public static final double kMaxTargetVelocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(5500.0);
 
   /** Tolerance for considering the Flywheel at target (measured vs target). */
-  public static final double kAtTargetVelocityToleranceRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(50.0);
+  public static final double kAtTargetVelocityToleranceRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(150.0);
 
   /** Delta rad/s per manual step. */
   public static final double kStepRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(100.0);

@@ -72,7 +72,7 @@ public class RobotContainer {
 
 	// Competition Toggle
 	@AutoLogOutput(key = "CompetitionToggle")
-	private boolean isCompetition = false;
+	private boolean isCompetition = false; // TODO: Swerve Calibrations and then disable
 
 	// Subsystems Toggle
 	private boolean isDriveEnabled 		= true;
@@ -89,7 +89,7 @@ public class RobotContainer {
 	// Simulation Toggle
 	private boolean halfFuelOnly 			= true;
 	private boolean shooterSimEnabled	= true;
-	private boolean fuelSimEnabled 		= true;
+	private boolean fuelSimEnabled 		= false;
 
 	// Subsystems
 	private final Drive drive;
@@ -128,6 +128,12 @@ public class RobotContainer {
 	public static boolean driverManualOverride = false;
 	@AutoLogOutput(key = "ManualOverride/Operator")
 	public static boolean operatorManualOverride = false;
+	@AutoLogOutput(key = "Subsystems/Shooter/Turret/DriverTurretOverride")
+	private boolean driverTurretOverride = false;
+
+	// Hang Hold Mode
+	@AutoLogOutput(key = "Subsystems/Hang/HangHoldModeEnabled")
+	private boolean hangHoldModeEnabled = false;
 
 	// Dashboard inputs
 	private final LoggedDashboardChooser<Command> autoChooser;
@@ -298,7 +304,7 @@ public class RobotContainer {
 		/// ------------------------------- Shooter Subsystem Commands --------------------------------
 		/// -------------------------------------------------------------------------------------------
 		// Turret aims at predicted target; velocity feedforward for spin compensation. Only active if not in manualOverride
-		turret.setManualOverrideSupplier(() -> operatorManualOverride);
+		turret.setManualOverrideSupplier(() -> operatorManualOverride || driverTurretOverride);
 		turret.setDrive(drive);
 		turret.setAimAtTargetSupplier(() -> shootWhenReadyCommand.isScheduled());
 
@@ -357,6 +363,40 @@ public class RobotContainer {
 			}
 		}, extender));
 
+		// Set to Retracted, must turn off AutoShoot, and set Turret Target to 0
+		driverController.povDown().onTrue(
+			Commands.sequence(
+				Commands.runOnce(() -> {
+					// Turn off AutoShoot (ShootWhenReady) so the shooter/transfer/agitator command stops.
+					if (shootWhenReadyCommand.isScheduled()) {
+						CommandScheduler.getInstance().cancel(shootWhenReadyCommand);
+					}
+
+					// Ensure flywheel is not actively spinning from a prior manual or auto shot.
+					if (flywheel != null) flywheel.setState(Flywheel.State.IDLE);
+
+					// Turret only "chases" a setpoint in manual mode, so temporarily enable a driver-only manual override.
+					// We set the SmartDashboard target to 1 deg first so the next update to 0deg is guaranteed to be detected.
+					driverTurretOverride = true;
+					SmartDashboard.putNumber("Turret/TargetPositionDeg", 1.0);
+				}, extender, turret, flywheel),
+				Commands.parallel(
+					// Turret: switch target to 0 deg, then wait until it's on target (or timeout).
+					Commands.sequence(
+						Commands.waitSeconds(0.02),
+						Commands.runOnce(() -> SmartDashboard.putNumber("Turret/TargetPositionDeg", 0.0)),
+						Commands.waitUntil(() -> turret != null && turret.atTarget()).withTimeout(1.0),
+						Commands.runOnce(() -> driverTurretOverride = false)
+					),
+					// Extender: wait exactly 0.25s after the pre-setup, then retract.
+					Commands.sequence(
+						Commands.waitSeconds(0.25),
+						Commands.runOnce(() -> extender.setRetractedState(), extender)
+					)
+				)
+			)
+		);
+
 		// Intake toggle: right bumper = Intaking ↔ Idle, left bumper = Reversing ↔ Idle
 		driverController.leftBumper().onTrue(
 			new ConditionalCommand(
@@ -382,14 +422,22 @@ public class RobotContainer {
 		if (hang != null) {
 			driverController.b().onTrue(
 				new ConditionalCommand(
-					Commands.runOnce(() -> hang.setIdleState(), hang), 
-					Commands.runOnce(() -> hang.setLevel1State(), hang), 
-					() -> hang.getState() == Hang.State.LEVEL_1));
-			driverController.x().onTrue(
+					Commands.runOnce(() -> hang.setLevel1State(), hang),
+					new ConditionalCommand(
+						Commands.runOnce(() -> hang.setIdleState(), hang),
+						Commands.runOnce(() -> hang.setLevel1State(), hang),
+						() -> hang.getState() == Hang.State.LEVEL_1),
+					() -> hangHoldModeEnabled));
+			driverController.b().onFalse(
 				new ConditionalCommand(
 					Commands.runOnce(() -> hang.setIdleState(), hang), 
-					Commands.runOnce(() -> hang.setStoredState(), hang), 
-					() -> hang.getState() == Hang.State.STORED));
+					new InstantCommand(),
+					() -> hangHoldModeEnabled));
+			driverController.x().onTrue(Commands.runOnce(() -> hangHoldModeEnabled = true));
+			driverController.x().whileTrue(Commands.startEnd(
+				() -> hang.setStoredState(),
+				() -> hang.setIdleState(),
+				hang));
 		}
 
     // Shoot toggle: on = schedule ShootWhenReadyCommand, set Flywheel to Charging if Idle; off = cancel (command end() sets Transfer and Agitator to Idle)
@@ -619,7 +667,12 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Set Shooter Target Passing Spot Center", Commands.runOnce(ShooterCommands::setPassingSpotCenter));
 		NamedCommands.registerCommand("Set Shooter Target Passing Spot Right", Commands.runOnce(ShooterCommands::setPassingSpotRight));
 		// With timeout so the sequential auto can advance to path commands (reference codebases build autos in code with paths only)
-		NamedCommands.registerCommand("Shoot When Ready", shootWhenReadyCommand);
+		NamedCommands.registerCommand("Shoot When Ready", Commands.runOnce(() -> CommandScheduler.getInstance().schedule(shootWhenReadyCommand)));
+		NamedCommands.registerCommand("Cancel Shoot When Ready", Commands.runOnce(() -> CommandScheduler.getInstance().cancel(shootWhenReadyCommand)));
+
+		// Hang Commands
+		NamedCommands.registerCommand("Hang Level 1", Commands.runOnce(() -> hang.setLevel1State(), hang));
+		NamedCommands.registerCommand("Hang Stored", Commands.runOnce(() -> hang.setStoredState(), hang));
 	} // End registerCommands
 
 	/**

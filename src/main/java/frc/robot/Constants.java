@@ -9,6 +9,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -53,13 +54,13 @@ public final class Constants {
     public static final double TRENCH_Y_KP = 8.0;
     public static final double TRENCH_Y_KI = 0.0;
     public static final double TRENCH_Y_KD = 0.05;
-    public static final double TRENCH_Y_TOLERANCE_M = 0.05;
+    public static final double TRENCH_Y_TOLERANCE_M = 0.127;
 
     /** Rotation (trench/bump lock) PID and tolerance. */
     public static final double ROTATION_KP = 5.0;
     public static final double ROTATION_KI = 0.0;
     public static final double ROTATION_KD = 0.0;
-    public static final double ROTATION_TOLERANCE_RAD = 0.08;
+    public static final double ROTATION_TOLERANCE_RAD = Units.degreesToRadians(10.0);
   }
 
   /**

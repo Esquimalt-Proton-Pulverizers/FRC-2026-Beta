@@ -18,16 +18,16 @@ public final class HangConstants { // XXX: Add correct values
   public static final boolean kMotorInverted = false;
 
   /** Smart current limit. */
-  public static final int kSmartCurrentLimitAmps = 40;
+  public static final int kSmartCurrentLimitAmps = 35;
 
   /** Linear travel (meters) per motor rotation. */
   public static final double kMetersPerRotation = 0.01;
 
   /** Hang meters per motor rotation (output / input). */
-  public static final double kGearRatio = 1.0;
+  public static final double kGearRatio = 5.0;
 
   /** PID gains for onboard position control. */
-  public static final double kP = 2.0;
+  public static final double kP = 8.0;
   public static final double kI = 0.0;
   public static final double kD = 0.0;
 

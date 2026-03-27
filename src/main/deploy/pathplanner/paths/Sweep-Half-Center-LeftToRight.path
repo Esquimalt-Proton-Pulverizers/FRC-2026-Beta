@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 6.064871339840284,
-        "y": 7.370860692102928
+        "x": 5.8,
+        "y": 7.5
       },
       "prevControl": {
-        "x": 6.270660129520706,
-        "y": 7.162281736104449
+        "x": 6.005788789680421,
+        "y": 7.29142104400152
       },
       "nextControl": null,
       "isLocked": false,
@@ -54,8 +54,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -63,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Fuel Sweeps",

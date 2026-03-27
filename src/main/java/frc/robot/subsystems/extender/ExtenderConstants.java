@@ -19,7 +19,7 @@ public final class ExtenderConstants { // XXX: Add correct values
   public static final boolean kMotorInverted = false;
 
   /** Smart current limit. */
-  public static final int kSmartCurrentLimitAmps = 25;
+  public static final int kSmartCurrentLimitAmps = 30;
 
   /** Extender radians per motor rotation 1.0 = 1:1 */
   public static final double kGearRatio = 100;
@@ -51,6 +51,6 @@ public final class ExtenderConstants { // XXX: Add correct values
   /** Tolerance for considering the Extender at target (measured vs target). */
   public static final double kAtTargetToleranceRad = Units.degreesToRadians(2.0);
 
-  /** Delta Rad per step. */
-  public static final double kStepRad = Units.degreesToRadians(5.0);
+  /** Delta Rad per step. */ // TODO: Make going up step 10, lower 5
+  public static final double kStepRad = Units.degreesToRadians(10.0);
 }

@@ -31,7 +31,7 @@ public class AgitatorIOSparkMax implements AgitatorIO {
         .outputCurrentPeriodMs(kSignalsPeriodMs)
         .primaryEncoderPositionPeriodMs(kEncoderVelocitySignalPeriodMs)
         .primaryEncoderVelocityPeriodMs(kEncoderVelocitySignalPeriodMs);
-    motor.configure(sparkMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    motor.configure(sparkMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     motor.setPeriodicFrameTimeout(0);
   } // End AgitatorIOSparkMax Constructor
 

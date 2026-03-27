@@ -27,10 +27,10 @@ public final class TurretConstants { // XXX: Add correct values
   public static final double kStatorCurrentLimitAmps = 30.0;
 
   /** Turret radians per motor rotation (output / input). 1.0 = 1:1. */
-  public static final double kGearRatio = 27.81;
+  public static final double kGearRatio = 25.4;
 
   /** PID gains for onboard position control. */
-  public static final double kP = 7.0;
+  public static final double kP = 14.0;
   public static final double kI = 0.0;
   public static final double kD = 0.0;
 
@@ -51,7 +51,7 @@ public final class TurretConstants { // XXX: Add correct values
   public static final double kMaxVoltage = 12.0;
 
   /** Tolerance for considering the Turret on target (setpoint vs measured, Turret frame). */
-  public static final double kAtTargetToleranceRad = Units.degreesToRadians(1.0);
+  public static final double kAtTargetToleranceRad = Units.degreesToRadians(4.0);
 
   /** Delta Rad per step. */
   public static final double kStepRad = Units.degreesToRadians(5.0);
