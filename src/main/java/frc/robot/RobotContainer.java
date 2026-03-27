@@ -130,6 +130,10 @@ public class RobotContainer {
 	@AutoLogOutput(key = "Subsystems/Shooter/Turret/DriverTurretOverride")
 	private boolean driverTurretOverride = false;
 
+	// Hang Hold Mode
+	@AutoLogOutput(key = "Subsystems/Hang/HangHoldModeEnabled")
+	private boolean hangHoldModeEnabled = false;
+
 	// Dashboard inputs
 	private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -412,14 +416,22 @@ public class RobotContainer {
 		if (hang != null) {
 			driverController.b().onTrue(
 				new ConditionalCommand(
-					Commands.runOnce(() -> hang.setIdleState(), hang), 
-					Commands.runOnce(() -> hang.setLevel1State(), hang), 
-					() -> hang.getState() == Hang.State.LEVEL_1));
-			driverController.x().onTrue(
+					Commands.runOnce(() -> hang.setLevel1State(), hang),
+					new ConditionalCommand(
+						Commands.runOnce(() -> hang.setIdleState(), hang),
+						Commands.runOnce(() -> hang.setLevel1State(), hang),
+						() -> hang.getState() == Hang.State.LEVEL_1),
+					() -> hangHoldModeEnabled));
+			driverController.b().onFalse(
 				new ConditionalCommand(
 					Commands.runOnce(() -> hang.setIdleState(), hang), 
-					Commands.runOnce(() -> hang.setStoredState(), hang), 
-					() -> hang.getState() == Hang.State.STORED));
+					new InstantCommand(),
+					() -> hangHoldModeEnabled));
+			driverController.x().onTrue(Commands.runOnce(() -> hangHoldModeEnabled = true));
+			driverController.x().whileTrue(Commands.startEnd(
+				() -> hang.setStoredState(),
+				() -> hang.setIdleState(),
+				hang));
 		}
 
     // Shoot toggle: on = schedule ShootWhenReadyCommand, set Flywheel to Charging if Idle; off = cancel (command end() sets Transfer and Agitator to Idle)
