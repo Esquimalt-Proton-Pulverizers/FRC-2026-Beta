@@ -4,8 +4,10 @@ import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.FieldConstants;
 import frc.robot.commands.ShooterCommands;
 import frc.robot.subsystems.agitator.Agitator;
 import frc.robot.subsystems.drive.Drive;
@@ -95,6 +97,7 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput("ShooterCommand/ShootWhenReadyCommandActive", shootCommandScheduledSupplier.getAsBoolean() || shootCommandActive);
     Logger.recordOutput("ShooterCommand/Ready/IsReadyToShoot", isReadyToShoot());
     Logger.recordOutput("ShooterCommand/Ready/AllianceZoneOk", !ShooterCommands.isShooterTargetHub() || AllianceUtil.isInAllianceZone(drive.getPose().getX()));
+    Logger.recordOutput("ShooterCommand/Ready/HubMinDistanceOk", hubAutoshootDistanceOk());
     Logger.recordOutput("ShooterCommand/Ready/TurretTargetInRange", turret.isTargetInRange());
     Logger.recordOutput("ShooterCommand/Ready/TurretAtTarget", turret.atTarget());
     Logger.recordOutput("ShooterCommand/Ready/HoodAtTarget", !hoodEnabled || hood.atTarget());
@@ -108,11 +111,17 @@ public class Shooter extends SubsystemBase {
   /**
    * Turret target in range and on target, Flywheel not Idle and at target speed (with {@link
    * ShooterConstants#kFlywheelOffTargetGraceSec} grace after leaving target speed); (Optional) Hood at target. When
-   * shooter target is hub, robot must be in alliance zone.
+   * shooter target is hub, robot must be in alliance zone and at least {@link
+   * ShooterConstants#kMinHubAutoshootDistanceM} from hub center.
    */
   public boolean isReadyToShoot() {
-    if (ShooterCommands.isShooterTargetHub() && !AllianceUtil.isInAllianceZone(drive.getPose().getX())) {
-      return false;
+    if (ShooterCommands.isShooterTargetHub()) {
+      if (!AllianceUtil.isInAllianceZone(drive.getPose().getX())) {
+        return false;
+      }
+      if (!hubAutoshootDistanceOk()) {
+        return false;
+      }
     }
     if (!turret.isTargetInRange()) return false;
     if (!turret.atTarget()) return false;
@@ -121,4 +130,14 @@ public class Shooter extends SubsystemBase {
     if (hoodEnabled && !hood.atTarget()) return false;
     return true;
   } // End isReadyToShoot
+
+  /** True if not shooting at hub, or robot is far enough from the alliance hub for autoshoot. */
+  private boolean hubAutoshootDistanceOk() {
+    if (!ShooterCommands.isShooterTargetHub()) {
+      return true;
+    }
+    Translation2d hubCenter =
+        AllianceUtil.isRedAlliance() ? FieldConstants.RED_HUB_CENTER : FieldConstants.BLUE_HUB_CENTER;
+    return drive.getPose().getTranslation().getDistance(hubCenter) >= ShooterConstants.kMinHubAutoshootDistanceM;
+  } // End hubAutoshootDistanceOk
 }

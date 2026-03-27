@@ -23,6 +23,9 @@ public final class ShooterConstants {
   /** An extra amount of distance the robot has to be past the alliance zone for auto selecting target to be enabled */
   public static final double kAutoSelectShootingTargetAllianceZoneTolerance = 1.5;
 
+  /** When aiming at the hub, autoshoot requires at least this horizontal distance to hub center (m). */
+  public static final double kMinHubAutoshootDistanceM = 1.5;
+
   /** Transform from robot center to Turret pivot. +X = forward, +Y = left, +Z = up (meters). */
   public static final Transform3d robotToTurret =
       new Transform3d(-0.07, -0.165, 0.45, new Rotation3d(0.0, 0.0, Units.degreesToRadians(0.0)));
