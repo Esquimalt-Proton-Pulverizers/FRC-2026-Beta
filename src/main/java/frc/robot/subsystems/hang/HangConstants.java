@@ -54,5 +54,5 @@ public final class HangConstants {
   public static final double kAtTargetToleranceMeters = Units.inchesToMeters(0.10);
 
   /** Delta Meter per step. */
-  public static final double kStepMeters = Units.inchesToMeters(0.5);
+  public static final double kStepMeters = Units.inchesToMeters(0.2);
 }
