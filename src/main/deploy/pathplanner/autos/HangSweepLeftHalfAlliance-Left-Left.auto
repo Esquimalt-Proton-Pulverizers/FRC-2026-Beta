@@ -23,21 +23,63 @@
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "GoTo-Outpost-From-Right"
+            "waitTime": 4.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Hang Level 1"
+            "name": "Flywheel Off"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 2.0
+            "name": "Cancel Shoot When Ready"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake On"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GoTo-Sweep-Alliance-From-Left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Sweep-Half-Alliance-LeftToRight"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GoTo-Sweep-Shooting-11ft-From-LeftSweep"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Off"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Flywheel On"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot When Ready"
           }
         },
         {
@@ -47,21 +89,21 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "GoTo-HangingRight-From-Outpost"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
+            "name": "Hang Level 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Hang-HangingRight"
+            "pathName": "GoTo-HangingLeft-From-LeftSweep"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Hang-HangingLeft"
           }
         },
         {
