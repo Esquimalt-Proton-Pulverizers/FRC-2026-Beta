@@ -3,7 +3,7 @@ package frc.robot.subsystems.shooter.transfer;
 import com.revrobotics.spark.config.SparkBaseConfig;
 
 /** Constants for the Transfer (agitator-to-shooter) subsystem. */
-public final class TransferConstants { // XXX: Add correct values
+public final class TransferConstants {
 
   private TransferConstants() {}
 
@@ -39,7 +39,7 @@ public final class TransferConstants { // XXX: Add correct values
   public static final double kStagingVoltage = 2.0;
 
   /** Voltage in Shooting state. */
-  public static final double kShootingVoltage = 6.0;
+  public static final double kShootingVoltage = 8.0;
 
   /** Proximity at or above this value = ball present (REV Color Sensor V3: 0–2047). */
   public static final int kColorSensorProximityThreshold = 150;

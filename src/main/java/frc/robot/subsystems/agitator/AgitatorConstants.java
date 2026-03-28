@@ -3,7 +3,7 @@ package frc.robot.subsystems.agitator;
 import com.revrobotics.spark.config.SparkBaseConfig;
 
 /** Constants for the Agitator (intake-to-transfer) subsystem. */
-public final class AgitatorConstants { // XXX: Add correct values
+public final class AgitatorConstants {
 
   private AgitatorConstants() {}
 
@@ -27,7 +27,7 @@ public final class AgitatorConstants { // XXX: Add correct values
   public static final int kEncoderVelocitySignalPeriodMs = 251;
 
   /** Max voltage magnitude applied to the motor. */
-  public static final double kMaxVoltage = 8.0;
+  public static final double kMaxVoltage = 11.0;
 
   /** Voltage in Idle state. */
   public static final double kIdleVoltage = 0.0;
@@ -36,7 +36,7 @@ public final class AgitatorConstants { // XXX: Add correct values
   public static final double kStagingVoltage = 2.0;
 
   /** Voltage in Shooting state (fast loading). */
-  public static final double kShootingVoltage = 6.0;
+  public static final double kShootingVoltage = 9.5;
 
   /** Delta volts per step. */
   public static final double kStepVolts = 0.25;
