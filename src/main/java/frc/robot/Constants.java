@@ -38,6 +38,14 @@ public final class Constants {
     public static final double CONTROLLER_RUMBLE = 0.3;
   }
 
+  /** Match timing. */
+  public static class MatchTiming {
+    private MatchTiming() {}
+
+    /** Driver hang endgame period. */
+    public static final double HANG_DRIVER_ENDGAME_SECONDS = 30.0;
+  }
+
   /** Teleop drive speeds and trench/bump alignment. */
   public static class SwerveConstants { // XXX: Tune SwerveConstants, especially TRENCH_ALIGN_TIME_S
     public static final double DEFAULT_DRIVE_SPEED_MPS = 1.6;

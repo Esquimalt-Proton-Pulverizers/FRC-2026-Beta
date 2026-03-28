@@ -30,6 +30,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import static edu.wpi.first.units.Units.Meters;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -397,6 +398,8 @@ public class RobotContainer {
 
 		// Enable Hang/ Retract mode, stop when released
 		if (hang != null) {
+			// If hangHoldModeEnabled (set by X in endgame), press → Level 1 and release → Idle; 
+			// Else toggle Level 1 / Idle.
 			driverController.b().onTrue(
 				new ConditionalCommand(
 					Commands.runOnce(() -> hang.setLevel1State(), hang),
@@ -407,14 +410,32 @@ public class RobotContainer {
 					() -> hangHoldModeEnabled));
 			driverController.b().onFalse(
 				new ConditionalCommand(
-					Commands.runOnce(() -> hang.setIdleState(), hang), 
+					Commands.runOnce(() -> hang.setIdleState(), hang),
 					new InstantCommand(),
 					() -> hangHoldModeEnabled));
-			driverController.x().onTrue(Commands.runOnce(() -> hangHoldModeEnabled = true));
-			driverController.x().whileTrue(Commands.startEnd(
-				() -> hang.setStoredState(),
-				() -> hang.setIdleState(),
-				hang));
+			// Before Endgame, X toggles Stored / Idle. 
+			// Endgame:        X onTrue sets hangHoldModeEnabled (see B); Hanging state while held, Idle on release
+			driverController.x().onTrue(
+				new ConditionalCommand(
+					Commands.runOnce(() -> hangHoldModeEnabled = true),
+					Commands.runOnce(
+						() -> {
+							if (hang.getState() == Hang.State.STORED) {
+								hang.setIdleState();
+							} else {
+								hang.setStoredState();
+							}
+						},
+						hang),
+					() -> isHangDriverEndgamePeriod()));
+			driverController.x().whileTrue(
+				new ConditionalCommand(
+					Commands.startEnd(
+						() -> hang.setHangingState(),
+						() -> hang.setIdleState(),
+						hang),
+					new InstantCommand(),
+					() -> isHangDriverEndgamePeriod()));
 		}
 
     // Shoot toggle: on = schedule ShootWhenReadyCommand, set Flywheel to Charging if Idle; off = cancel (command end() sets Transfer and Agitator to Idle)
@@ -679,6 +700,16 @@ public class RobotContainer {
 		if (flywheel != null) flywheel.setState(Flywheel.State.IDLE);
 		if (hang != null) 		hang.setIdleState();
 	} // End idleBallHandling
+
+	/**
+	 * Check if we are in the last 30 seconds (Endgame).
+	 * Requires FMS so practice mode (match time often 0) does not always select endgame.
+	 */
+	private boolean isHangDriverEndgamePeriod() {
+		return DriverStation.isTeleop()
+				&& DriverStation.isFMSAttached()
+				&& DriverStation.getMatchTime() <= Constants.MatchTiming.HANG_DRIVER_ENDGAME_SECONDS;
+	}
 	
   /**
    * Hang assist: set hang to {@link Hang.State#LEVEL_1}, pathfind and follow the named PathPlanner
@@ -689,8 +720,7 @@ public class RobotContainer {
     return Commands.sequence(
         Commands.runOnce(() -> hang.setLevel1State(), hang),
         DriveCommands.pathfindThenFollowPath(drive, pathName),
-        DriveCommands.timedDriveBackRobotCentric(drive),
-        Commands.runOnce(() -> hang.setHangingState(), hang));
+        DriveCommands.timedDriveBackRobotCentric(drive));
   }
 
   /**
