@@ -448,7 +448,7 @@ public class RobotContainer {
     driverController.povLeft()
         .whileTrue(Commands.defer(() -> hangAssistAfterPathCommand("Hang-HangingLeft"), Set.of(drive, hang)));
     driverController.povRight()
-        .whileTrue(Commands.defer(() -> hangAssistAfterPathCommand("Hang-HangingRight"), Set.of(drive, hang)));
+        .whileTrue(Commands.defer(() -> hangAssistAfterPathCommand("Hang-HangingRight-TeleOp"), Set.of(drive, hang)));
 
 		// ------------------------------------------- Driver Manual Override -------------------------------------------
 		// If Manual Override is false, become true. 
