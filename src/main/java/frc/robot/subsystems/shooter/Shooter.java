@@ -102,7 +102,7 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput("ShooterCommand/Ready/TurretAtTarget", turret.atTarget());
     Logger.recordOutput("ShooterCommand/Ready/HoodAtTarget", !hoodEnabled || hood.atTarget());
     Logger.recordOutput("ShooterCommand/Ready/FlywheelAtTarget", flywheel.atTargetVelocity());
-    Logger.recordOutput("ShooterCommand/Ready/FlywheelAtTargetWithinGracePeriod", flywheelOffTargetGraceTimerSec >= ShooterConstants.kFlywheelOffTargetGraceSec);
+    Logger.recordOutput("ShooterCommand/Ready/FlywheelAtTargetWithinGracePeriod", !(flywheelOffTargetGraceTimerSec >= ShooterConstants.kFlywheelOffTargetGraceSec));
     Logger.recordOutput("ShooterCommand/Ready/FlywheelNotIdle", flywheel.getState() != State.IDLE);
 
     ShooterCommands.setShooterTarget(drive, turret, hood, flywheel, hoodEnabled, !manualOverrideSupplier.getAsBoolean());
