@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 import org.ironmaple.simulation.SimulatedArena;
@@ -444,8 +445,10 @@ public class RobotContainer {
     // Pathfind then follow path to outpost
     driverController.leftStick().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "GoTo-Outpost"));
 
-    driverController.povLeft().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "Hang-HangingLeft"));
-    driverController.povRight().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "Hang-HangingRight"));
+    driverController.povLeft()
+        .whileTrue(Commands.defer(() -> hangAssistAfterPathCommand("Hang-HangingLeft"), Set.of(drive, hang)));
+    driverController.povRight()
+        .whileTrue(Commands.defer(() -> hangAssistAfterPathCommand("Hang-HangingRight"), Set.of(drive, hang)));
 
 		// ------------------------------------------- Driver Manual Override -------------------------------------------
 		// If Manual Override is false, become true. 
@@ -676,6 +679,19 @@ public class RobotContainer {
 		if (flywheel != null) flywheel.setState(Flywheel.State.IDLE);
 		if (hang != null) 		hang.setIdleState();
 	} // End idleBallHandling
+	
+  /**
+   * Hang assist: set hang to {@link Hang.State#LEVEL_1}, pathfind and follow the named PathPlanner
+   * path, run the same short robot-centric backup used for hang alignment in autos, then set hang to
+   * {@link Hang.State#HANGING}.
+   */
+  private Command hangAssistAfterPathCommand(String pathName) {
+    return Commands.sequence(
+        Commands.runOnce(() -> hang.setLevel1State(), hang),
+        DriveCommands.pathfindThenFollowPath(drive, pathName),
+        DriveCommands.timedDriveBackRobotCentric(drive),
+        Commands.runOnce(() -> hang.setHangingState(), hang));
+  }
 
   /**
    * Update Field2d with the current robot pose. Call from Robot.robotPeriodic().
