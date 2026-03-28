@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9674809471616705,
-        "y": 0.8069999999999994
+        "x": 2.7509745962155607,
+        "y": 0.9319999999999992
       },
       "isLocked": false,
       "linkedName": "StartingPosition-Right"
@@ -20,15 +20,20 @@
         "y": 0.5
       },
       "prevControl": {
-        "x": 0.182,
-        "y": 0.5
+        "x": 0.678201938253052,
+        "y": 0.5434120444167325
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Outpost"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4683053040103492,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
