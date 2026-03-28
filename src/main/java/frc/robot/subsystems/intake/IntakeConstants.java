@@ -17,7 +17,7 @@ public final class IntakeConstants {
   public static final boolean kMotorInverted = false;
 
   /** Smart current limit. */
-  public static final int kSmartCurrentLimitAmps = 40;
+  public static final int kSmartCurrentLimitAmps = 60;
 
   /** Open-loop ramp time from 0 to full output. Limits current spikes on step changes. */
   public static final double kOpenLoopRampRateSec = 0.3;
@@ -42,5 +42,5 @@ public final class IntakeConstants {
   public static final double kReversingVoltage = -2.0;
 
   /** Delta volts per step. */
-  public static final double kStepVolts = 1.0;
+  public static final double kStepVolts = 0.25;
 }
