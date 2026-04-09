@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 import org.ironmaple.simulation.SimulatedArena;
@@ -29,8 +28,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
 import static edu.wpi.first.units.Units.Meters;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,7 +39,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.SafeRetractExtenderCommand;
 import frc.robot.commands.ShootWhenReadyCommand;
 import frc.robot.commands.ShooterCommands;
 import frc.robot.commands.TeleopDrive;
@@ -74,11 +72,11 @@ public class RobotContainer {
 
 	// Competition Toggle
 	@AutoLogOutput(key = "CompetitionToggle")
-	private boolean isCompetition = true;
+	private boolean isCompetition = false;
 
 	// Subsystems Toggle
 	private boolean isDriveEnabled 		= true;
-	private boolean isVisionEnabled 	= true;
+	private boolean isVisionEnabled 	= false;
 	private boolean isIntakeEnabled 	= true;
 	private boolean isExtenderEnabled = true;
 	private boolean isAgitatorEnabled = true;
@@ -86,12 +84,12 @@ public class RobotContainer {
 	private boolean isTurretEnabled 	= true;
 	private boolean isHoodEnabled 		= false;
 	private boolean isFlywheelEnabled = true;
-	private boolean isHangEnabled 		= true;
+	private boolean isHangEnabled 		= false;
 
 	// Simulation Toggle
 	private boolean halfFuelOnly 			= true;
 	private boolean shooterSimEnabled	= true;
-	private boolean fuelSimEnabled 		= false;
+	private boolean fuelSimEnabled 		= true;
 
 	// Subsystems
 	private final Drive drive;
@@ -118,9 +116,6 @@ public class RobotContainer {
 	private final Shooter shooter;
 	private final ShootWhenReadyCommand shootWhenReadyCommand;
 
-	// Safe Extender Retracter
-	private final Command safeRetractExtenderCommand;
-
 	// Field view (robot pose)
 	private final Field2d field = new Field2d();
 
@@ -130,15 +125,11 @@ public class RobotContainer {
 
 	// Manual Override
 	@AutoLogOutput(key = "ManualOverride/Driver")
-	public static boolean driverManualOverride = false;
+	public static boolean driverManualOverride = true;
 	@AutoLogOutput(key = "ManualOverride/Operator")
-	public static boolean operatorManualOverride = false;
+	public static boolean operatorManualOverride = true;
 	@AutoLogOutput(key = "Subsystems/Shooter/Turret/DriverTurretOverride")
-	private boolean driverTurretOverride = false;
-
-	// Hang Hold Mode
-	@AutoLogOutput(key = "Subsystems/Hang/HangHoldModeEnabled")
-	private boolean hangHoldModeEnabled = false;
+	private boolean driverTurretOverride = true;
 
 	// Dashboard inputs
 	private final LoggedDashboardChooser<Command> autoChooser;
@@ -204,7 +195,7 @@ public class RobotContainer {
 
 				driveSimulation = new SwerveDriveSimulation(Drive.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
 				applyRearGapToDriveCollision(driveSimulation);
-				SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+				SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation); 
 				drive = new Drive(
 						new GyroIOSim(driveSimulation.getGyroSimulation()),
 						new ModuleIOSim(TunerConstants.FrontLeft, driveSimulation.getModules()[0], 0),
@@ -279,10 +270,6 @@ public class RobotContainer {
 		shooter.setShootCommandScheduledSupplier(shootWhenReadyCommand::isScheduled);
 		shooter.setManualOverrideSupplier(() -> operatorManualOverride);
 
-		safeRetractExtenderCommand =
-				SafeRetractExtenderCommand.create(
-						shootWhenReadyCommand, flywheel, extender, turret, b -> driverTurretOverride = b);
-
 		// Subsystem Manual Override Ignore Limits Supplier
 		intake.setIgnoreLimitsSupplier(() 	-> operatorManualOverride);
 		extender.setIgnoreLimitsSupplier(() -> operatorManualOverride);
@@ -311,7 +298,7 @@ public class RobotContainer {
 		turret.setManualOverrideSupplier(() -> operatorManualOverride || driverTurretOverride);
 		turret.setDrive(drive);
 		turret.setAimAtTargetSupplier(() -> shootWhenReadyCommand.isScheduled());
-
+ 
 		/// -------------------------------------------------------------------------------------------
 		/// ------------------------------------ Logger Dashboard -------------------------------------
 		/// -------------------------------------------------------------------------------------------
@@ -319,7 +306,7 @@ public class RobotContainer {
 		SmartDashboard.putData("Field", field);
 
 		// Register PathPlanner named commands
-		registerCommands();
+		registerCommands();   
 
 		// Set up Auto routines
 		autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -365,15 +352,41 @@ public class RobotContainer {
 				case IDLE ->			extender.setExtendedState();
 				default -> throw new IllegalArgumentException("Unexpected value: " + extender.getState());
 			}
-
-			// Disable Intake when Extender is Retracted or Partial
-			if (extender.getState() == Extender.State.RETRACTED || extender.getState() == Extender.State.PARTIAL) {
-				intake.setIdleState();
-			}
 		}, extender));
 
 		// Set to Retracted, must turn off AutoShoot, and set Turret Target to 0
-		driverController.povDown().onTrue(safeRetractExtenderCommand);
+		driverController.povDown().onTrue(
+			Commands.sequence(
+				Commands.runOnce(() -> {
+					// Turn off AutoShoot (ShootWhenReady) so the shooter/transfer/agitator command stops.
+					if (shootWhenReadyCommand.isScheduled()) {
+						CommandScheduler.getInstance().cancel(shootWhenReadyCommand);
+					}
+
+					// Ensure flywheel is not actively spinning from a prior manual or auto shot.
+					if (flywheel != null) flywheel.setState(Flywheel.State.IDLE);
+
+					// Turret only "chases" a setpoint in manual mode, so temporarily enable a driver-only manual override.
+					// We set the SmartDashboard target to 1 deg first so the next update to 0deg is guaranteed to be detected.
+					driverTurretOverride = true;
+					SmartDashboard.putNumber("Turret/TargetPositionDeg", 1.0);
+				}, extender, turret, flywheel),
+				Commands.parallel(
+					// Turret: switch target to 0 deg, then wait until it's on target (or timeout).
+					Commands.sequence(
+						Commands.waitSeconds(0.02),
+						Commands.runOnce(() -> SmartDashboard.putNumber("Turret/TargetPositionDeg", 0.0)),
+						Commands.waitUntil(() -> turret != null && turret.atTarget()).withTimeout(1.0),
+						Commands.runOnce(() -> driverTurretOverride = false)
+					),
+					// Extender: wait exactly 0.25s after the pre-setup, then retract.
+					Commands.sequence(
+						Commands.waitSeconds(0.25),
+						Commands.runOnce(() -> extender.setRetractedState(), extender)
+					)
+				)
+			)
+		);
 
 		// Intake toggle: right bumper = Intaking ↔ Idle, left bumper = Reversing ↔ Idle
 		driverController.leftBumper().onTrue(
@@ -398,44 +411,16 @@ public class RobotContainer {
 
 		// Enable Hang/ Retract mode, stop when released
 		if (hang != null) {
-			// If hangHoldModeEnabled (set by X in endgame), press → Level 1 and release → Idle; 
-			// Else toggle Level 1 / Idle.
 			driverController.b().onTrue(
 				new ConditionalCommand(
-					Commands.runOnce(() -> hang.setLevel1State(), hang),
-					new ConditionalCommand(
-						Commands.runOnce(() -> hang.setIdleState(), hang),
-						Commands.runOnce(() -> hang.setLevel1State(), hang),
-						() -> hang.getState() == Hang.State.LEVEL_1),
-					() -> hangHoldModeEnabled));
-			driverController.b().onFalse(
-				new ConditionalCommand(
-					Commands.runOnce(() -> hang.setIdleState(), hang),
-					new InstantCommand(),
-					() -> hangHoldModeEnabled));
-			// Before Endgame, X toggles Stored / Idle. 
-			// Endgame:        X onTrue sets hangHoldModeEnabled (see B); Hanging state while held, Idle on release
+					Commands.runOnce(() -> hang.setIdleState(), hang), 
+					Commands.runOnce(() -> hang.setLevel1State(), hang), 
+					() -> hang.getState() == Hang.State.LEVEL_1));
 			driverController.x().onTrue(
 				new ConditionalCommand(
-					Commands.runOnce(() -> hangHoldModeEnabled = true),
-					Commands.runOnce(
-						() -> {
-							if (hang.getState() == Hang.State.STORED) {
-								hang.setIdleState();
-							} else {
-								hang.setStoredState();
-							}
-						},
-						hang),
-					() -> isHangDriverEndgamePeriod()));
-			driverController.x().whileTrue(
-				new ConditionalCommand(
-					Commands.startEnd(
-						() -> hang.setHangingState(),
-						() -> hang.setIdleState(),
-						hang),
-					new InstantCommand(),
-					() -> isHangDriverEndgamePeriod()));
+					Commands.runOnce(() -> hang.setIdleState(), hang), 
+					Commands.runOnce(() -> hang.setStoredState(), hang), 
+					() -> hang.getState() == Hang.State.STORED));
 		}
 
     // Shoot toggle: on = schedule ShootWhenReadyCommand, set Flywheel to Charging if Idle; off = cancel (command end() sets Transfer and Agitator to Idle)
@@ -466,10 +451,8 @@ public class RobotContainer {
     // Pathfind then follow path to outpost
     driverController.leftStick().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "GoTo-Outpost"));
 
-    driverController.povLeft()
-        .whileTrue(Commands.defer(() -> hangAssistAfterPathCommand("Hang-HangingLeft"), Set.of(drive, hang)));
-    driverController.povRight()
-        .whileTrue(Commands.defer(() -> hangAssistAfterPathCommand("Hang-HangingRight-TeleOp"), Set.of(drive, hang)));
+    driverController.povLeft().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "HangingPosition-Left"));
+    driverController.povRight().whileTrue(DriveCommands.pathfindThenFollowPath(drive, "HangingPosition-Right"));
 
 		// ------------------------------------------- Driver Manual Override -------------------------------------------
 		// If Manual Override is false, become true. 
@@ -654,7 +637,6 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Extender Down", Commands.runOnce(() -> extender.setExtendedState(), extender));
 		NamedCommands.registerCommand("Extender Partial", Commands.runOnce(() -> extender.setPartialState(), extender));
 		NamedCommands.registerCommand("Extender Up", Commands.runOnce(() -> extender.setRetractedState(), extender));
-		NamedCommands.registerCommand("Safe Retract Extender", safeRetractExtenderCommand);
 
 		// Flywheel Commands
 		NamedCommands.registerCommand("Flywheel On", Commands.runOnce(() -> flywheel.setState(Flywheel.State.CHARGING), flywheel));
@@ -667,15 +649,6 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Set Shooter Target Passing Spot Right", Commands.runOnce(ShooterCommands::setPassingSpotRight));
 		// With timeout so the sequential auto can advance to path commands (reference codebases build autos in code with paths only)
 		NamedCommands.registerCommand("Shoot When Ready", Commands.runOnce(() -> CommandScheduler.getInstance().schedule(shootWhenReadyCommand)));
-		NamedCommands.registerCommand("Cancel Shoot When Ready", Commands.runOnce(() -> CommandScheduler.getInstance().cancel(shootWhenReadyCommand)));
-
-		// Hang Commands
-		NamedCommands.registerCommand("Hang Level 1", Commands.runOnce(() -> hang.setLevel1State(), hang));
-		NamedCommands.registerCommand("Hang Hanging", Commands.runOnce(() -> hang.setHangingState(), hang));
-		NamedCommands.registerCommand("Hang Stored", Commands.runOnce(() -> hang.setStoredState(), hang));
-
-		// Drive Commands (auto)
-		NamedCommands.registerCommand("Drive Back Hang Align", DriveCommands.timedDriveBackRobotCentric(drive));
 	} // End registerCommands
 
 	/**
@@ -700,28 +673,6 @@ public class RobotContainer {
 		if (flywheel != null) flywheel.setState(Flywheel.State.IDLE);
 		if (hang != null) 		hang.setIdleState();
 	} // End idleBallHandling
-
-	/**
-	 * Check if we are in the last 30 seconds (Endgame).
-	 * Requires FMS so practice mode (match time often 0) does not always select endgame.
-	 */
-	private boolean isHangDriverEndgamePeriod() {
-		return DriverStation.isTeleop()
-				&& DriverStation.isFMSAttached()
-				&& DriverStation.getMatchTime() <= Constants.MatchTiming.HANG_DRIVER_ENDGAME_SECONDS;
-	}
-	
-  /**
-   * Hang assist: set hang to {@link Hang.State#LEVEL_1}, pathfind and follow the named PathPlanner
-   * path, run the same short robot-centric backup used for hang alignment in autos, then set hang to
-   * {@link Hang.State#HANGING}.
-   */
-  private Command hangAssistAfterPathCommand(String pathName) {
-    return Commands.sequence(
-        Commands.runOnce(() -> hang.setLevel1State(), hang),
-        DriveCommands.pathfindThenFollowPath(drive, pathName),
-        DriveCommands.timedDriveBackRobotCentric(drive));
-  }
 
   /**
    * Update Field2d with the current robot pose. Call from Robot.robotPeriodic().

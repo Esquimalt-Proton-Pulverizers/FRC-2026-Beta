@@ -38,7 +38,7 @@ public final class FlywheelConstants {
   public static final double kFlywheelRadiusMeters = 0.0508;
 
   /** Target velocity in Idle state. */
-  public static final double kIdleVelocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(0.0);
+  public static final double kIdleVelocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500);
 
   /** Default target velocity. */
   public static final double kDefaultTargetVelocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(3200.0);
