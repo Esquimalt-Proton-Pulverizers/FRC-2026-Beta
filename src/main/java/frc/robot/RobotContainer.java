@@ -58,6 +58,7 @@ import frc.robot.subsystems.shooter.turret.*;
 import frc.robot.subsystems.shooter.hood.*;
 import frc.robot.subsystems.shooter.flywheel.*;
 import frc.robot.subsystems.hang.*;
+import frc.robot.subsystems.candle.*;
 
 
 /**
@@ -86,6 +87,7 @@ public class RobotContainer {
 	private boolean isTurretEnabled 	= true;
 	private boolean isHoodEnabled 		= false;
 	private boolean isFlywheelEnabled = true;
+	private boolean isCANdleEnabled   = true;
 	private boolean isHangEnabled 		= true;
 
 	// Simulation Toggle
@@ -104,6 +106,7 @@ public class RobotContainer {
 	private final Turret turret;
 	private final Hood hood;
 	private final Flywheel flywheel;
+	private final CANdle candle;
 	private final Hang hang;
 
 	// Drive Commands
@@ -186,6 +189,7 @@ public class RobotContainer {
 				turret   = isTurretEnabled 	 ? new Turret(new TurretIOSparkMax()) 	  : new Turret(new TurretIO() {});
 				hood     = isHoodEnabled  	 ? new Hood(new HoodIOSparkMax()) 		  	: new Hood(new HoodIO() {});
 				flywheel = isFlywheelEnabled ? new Flywheel(new FlywheelIOTalonFX())  : new Flywheel(new FlywheelIO() {});
+				candle   = isCANdleEnabled   ? new CANdle(new CANdleIOLEDs())         : new CANdle(new CANdleIO() {});
 				hang 	 	 = isHangEnabled		 ? new Hang(new HangIOSparkMax())  				: new Hang(new HangIO() {});
 				shooterSim = null;
 				shooterSimVisualizer = null;
@@ -226,6 +230,7 @@ public class RobotContainer {
 				turret 	 = new Turret(new TurretIOSim());
 				hood 		 = new Hood(new HoodIOSim());
 				flywheel = new Flywheel(new FlywheelIOSim());
+				candle   = new CANdle(new CANdleIOSim());
 				hang 		 = new Hang(new HangIOSim());
 
 				// Shooter Sim Visualizer
@@ -266,6 +271,7 @@ public class RobotContainer {
 				turret 	 = new Turret(new TurretIO() {});
 				hood 		 = new Hood(new HoodIO() {});
 				flywheel = new Flywheel(new FlywheelIO() {});
+				candle 	 = new CANdle(new CANdleIO() {});
 				hang 		 = new Hang(new HangIO() {});
 				shooterSim = null;
 				shooterSimVisualizer = null;
@@ -312,6 +318,9 @@ public class RobotContainer {
 		turret.setDrive(drive);
 		turret.setAimAtTargetSupplier(() -> shootWhenReadyCommand.isScheduled());
 
+		candle.setShootWhenReadySupplier(() -> shootWhenReadyCommand.isScheduled());
+		candle.setManualOverrideSupplier(() -> RobotContainer.driverManualOverride || RobotContainer.operatorManualOverride);
+		candle.setShooter(shooter);
 		/// -------------------------------------------------------------------------------------------
 		/// ------------------------------------ Logger Dashboard -------------------------------------
 		/// -------------------------------------------------------------------------------------------
