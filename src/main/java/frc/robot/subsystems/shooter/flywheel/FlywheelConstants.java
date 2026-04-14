@@ -10,7 +10,7 @@ public final class FlywheelConstants {
   private FlywheelConstants() {}
 
   /** CAN ID of the Flywheel motor. */
-  public static final int kMotorId = 7;
+  public static final int kMotorId = 56;
 
   /** Max velocity ramp rate per second (RPM/s). */
   public static final double kVelocityRampRateRpmPerSec = 4000.0;
